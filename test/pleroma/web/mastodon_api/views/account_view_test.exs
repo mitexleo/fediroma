@@ -268,10 +268,12 @@ defmodule Pleroma.Web.MastodonAPI.AccountViewTest do
       muting: false,
       muting_notifications: false,
       subscribing: false,
+      notifying: false,
       requested: false,
       domain_blocking: false,
       showing_reblogs: true,
-      endorsed: false
+      endorsed: false,
+      note: ""
     }
 
     test "represent a relationship for the following and followed user" do
@@ -293,6 +295,7 @@ defmodule Pleroma.Web.MastodonAPI.AccountViewTest do
             muting: true,
             muting_notifications: true,
             subscribing: true,
+            notifying: true,
             showing_reblogs: false,
             id: to_string(other_user.id)
           }

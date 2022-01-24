@@ -7,6 +7,7 @@ defmodule Pleroma.Web.MastodonAPI.AccountView do
 
   alias Pleroma.FollowingRelationship
   alias Pleroma.User
+  alias Pleroma.UserNote
   alias Pleroma.UserRelationship
   alias Pleroma.Web.CommonAPI.Utils
   alias Pleroma.Web.MastodonAPI.AccountView
@@ -101,6 +102,15 @@ defmodule Pleroma.Web.MastodonAPI.AccountView do
         User.following?(target, reading_user)
       end
 
+    subscribing =
+      UserRelationship.exists?(
+        user_relationships,
+        :inverse_subscription,
+        target,
+        reading_user,
+        &User.subscribed_to?(&2, &1)
+      )
+
     # NOTE: adjust UserRelationship.view_relationships_option/2 on new relation-related flags
     %{
       id: to_string(target.id),
@@ -138,14 +148,8 @@ defmodule Pleroma.Web.MastodonAPI.AccountView do
           target,
           &User.muted_notifications?(&1, &2)
         ),
-      subscribing:
-        UserRelationship.exists?(
-          user_relationships,
-          :inverse_subscription,
-          target,
-          reading_user,
-          &User.subscribed_to?(&2, &1)
-        ),
+      subscribing: subscribing,
+      notifying: subscribing,
       requested: follow_state == :follow_pending,
       domain_blocking: User.blocks_domain?(reading_user, target),
       showing_reblogs:
@@ -156,7 +160,12 @@ defmodule Pleroma.Web.MastodonAPI.AccountView do
           target,
           &User.muting_reblogs?(&1, &2)
         ),
-      endorsed: false
+      endorsed: false,
+      note:
+        UserNote.show(
+          reading_user,
+          target
+        )
     }
   end
 
