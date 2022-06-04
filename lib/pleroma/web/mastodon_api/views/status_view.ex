@@ -363,7 +363,7 @@ defmodule Pleroma.Web.MastodonAPI.StatusView do
       reblog: nil,
       card: card,
       content: content_html,
-      text: opts[:with_source] && object.data["source"],
+      text: opts[:with_source] && get_source_text(object.data["source"]),
       created_at: created_at,
       edited_at: edited_at,
       reblogs_count: announcement_count,
@@ -481,8 +481,9 @@ defmodule Pleroma.Web.MastodonAPI.StatusView do
 
     %{
       id: activity.id,
-      text: Map.get(object.data, "source", ""),
-      spoiler_text: Map.get(object.data, "summary", "")
+      text: get_source_text(Map.get(object.data, "source", "")),
+      spoiler_text: Map.get(object.data, "summary", ""),
+      content_type: get_source_content_type(object.data["source"])
     }
   end
 
@@ -723,5 +724,25 @@ defmodule Pleroma.Web.MastodonAPI.StatusView do
     else
       _ -> nil
     end
+  end
+
+  defp get_source_text(%{"content" => content} = _source) do
+    content
+  end
+
+  defp get_source_text(source) when is_binary(source) do
+    source
+  end
+
+  defp get_source_text(_) do
+    ""
+  end
+
+  defp get_source_content_type(%{"mediaType" => type} = _source) do
+    type
+  end
+
+  defp get_source_content_type(_source) do
+    Utils.get_content_type(nil)
   end
 end
