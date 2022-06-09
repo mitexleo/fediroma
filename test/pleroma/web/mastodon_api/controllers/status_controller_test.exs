@@ -2113,8 +2113,14 @@ defmodule Pleroma.Web.MastodonAPI.StatusControllerTest do
       oauth_access(["write:statuses"])
     end
 
-    test "it updates the status", %{conn: conn, user: user} do
+    test "it updates the status" do
+      %{conn: conn, user: user} = oauth_access(["write:statuses", "read:statuses"])
+
       {:ok, activity} = CommonAPI.post(user, %{status: "mew mew #abc", spoiler_text: "#def"})
+
+      conn
+      |> get("/api/v1/statuses/#{activity.id}")
+      |> json_response_and_validate_schema(200)
 
       response =
         conn
@@ -2123,6 +2129,14 @@ defmodule Pleroma.Web.MastodonAPI.StatusControllerTest do
           "status" => "edited",
           "spoiler_text" => "lol"
         })
+        |> json_response_and_validate_schema(200)
+
+      assert response["content"] == "edited"
+      assert response["spoiler_text"] == "lol"
+
+      response =
+        conn
+        |> get("/api/v1/statuses/#{activity.id}")
         |> json_response_and_validate_schema(200)
 
       assert response["content"] == "edited"
