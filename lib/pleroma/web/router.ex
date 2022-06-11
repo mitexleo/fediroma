@@ -537,8 +537,6 @@ defmodule Pleroma.Web.Router do
     get("/bookmarks", StatusController, :bookmarks)
 
     post("/statuses", StatusController, :create)
-    get("/statuses/:id/history", StatusController, :show_history)
-    get("/statuses/:id/source", StatusController, :show_source)
     put("/statuses/:id", StatusController, :update)
     delete("/statuses/:id", StatusController, :delete)
     post("/statuses/:id/reblog", StatusController, :reblog)
@@ -604,6 +602,8 @@ defmodule Pleroma.Web.Router do
     get("/statuses/:id/context", StatusController, :context)
     get("/statuses/:id/favourited_by", StatusController, :favourited_by)
     get("/statuses/:id/reblogged_by", StatusController, :reblogged_by)
+    get("/statuses/:id/history", StatusController, :show_history)
+    get("/statuses/:id/source", StatusController, :show_source)
 
     get("/custom_emojis", CustomEmojiController, :index)
 
