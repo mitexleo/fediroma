@@ -2074,7 +2074,7 @@ defmodule Pleroma.Web.MastodonAPI.StatusControllerTest do
 
   describe "get status history" do
     setup do
-      oauth_access(["read:statuses"])
+      %{conn: build_conn()}
     end
 
     test "unedited post", %{conn: conn} do
@@ -2226,7 +2226,7 @@ defmodule Pleroma.Web.MastodonAPI.StatusControllerTest do
 
   describe "get status source" do
     setup do
-      oauth_access(["read:statuses"])
+      %{conn: build_conn()}
     end
 
     test "it returns the source", %{conn: conn} do
