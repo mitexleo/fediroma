@@ -149,7 +149,7 @@ config :pleroma, Pleroma.Web.Endpoint,
   ]
 
 # Configures Elixir's Logger
-config :logger, truncate: 65536
+config :logger, truncate: 65_536
 
 config :logger, :console,
   level: :info,
@@ -611,7 +611,8 @@ config :esshd,
   enabled: false
 
 oauth_consumer_strategies =
-  System.get_env("OAUTH_CONSUMER_STRATEGIES")
+  "OAUTH_CONSUMER_STRATEGIES"
+  |> System.get_env()
   |> to_string()
   |> String.split()
   |> Enum.map(&hd(String.split(&1, ":")))
@@ -725,13 +726,6 @@ config :pleroma, :static_fe, enabled: false
 
 config :pleroma, :frontends,
   available: %{
-    "kenoma" => %{
-      "name" => "kenoma",
-      "git" => "https://git.pleroma.social/lambadalambda/kenoma",
-      "build_url" =>
-        "https://git.pleroma.social/lambadalambda/kenoma/-/jobs/artifacts/${ref}/download?job=build",
-      "ref" => "master"
-    },
     "pleroma-fe" => %{
       "name" => "pleroma-fe",
       "git" => "https://akkoma.dev/AkkomaGang/pleroma-fe",
@@ -739,30 +733,18 @@ config :pleroma, :frontends,
       "ref" => "develop",
       "build_dir" => "dist"
     },
-    "fedi-fe" => %{
-      "name" => "fedi-fe",
-      "git" => "https://git.pleroma.social/pleroma/fedi-fe",
-      "build_url" =>
-        "https://git.pleroma.social/pleroma/fedi-fe/-/jobs/artifacts/${ref}/download?job=build",
-      "ref" => "master",
-      "custom-http-headers" => [
-        {"service-worker-allowed", "/"}
-      ]
-    },
     "admin-fe" => %{
       "name" => "admin-fe",
-      "git" => "https://git.pleroma.social/pleroma/admin-fe",
-      "build_url" =>
-        "https://git.pleroma.social/pleroma/admin-fe/-/jobs/artifacts/${ref}/download?job=build",
+      "git" => "https://akkoma.dev/AkkomaGang/admin-fe",
+      "build_url" => "https://akkoma-updates.s3-website.fr-par.scw.cloud/frontend/akkoma-fe.zip",
       "ref" => "develop"
     },
-    "soapbox-fe" => %{
-      "name" => "soapbox-fe",
-      "git" => "https://gitlab.com/soapbox-pub/soapbox-fe",
-      "build_url" =>
-        "https://gitlab.com/soapbox-pub/soapbox-fe/-/jobs/artifacts/${ref}/download?job=build-production",
-      "ref" => "v1.0.0",
-      "build_dir" => "static"
+    "mastodon-fe" => %{
+      "name" => "mastodon-fe",
+      "git" => "https://akkoma.dev/AkkomaGang/masto-fe",
+      "build_url" => "https://akkoma-updates.s3-website.fr-par.scw.cloud/frontend/masto-fe.zip",
+      "build_dir" => "distribution",
+      "ref" => "develop"
     }
   }
 
