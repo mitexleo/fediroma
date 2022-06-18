@@ -722,6 +722,7 @@ config :pleroma, :static_fe, enabled: false
 # config :pleroma, :frontends,
 # primary: %{"name" => "pleroma-fe", "ref" => "develop"},
 # admin: %{"name" => "admin-fe", "ref" => "stable"},
+# mastodon: %{"enabled" => true, "name" => "mastodon-fe", "ref" => "develop"}
 # available: %{...}
 
 config :pleroma, :frontends,
@@ -733,18 +734,27 @@ config :pleroma, :frontends,
       "ref" => "develop",
       "build_dir" => "dist"
     },
-    "admin-fe" => %{
-      "name" => "admin-fe",
-      "git" => "https://akkoma.dev/AkkomaGang/admin-fe",
-      "build_url" => "https://akkoma-updates.s3-website.fr-par.scw.cloud/frontend/akkoma-fe.zip",
-      "ref" => "develop"
-    },
+    # mastodon-Fe cannot be set as a primary - it can only be enabled via the mastodon configuration above
     "mastodon-fe" => %{
       "name" => "mastodon-fe",
       "git" => "https://akkoma.dev/AkkomaGang/masto-fe",
       "build_url" => "https://akkoma-updates.s3-website.fr-par.scw.cloud/frontend/masto-fe.zip",
       "build_dir" => "distribution",
       "ref" => "develop"
+    },
+    "admin-fe" => %{
+      "name" => "admin-fe",
+      "git" => "https://akkoma.dev/AkkomaGang/admin-fe",
+      "build_url" => "https://akkoma-updates.s3-website.fr-par.scw.cloud/frontend/admin-fe.zip",
+      "ref" => "develop"
+    },
+    "soapbox-fe" => %{
+      "name" => "soapbox-fe",
+      "git" => "https://gitlab.com/soapbox-pub/soapbox-fe",
+      "build_url" =>
+        "https://gitlab.com/soapbox-pub/soapbox-fe/-/jobs/artifacts/${ref}/download?job=build-production",
+      "ref" => "v1.0.0",
+      "build_dir" => "static"
     }
   }
 
