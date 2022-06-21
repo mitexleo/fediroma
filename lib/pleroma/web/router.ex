@@ -4,10 +4,7 @@
 
 defmodule Pleroma.Web.Router do
   use Pleroma.Web, :router
-  alias Pleroma.Config
   import Phoenix.LiveDashboard.Router
-
-  @mastoFEEnabled Config.get([:frontends, :mastodon, "enabled"])
 
   pipeline :accepts_html do
     plug(:accepts, ["html"])
@@ -581,13 +578,11 @@ defmodule Pleroma.Web.Router do
     get("/timelines/list/:list_id", TimelineController, :list)
   end
 
-  if @mastoFEEnabled do
-    scope "/api/web", Pleroma.Web do
-      pipe_through(:authenticated_api)
+  scope "/api/web", Pleroma.Web do
+    pipe_through(:authenticated_api)
 
-      # Backend-obscure settings blob for MastoFE, don't parse/reuse elsewhere
-      put("/settings", MastoFEController, :put_settings)
-    end
+    # Backend-obscure settings blob for MastoFE, don't parse/reuse elsewhere
+    put("/settings", MastoFEController, :put_settings)
   end
 
   scope "/api/v1", Pleroma.Web.MastodonAPI do
@@ -796,26 +791,24 @@ defmodule Pleroma.Web.Router do
     get("/:version", Nodeinfo.NodeinfoController, :nodeinfo)
   end
 
-  if @mastoFEEnabled do
-    scope "/", Pleroma.Web do
-      pipe_through(:api)
+  scope "/", Pleroma.Web do
+    pipe_through(:api)
 
-      get("/manifest.json", ManifestController, :show)
-      get("/web/manifest.json", MastoFEController, :manifest)
-    end
-
-    scope "/", Pleroma.Web do
-      pipe_through(:mastodon_html)
-      get("/web/login", MastodonAPI.AuthController, :login)
-      delete("/auth/sign_out", MastodonAPI.AuthController, :logout)
-      get("/web/*path", MastoFEController, :index)
-      get("/embed/:id", EmbedController, :show)
-    end
+    get("/manifest.json", ManifestController, :show)
+    get("/web/manifest.json", MastoFEController, :manifest)
   end
 
   scope "/", Pleroma.Web do
-    pipe_through(:pleroma_html)
-    post("/auth/password", TwitterAPI.PasswordController, :request)
+    pipe_through(:mastodon_html)
+
+    get("/web/login", MastodonAPI.AuthController, :login)
+    delete("/auth/sign_out", MastodonAPI.AuthController, :logout)
+
+    post("/auth/password", MastodonAPI.AuthController, :password_reset)
+
+    get("/web/*path", MastoFEController, :index)
+
+    get("/embed/:id", EmbedController, :show)
   end
 
   scope "/proxy/", Pleroma.Web do

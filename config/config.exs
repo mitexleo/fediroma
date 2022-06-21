@@ -709,7 +709,7 @@ config :pleroma, Pleroma.Web.Plugs.RemoteIp,
     "192.168.0.0/16"
   ]
 
-config :pleroma, :static_fe, enabled: false
+config :pleroma, :static_fe, enabled: true
 
 # Example of frontend configuration
 # This example will make us serve the primary frontend from the
@@ -726,6 +726,10 @@ config :pleroma, :static_fe, enabled: false
 # available: %{...}
 
 config :pleroma, :frontends,
+  mastodon: %{
+    "name" => "mastodon-fe",
+    "ref" => "develop"
+  },
   available: %{
     "pleroma-fe" => %{
       "name" => "pleroma-fe",
@@ -734,7 +738,7 @@ config :pleroma, :frontends,
       "ref" => "develop",
       "build_dir" => "dist"
     },
-    # mastodon-Fe cannot be set as a primary - it can only be enabled via the mastodon configuration above
+    # mastodon-Fe cannot be set as a primary - this is only here so we can update this seperately
     "mastodon-fe" => %{
       "name" => "mastodon-fe",
       "git" => "https://akkoma.dev/AkkomaGang/masto-fe",

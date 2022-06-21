@@ -8,7 +8,6 @@ defmodule Pleroma.Web.Endpoint do
   require Pleroma.Constants
 
   alias Pleroma.Config
-  @mastoFEEnabled Config.get([:frontends, :mastodon, "enabled"])
 
   socket("/socket", Pleroma.Web.UserSocket)
   socket("/live", Phoenix.LiveView.Socket)
@@ -69,6 +68,28 @@ defmodule Pleroma.Web.Endpoint do
     }
   )
 
+  plug(Plug.Static.IndexHtml, at: "/pleroma/fedife/")
+
+  plug(Pleroma.Web.Plugs.FrontendStatic,
+    at: "/pleroma/fedife",
+    frontend_type: :fedife,
+    gzip: true,
+    cache_control_for_etags: @static_cache_control,
+    headers: %{
+      "cache-control" => @static_cache_control
+    }
+  )
+
+  plug(Pleroma.Web.Plugs.FrontendStatic,
+    at: "/",
+    frontend_type: :mastodon,
+    gzip: true,
+    cache_control_for_etags: @static_cache_control,
+    headers: %{
+      "cache-control" => @static_cache_control
+    }
+  )
+
   # Serve at "/" the static files from "priv/static" directory.
   #
   # You should set gzip to true if you are running phoenix.digest
@@ -90,18 +111,6 @@ defmodule Pleroma.Web.Endpoint do
     at: "/pleroma/admin/",
     from: {:pleroma, "priv/static/adminfe/"}
   )
-
-  if @mastoFEEnabled do
-    plug(Pleroma.Web.Plugs.FrontendStatic,
-      at: "/",
-      frontend_type: :mastodon,
-      gzip: true,
-      cache_control_for_etags: @static_cache_control,
-      headers: %{
-        "cache-control" => @static_cache_control
-      }
-    )
-  end
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
