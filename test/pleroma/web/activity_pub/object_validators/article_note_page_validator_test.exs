@@ -38,6 +38,11 @@ defmodule Pleroma.Web.ActivityPub.ObjectValidators.ArticleNotePageValidatorTest 
       %{valid?: true} = ArticleNotePageValidator.cast_and_validate(note)
     end
 
+    test "a note from factory validates" do
+      note = insert(:note)
+      %{valid?: true} = ArticleNotePageValidator.cast_and_validate(note.data)
+    end
+
     test "a note with a remote replies collection should validate", _ do
       insert(:user, %{ap_id: "https://bookwyrm.com/user/TestUser"})
       collection = File.read!("test/fixtures/bookwyrm-replies-collection.json")
