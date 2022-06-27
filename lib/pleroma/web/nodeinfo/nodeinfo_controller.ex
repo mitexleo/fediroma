@@ -63,6 +63,7 @@ defmodule Pleroma.Web.Nodeinfo.NodeinfoController do
       metadata: %{
         nodeName: Config.get([:instance, :name]),
         nodeDescription: Config.get([:instance, :description]),
+        nodeAccentColor: Config.get([:instance, :accent_color]),
         private: !Config.get([:instance, :public], true),
         suggestions: %{
           enabled: false
