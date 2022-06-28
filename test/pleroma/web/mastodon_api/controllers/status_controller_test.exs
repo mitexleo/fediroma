@@ -1816,7 +1816,9 @@ defmodule Pleroma.Web.MastodonAPI.StatusControllerTest do
 
     {:ok, %{id: id1}} = CommonAPI.post(user, %{status: "1"})
     {:ok, %{id: id2}} = CommonAPI.post(user, %{status: "2", in_reply_to_status_id: id1})
-    {:ok, %{id: id3}} = CommonAPI.post(remote_user, %{status: "3", in_reply_to_status_id: id2, local: false})
+
+    {:ok, %{id: id3}} =
+      CommonAPI.post(remote_user, %{status: "3", in_reply_to_status_id: id2, local: false})
 
     response =
       build_conn()
