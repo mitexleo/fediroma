@@ -23,6 +23,8 @@ defmodule Mix.Pleroma do
     Pleroma.Config.Oban.warn()
     Pleroma.Application.limiters_setup()
     Application.put_env(:phoenix, :serve_endpoints, false, persistent: true)
+    Finch.start_link(name: MyFinch)
+
 
     unless System.get_env("DEBUG") do
       Logger.remove_backend(:console)
