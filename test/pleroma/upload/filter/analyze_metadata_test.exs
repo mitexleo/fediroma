@@ -16,7 +16,7 @@ defmodule Pleroma.Upload.Filter.AnalyzeMetadataTest do
 
     {:ok, :filtered, meta} = AnalyzeMetadata.filter(upload)
 
-    assert %{width: 1024, height: 768} = meta
+    assert %{width: 1024, height: 768, blurhash: "V6Dv1P?^IS.6InIEIqV^xtWE$$M|D,RnM}%1RitPR%X3"} = meta
     assert meta.blurhash
   end
 
