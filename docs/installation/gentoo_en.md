@@ -4,13 +4,13 @@
 
 ## Installation
 
-This guide will assume that you have administrative rights, either as root or a user with [sudo permissions](https://wiki.gentoo.org/wiki/Sudo). Lines that begin with `#` indicate that they should be run as the superuser. Lines using `$` should be run as the indicated user, e.g. `pleroma$` should be run as the `pleroma` user.
+This guide will assume that you have administrative rights, either as root or a user with [sudo permissions](https://wiki.gentoo.org/wiki/Sudo). Lines that begin with `#` indicate that they should be run as the superuser. Lines using `$` should be run as the indicated user, e.g. `akkoma$` should be run as the `akkoma` user.
 
 {! backend/installation/generic_dependencies.include !}
 
 ### Your make.conf, package.use, and USE flags
 
-The only specific USE flag you should need is the `uuid` flag for `dev-db/postgresql`. Add the following line to any new file in `/etc/portage/package.use`. If you would like a suggested name for the file, either `postgresql` or `pleroma` would do fine, depending on how you like to arrange your package.use flags.
+The only specific USE flag you should need is the `uuid` flag for `dev-db/postgresql`. Add the following line to any new file in `/etc/portage/package.use`. If you would like a suggested name for the file, either `postgresql` or `akkoma` would do fine, depending on how you like to arrange your package.use flags.
 
 ```text
 dev-db/postgresql uuid
@@ -102,41 +102,41 @@ Not only does this make it much easier to deploy changes you make, as you can co
 
 * Add a new system user for the Akkoma service and set up default directories:
 
-Remove `,wheel` if you do not want this user to be able to use `sudo`, however note that being able to `sudo` as the `pleroma` user will make finishing the insallation and common maintenence tasks somewhat easier:
+Remove `,wheel` if you do not want this user to be able to use `sudo`, however note that being able to `sudo` as the `akkoma` user will make finishing the insallation and common maintenence tasks somewhat easier:
 
 ```shell
- # useradd -m -G users,wheel -s /bin/bash pleroma
+ # useradd -m -G users,wheel -s /bin/bash akkoma
 ```
 
-Optional: If you are using sudo, review your sudo setup to ensure it works for you. The `/etc/sudoers` file has a lot of options and examples to help you, and [the Gentoo sudo guide](https://wiki.gentoo.org/wiki/Sudo) has more information. Finishing this installation will be somewhat easier if you have a way to sudo from the `pleroma` user, but it might be best to not allow that user to sudo during normal operation, and as such there will be a reminder at the end of this guide to double check if you would like to lock down the `pleroma` user after initial setup.
+Optional: If you are using sudo, review your sudo setup to ensure it works for you. The `/etc/sudoers` file has a lot of options and examples to help you, and [the Gentoo sudo guide](https://wiki.gentoo.org/wiki/Sudo) has more information. Finishing this installation will be somewhat easier if you have a way to sudo from the `akkoma` user, but it might be best to not allow that user to sudo during normal operation, and as such there will be a reminder at the end of this guide to double check if you would like to lock down the `akkoma` user after initial setup.
 
-**Note**: To execute a single command as the Akkoma system user, use `sudo -Hu pleroma command`. You can also switch to a shell by using `sudo -Hu pleroma $SHELL`. If you don't have or want `sudo` or would like to use the system as the `pleroma` user for instance maintenance tasks, you can simply use `su - pleroma` to switch to the `pleroma` user.
+**Note**: To execute a single command as the Akkoma system user, use `sudo -Hu akkoma command`. You can also switch to a shell by using `sudo -Hu akkoma $SHELL`. If you don't have or want `sudo` or would like to use the system as the `akkoma` user for instance maintenance tasks, you can simply use `su - akkoma` to switch to the `akkoma` user.
 
 * Git clone the AkkomaBE repository and make the Akkoma user the owner of the directory:
 
-It is highly recommended you use your own fork for the `https://path/to/repo` part below, however if you foolishly decide to forego using your own fork, the primary repo `https://git.pleroma.social/pleroma/pleroma` will work here.
+It is highly recommended you use your own fork for the `https://path/to/repo` part below, however if you foolishly decide to forego using your own fork, the primary repo `https://akkoma.dev/AkkomaGang/akkoma.git` will work here.
 
 ```shell
- pleroma$ cd ~
- pleroma$ git clone -b stable https://path/to/repo
+ akkoma$ cd ~
+ akkoma$ git clone -b stable https://path/to/repo
 ```
 
 * Change to the new directory:
 
 ```shell
-pleroma$ cd ~/pleroma
+akkoma$ cd ~/akkoma
 ```
 
 * Install the dependencies for Akkoma and answer with `yes` if it asks you to install `Hex`:
 
 ```shell
-pleroma$ mix deps.get
+akkoma$ mix deps.get
 ```
 
 * Generate the configuration:
 
 ```shell
-pleroma$ MIX_ENV=prod mix pleroma.instance gen
+akkoma$ MIX_ENV=prod mix pleroma.instance gen
 ```
 
   * Answer with `yes` if it asks you to install `rebar3`.
@@ -148,28 +148,28 @@ pleroma$ MIX_ENV=prod mix pleroma.instance gen
   * Spend some time with `generated_config.exs` to ensure that everything is in order. If you plan on using an S3-compatible service to store your local media, that can be done here. You will likely mostly be using `prod.secret.exs` for a production instance, however if you would like to set up a development environment, make a copy to `dev.secret.exs` and adjust settings as needed as well.
 
 ```shell
-pleroma$ mv config/generated_config.exs config/prod.secret.exs
+akkoma$ mv config/generated_config.exs config/prod.secret.exs
 ```
 
 * The previous command creates also the file `config/setup_db.psql`, with which you can create the database. Ensure that it is using the correct database name on the `CREATE DATABASE` and the `\c` lines, then run the postgres script:
 
 ```shell
-pleroma$ sudo -Hu postgres psql -f config/setup_db.psql
+akkoma$ sudo -Hu postgres psql -f config/setup_db.psql
 ```
 
 * Now run the database migration:
 
 ```shell
-pleroma$ MIX_ENV=prod mix ecto.migrate
+akkoma$ MIX_ENV=prod mix ecto.migrate
 ```
 
 * Now you can start Akkoma already
 
 ```shell
-pleroma$ MIX_ENV=prod mix phx.server
+akkoma$ MIX_ENV=prod mix phx.server
 ```
 
-It probably won't work over the public internet quite yet, however, as we still need to set up a web servere to proxy to the pleroma application, as well as configure SSL.
+It probably won't work over the public internet quite yet, however, as we still need to set up a web servere to proxy to the akkoma application, as well as configure SSL.
 
 ### Finalize installation
 
@@ -217,13 +217,13 @@ If you are using any additional subdomains, such as for a media proxy, you can r
 * Copy the example nginx configuration and activate it:
 
 ```shell
- # cp /home/pleroma/pleroma/installation/pleroma.nginx /etc/nginx/sites-available/
- # ln -s /etc/nginx/sites-available/pleroma.nginx /etc/nginx/sites-enabled/pleroma.nginx
+ # cp /home/akkoma/akkoma/installation/akkoma.nginx /etc/nginx/sites-available/
+ # ln -s /etc/nginx/sites-available/akkoma.nginx /etc/nginx/sites-enabled/akkoma.nginx
 ```
 
 * Take some time to ensure that your nginx config is correct
 
-Replace all instances of `example.tld` with your instance's public URL. If for whatever reason you made changes to the port that your pleroma app runs on, be sure that is reflected in your configuration.
+Replace all instances of `example.tld` with your instance's public URL. If for whatever reason you made changes to the port that your akkoma app runs on, be sure that is reflected in your configuration.
 
 Pay special attention to the line that begins with `ssl_ecdh_curve`. It is stongly advised to comment that line out so that OpenSSL will use its full capabilities, and it is also possible you are running OpenSSL 1.0.2 necessitating that you do this.
 
@@ -254,14 +254,14 @@ This will run certbot on the first of the month at midnight. If you'd rather run
 
 #### Other webserver/proxies
 
-If you would like to use other webservers or proxies, there are example configurations for some popular alternatives in `/home/pleroma/pleroma/installation/`. You can, of course, check out [the Gentoo wiki](https://wiki.gentoo.org) for more information on installing and configuring said alternatives.
+If you would like to use other webservers or proxies, there are example configurations for some popular alternatives in `/home/akkoma/akkoma/installation/`. You can, of course, check out [the Gentoo wiki](https://wiki.gentoo.org) for more information on installing and configuring said alternatives.
 
 #### Create the uploads folder
 
-Even if you are using S3, Akkoma needs someplace to store media posted on your instance. If you are using the `/home/pleroma/pleroma` root folder suggested by this guide, simply:
+Even if you are using S3, Akkoma needs someplace to store media posted on your instance. If you are using the `/home/akkoma/akkoma` root folder suggested by this guide, simply:
 
 ```shell
- pleroma$ mkdir -p ~/pleroma/uploads
+ akkoma$ mkdir -p ~/akkoma/uploads
  ```
 
 #### init.d service
@@ -269,16 +269,16 @@ Even if you are using S3, Akkoma needs someplace to store media posted on your i
 * Copy example service file
 
 ```shell
- # cp /home/pleroma/pleroma/installation/init.d/pleroma /etc/init.d/
+ # cp /home/akkoma/akkoma/installation/init.d/akkoma /etc/init.d/
 ```
 
 * Be sure to take a look at this service file and make sure that all paths fit your installation
 
-* Enable and start `pleroma`:
+* Enable and start `akkoma`:
 
 ```shell
- # rc-update add pleroma default
- # /etc/init.d/pleroma start
+ # rc-update add akkoma default
+ # /etc/init.d/akkoma start
 ```
 
 #### Create your first user
@@ -286,12 +286,12 @@ Even if you are using S3, Akkoma needs someplace to store media posted on your i
 If your instance is up and running, you can create your first user with administrative rights with the following task:
 
 ```shell
-pleroma$ MIX_ENV=prod mix pleroma.user new <username> <your@emailaddress> --admin
+akkoma$ MIX_ENV=prod mix pleroma.user new <username> <your@emailaddress> --admin
 ```
 
 #### Privilege cleanup
 
-If you opted to allow sudo for the `pleroma` user but would like to remove the ability for greater security, now might be a good time to edit `/etc/sudoers` and/or change the groups the `pleroma` user belongs to. Be sure to restart the pleroma service afterwards to ensure it picks up on the changes.
+If you opted to allow sudo for the `akkoma` user but would like to remove the ability for greater security, now might be a good time to edit `/etc/sudoers` and/or change the groups the `akkoma` user belongs to. Be sure to restart the akkoma service afterwards to ensure it picks up on the changes.
 
 #### Further reading
 
