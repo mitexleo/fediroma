@@ -215,7 +215,3 @@ sudo -Hu akkoma MIX_ENV=prod mix pleroma.user new <username> <your@emailaddress>
 #### Further reading
 
 {! backend/installation/further_reading.include !}
-
-## Questions
-
-Questions about the installation or didn’t it work as it should be, ask in [#pleroma:libera.chat](https://matrix.to/#/#pleroma:libera.chat) via Matrix or **#pleroma** on **libera.chat** via IRC.

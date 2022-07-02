@@ -186,10 +186,3 @@ sudo -Hu akkoma MIX_ENV=prod mix pleroma.user new <username> <your@emailaddress>
 #### その他の設定とカスタマイズ
 
 {! backend/installation/further_reading.include !}
-
-## 質問ある？
-
-インストールについて質問がある、もしくは、うまくいかないときは、以下のところで質問できます。
-
-* [#pleroma:libera.chat](https://matrix.to/#/#pleroma:libera.chat)
-* **libera.chat** の **#pleroma** IRCチャンネル
