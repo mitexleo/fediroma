@@ -55,23 +55,23 @@ First, run `# /etc/rc.d/pgsql start`. Then, `$ sudo -Hu pgsql -g pgsql createdb`
 Create a user for Akkoma:
 
 ```
-# groupadd pleroma
-# useradd -d /home/pleroma -m -g pleroma -s /usr/pkg/bin/mksh pleroma
-# echo 'export LC_ALL="en_GB.UTF-8"' >> /home/pleroma/.profile
-# su -l pleroma -c $SHELL
+# groupadd akkoma
+# useradd -d /home/akkoma -m -g akkoma -s /usr/pkg/bin/mksh akkoma
+# echo 'export LC_ALL="en_GB.UTF-8"' >> /home/akkoma/.profile
+# su -l akkoma -c $SHELL
 ```
 
 Clone the repository:
 
 ```
-$ cd /home/pleroma
+$ cd /home/akkoma
 $ git clone https://akkoma.dev/AkkomaGang/akkoma.git
 ```
 
 Configure Akkoma. Note that you need a domain name at this point:
 
 ```
-$ cd /home/pleroma/pleroma
+$ cd /home/akkoma/akkoma
 $ mix deps.get
 $ MIX_ENV=prod mix pleroma.instance gen # You will be asked a few questions here.
 ```
@@ -101,7 +101,7 @@ $ MIX_ENV=prod mix ecto.migrate
 ## Configuring nginx
 
 Install the example configuration file
-`/home/pleroma/pleroma/installation/pleroma.nginx` to
+`/home/akkoma/akkoma/installation/akkoma.nginx` to
 `/usr/pkg/etc/nginx.conf`.
 
 Note that it will need to be wrapped in a `http {}` block. You should add
@@ -177,19 +177,19 @@ Let's add auto-renewal to `/etc/daily.local`
 Copy the startup script to the correct location and make sure it's executable:
 
 ```
-# cp /home/pleroma/pleroma/installation/netbsd/rc.d/pleroma /etc/rc.d/pleroma
-# chmod +x /etc/rc.d/pleroma
+# cp /home/akkoma/akkoma/installation/netbsd/rc.d/akkoma /etc/rc.d/akkoma
+# chmod +x /etc/rc.d/akkoma
 ```
 
 Add the following to `/etc/rc.conf`:
 
 ```
-pleroma=YES
-pleroma_home="/home/pleroma"
-pleroma_user="pleroma"
+akkoma=YES
+akkoma_home="/home/akkoma"
+akkoma_user="akkoma"
 ```
 
-Run `# /etc/rc.d/pleroma start` to start Akkoma.
+Run `# /etc/rc.d/akkoma start` to start Akkoma.
 
 ## Conclusion
 
