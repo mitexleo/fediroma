@@ -304,5 +304,4 @@ This will create an account withe the username of 'joeuser' with the email addre
 
 ## Questions
 
-Questions about the installation or didn’t it work as it should be, ask in [#pleroma:libera.chat](https://matrix.to/#/#pleroma:libera.chat) via Matrix or **#pleroma** on **libera.chat** via IRC, you can also [file an issue on our Gitea](https://akkoma.dev/AkkomaGang/akkoma/issues).
-
+If you encounter any issues or have questions regarding the install process, feel free to ask at [meta.akkoma.dev](https://meta.akkoma.dev/).

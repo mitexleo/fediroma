@@ -212,3 +212,6 @@ Restart nginx with `# service nginx restart` and you should be up and running.
 
 Make sure your time is in sync, or other instances will receive your posts with
 incorrect timestamps. You should have ntpd running.
+## Questions
+
+If you encounter any issues or have questions regarding the install process, feel free to ask at [meta.akkoma.dev](https://meta.akkoma.dev/).
