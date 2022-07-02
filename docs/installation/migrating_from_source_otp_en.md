@@ -20,9 +20,9 @@ The system needs to have `curl` and `unzip` installed for downloading and unpack
     ```
 
 ## Moving content out of the application directory
-When using OTP releases the application directory changes with every version so it would be a bother to keep content there (and also dangerous unless `--no-rm` option is used when updating). Fortunately almost all paths in Pleroma are configurable, so it is possible to move them out of there.
+When using OTP releases the application directory changes with every version so it would be a bother to keep content there (and also dangerous unless `--no-rm` option is used when updating). Fortunately almost all paths in Akkoma are configurable, so it is possible to move them out of there.
 
-Pleroma should be stopped before proceeding.
+Akkoma should be stopped before proceeding.
 
 ### Moving uploads/custom public files directory
 
@@ -64,7 +64,7 @@ Note that globs have been replaced with `pack_extensions`, so if your emojis are
 ### Moving the config
 ```sh
 # Create the config directory
-# The default path for Pleroma config is /etc/pleroma/config.exs
+# The default path for Akkoma config is /etc/pleroma/config.exs
 # but it can be set via PLEROMA_CONFIG_PATH environment variable
 mkdir -p /etc/pleroma
 

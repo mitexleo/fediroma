@@ -1,4 +1,4 @@
-# Pleroman asennus OpenBSD:llä
+# Akkoman asennus OpenBSD:llä
 
 Tarvitset:
 * Oman domainin
@@ -55,7 +55,7 @@ Vaihda pleroma-käyttäjään ja mene kotihakemistoosi:
 
 Lataa pleroman lähdekoodi:
 
-`$ git clone -b stable https://git.pleroma.social/pleroma/pleroma.git`
+`$ git clone https://akkoma.dev/AkkomaGang/akkoma.git`
 
 `$ cd pleroma`
 

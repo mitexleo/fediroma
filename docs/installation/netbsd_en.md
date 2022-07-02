@@ -8,7 +8,7 @@ pkgin should have been installed by the NetBSD installer if you selected
 the right options. If it isn't installed, install it using pkg_add.
 
 Note that `postgresql11-contrib` is needed for the Postgres extensions
-Pleroma uses.
+Akkoma uses.
 
 The `mksh` shell is needed to run the Elixir `mix` script.
 
@@ -50,9 +50,9 @@ First, run `# /etc/rc.d/pgsql start`. Then, `$ sudo -Hu pgsql -g pgsql createdb`
 
 `# pkgin install ImageMagick ffmpeg4 p5-Image-ExifTool`
 
-## Configuring Pleroma
+## Configuring Akkoma
 
-Create a user for Pleroma:
+Create a user for Akkoma:
 
 ```
 # groupadd pleroma
@@ -65,10 +65,10 @@ Clone the repository:
 
 ```
 $ cd /home/pleroma
-$ git clone -b stable https://git.pleroma.social/pleroma/pleroma.git
+$ git clone https://akkoma.dev/AkkomaGang/akkoma.git
 ```
 
-Configure Pleroma. Note that you need a domain name at this point:
+Configure Akkoma. Note that you need a domain name at this point:
 
 ```
 $ cd /home/pleroma/pleroma
@@ -172,7 +172,7 @@ Let's add auto-renewal to `/etc/daily.local`
     --stateless
 ```
 
-## Creating a startup script for Pleroma
+## Creating a startup script for Akkoma
 
 Copy the startup script to the correct location and make sure it's executable:
 
@@ -189,7 +189,7 @@ pleroma_home="/home/pleroma"
 pleroma_user="pleroma"
 ```
 
-Run `# /etc/rc.d/pleroma start` to start Pleroma.
+Run `# /etc/rc.d/pleroma start` to start Akkoma.
 
 ## Conclusion
 

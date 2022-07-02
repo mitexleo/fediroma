@@ -34,9 +34,9 @@ Setup the required services to automatically start at boot, using `sysrc(8)`.
 # pkg install imagemagick ffmpeg p5-Image-ExifTool
 ```
 
-## Configuring Pleroma
+## Configuring Akkoma
 
-Create a user for Pleroma:
+Create a user for Akkoma:
 
 ```
 # pw add user pleroma -m
@@ -48,10 +48,10 @@ Clone the repository:
 
 ```
 $ cd $HOME # Should be the same as /home/pleroma
-$ git clone -b stable https://git.pleroma.social/pleroma/pleroma.git
+$ git clone https://akkoma.dev/AkkomaGang/akkoma.git
 ```
 
-Configure Pleroma. Note that you need a domain name at this point:
+Configure Akkoma. Note that you need a domain name at this point:
 
 ```
 $ cd /home/pleroma/pleroma
@@ -173,9 +173,9 @@ Edit the defaults of `/usr/local/etc/nginx/sites-available/pleroma.nginx`:
 * Change `ssl_certificate_key` to `/var/db/acme/certs/example.tld/example.tld.key`.
 * Change all references of `example.tld` to your instance's domain name.
 
-## Creating a startup script for Pleroma
+## Creating a startup script for Akkoma
 
-Pleroma will need to compile when it initially starts, which typically takes a longer
+Akkoma will need to compile when it initially starts, which typically takes a longer
 period of time. Therefore, it is good practice to initially run pleroma from the
 command-line before utilizing the rc.d script. That is done as follows:
 

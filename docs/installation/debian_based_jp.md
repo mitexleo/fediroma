@@ -1,4 +1,4 @@
-# Pleromaの入れ方
+# Akkomaの入れ方
 ## 日本語訳について
 
 この記事は [Installing on Debian based distributions](Installing on Debian based distributions) の日本語訳です。何かがおかしいと思ったら、原文を見てください。
@@ -60,15 +60,15 @@ sudo apt install elixir erlang-dev erlang-nox
 sudo apt install imagemagick ffmpeg libimage-exiftool-perl
 ```
 
-### Pleroma BE (バックエンド) をインストールします
+### Akkoma BE (バックエンド) をインストールします
 
-*  Pleroma用に新しいユーザーを作ります。
+*  Akkoma用に新しいユーザーを作ります。
 
 ```
 sudo useradd -r -s /bin/false -m -d /var/lib/pleroma -U pleroma
 ```
 
-**注意**: Pleromaユーザとして単発のコマンドを実行したい場合はは、`sudo -Hu pleroma command` を使ってください。シェルを使いたい場合は `sudo -Hu pleroma $SHELL`です。もし `sudo` を使わない場合は、rootユーザで `su -l pleroma -s $SHELL -c 'command'` とすることでコマンドを、`su -l pleroma -s $SHELL` とすることでシェルを開始できます。
+**注意**: Akkomaユーザとして単発のコマンドを実行したい場合はは、`sudo -Hu pleroma command` を使ってください。シェルを使いたい場合は `sudo -Hu pleroma $SHELL`です。もし `sudo` を使わない場合は、rootユーザで `su -l pleroma -s $SHELL -c 'command'` とすることでコマンドを、`su -l pleroma -s $SHELL` とすることでシェルを開始できます。
 
 *  Gitリポジトリをクローンします。
 ```
@@ -82,7 +82,7 @@ sudo -Hu pleroma git clone -b stable https://git.pleroma.social/pleroma/pleroma 
 cd /opt/pleroma
 ```
 
-* Pleromaが依存するパッケージをインストールします。Hexをインストールしてもよいか聞かれたら、yesを入力してください。
+* Akkomaが依存するパッケージをインストールします。Hexをインストールしてもよいか聞かれたら、yesを入力してください。
 ```
 sudo -Hu pleroma mix deps.get
 ```
@@ -111,14 +111,14 @@ sudo -Hu pleroma MIX_ENV=prod mix pleroma.instance gen
 sudo -Hu pleroma MIX_ENV=prod mix ecto.migrate
 ```
 
-* これでPleromaを起動できるようになりました。
+* これでAkkomaを起動できるようになりました。
 ```
 sudo -Hu pleroma MIX_ENV=prod mix phx.server
 ```
 
 ### インストールの最終段階
 
-あなたの新しいインスタンスを世界に向けて公開するには、nginx等のWebサーバやプロキシサーバをPleromaの前段に使用する必要があります。また、Pleroma のためにシステムサービスファイルを作成する必要があります。
+あなたの新しいインスタンスを世界に向けて公開するには、nginx等のWebサーバやプロキシサーバをAkkomaの前段に使用する必要があります。また、Akkoma のためにシステムサービスファイルを作成する必要があります。
 
 #### Nginx
 

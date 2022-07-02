@@ -15,7 +15,7 @@ To install them, run the following command (with doas or as root):
 pkg_add elixir gmake git postgresql-server postgresql-contrib cmake ffmpeg ImageMagick
 ```
 
-Pleroma requires a reverse proxy, OpenBSD has relayd in base (and is used in this guide) and packages/ports are available for nginx (www/nginx) and apache (www/apache-httpd). Independently of the reverse proxy, [acme-client(1)](https://man.openbsd.org/acme-client) can be used to get a certificate from Let's Encrypt.
+Akkoma requires a reverse proxy, OpenBSD has relayd in base (and is used in this guide) and packages/ports are available for nginx (www/nginx) and apache (www/apache-httpd). Independently of the reverse proxy, [acme-client(1)](https://man.openbsd.org/acme-client) can be used to get a certificate from Let's Encrypt.
 
 #### Optional software
 
@@ -31,7 +31,7 @@ pkg_add ImageMagick ffmpeg p5-Image-ExifTool
 ```
 
 #### Creating the pleroma user
-Pleroma will be run by a dedicated user, \_pleroma. Before creating it, insert the following lines in login.conf:
+Akkoma will be run by a dedicated user, \_pleroma. Before creating it, insert the following lines in login.conf:
 ```
 pleroma:\
 	:datasize-max=1536M:\
@@ -43,7 +43,7 @@ This creates a "pleroma" login class and sets higher values than default for dat
 Create the \_pleroma user, assign it the pleroma login class and create its home directory (/home/\_pleroma/): `useradd -m -L pleroma _pleroma`
 
 #### Clone pleroma's directory
-Enter a shell as the \_pleroma user. As root, run `su _pleroma -;cd`. Then clone the repository with `git clone -b stable https://git.pleroma.social/pleroma/pleroma.git`. Pleroma is now installed in /home/\_pleroma/pleroma/, it will be configured and started at the end of this guide.
+Enter a shell as the \_pleroma user. As root, run `su _pleroma -;cd`. Then clone the repository with `git clone https://akkoma.dev/AkkomaGang/akkoma.git`. Akkoma is now installed in /home/\_pleroma/pleroma/, it will be configured and started at the end of this guide.
 
 #### PostgreSQL
 Start a shell as the \_postgresql user (as root run `su _postgresql -` then run the `initdb` command to initialize postgresql:
@@ -170,7 +170,7 @@ http protocol plerup { # Protocol for upstream pleroma server
 	match request header append "Connection" value "upgrade"
 	#match response header append "Strict-Transport-Security" value "max-age=31536000; includeSubDomains" # Uncomment this only after you get HTTPS working.
 
-	# If you do not want remote frontends to be able to access your Pleroma backend server, comment these lines
+	# If you do not want remote frontends to be able to access your Akkoma backend server, comment these lines
 	match response header append "Access-Control-Allow-Origin" value "*"
 	match response header append "Access-Control-Allow-Methods" value "POST, PUT, DELETE, GET, PATCH, OPTIONS"
 	match response header append "Access-Control-Allow-Headers" value "Authorization, Content-Type, Idempotency-Key"

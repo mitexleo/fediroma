@@ -88,9 +88,9 @@ The output from emerging postgresql should give you a command for initializing t
 
 ### A note on licenses, the AGPL, and deployment procedures
 
-If you do not plan to make any modifications to your Pleroma instance, cloning directly from the main repo will get you what you need. However, if you plan on doing any contributions to upstream development, making changes or modifications to your instance, making custom themes, or want to play around--and let's be honest here, if you're using Gentoo that is most likely you--you will save yourself a lot of headache later if you take the time right now to fork the Pleroma repo and use that in the following section.
+If you do not plan to make any modifications to your Akkoma instance, cloning directly from the main repo will get you what you need. However, if you plan on doing any contributions to upstream development, making changes or modifications to your instance, making custom themes, or want to play around--and let's be honest here, if you're using Gentoo that is most likely you--you will save yourself a lot of headache later if you take the time right now to fork the Akkoma repo and use that in the following section.
 
-Not only does this make it much easier to deploy changes you make, as you can commit and pull from upstream and all that good stuff from the comfort of your local machine then simply `git pull` on your instance server when you're ready to deploy, it also ensures you are compliant with the Affero General Public Licence that Pleroma is licenced under, which stipulates that all network services provided with modified AGPL code must publish their changes on a publicly available internet service and for free. It also makes it much easier to ask for help from and provide help to your fellow Pleroma admins if your public repo always reflects what you are running because it is part of your deployment procedure.
+Not only does this make it much easier to deploy changes you make, as you can commit and pull from upstream and all that good stuff from the comfort of your local machine then simply `git pull` on your instance server when you're ready to deploy, it also ensures you are compliant with the Affero General Public Licence that Akkoma is licenced under, which stipulates that all network services provided with modified AGPL code must publish their changes on a publicly available internet service and for free. It also makes it much easier to ask for help from and provide help to your fellow Akkoma admins if your public repo always reflects what you are running because it is part of your deployment procedure.
 
 ### Install media / graphics packages (optional, see [`docs/installation/optional/media_graphics_packages.md`](docs/installation/optional/media_graphics_packages.md))
 
@@ -98,9 +98,9 @@ Not only does this make it much easier to deploy changes you make, as you can co
 # emerge --ask media-video/ffmpeg media-gfx/imagemagick media-libs/exiftool
 ```
 
-### Install PleromaBE
+### Install AkkomaBE
 
-* Add a new system user for the Pleroma service and set up default directories:
+* Add a new system user for the Akkoma service and set up default directories:
 
 Remove `,wheel` if you do not want this user to be able to use `sudo`, however note that being able to `sudo` as the `pleroma` user will make finishing the insallation and common maintenence tasks somewhat easier:
 
@@ -110,9 +110,9 @@ Remove `,wheel` if you do not want this user to be able to use `sudo`, however n
 
 Optional: If you are using sudo, review your sudo setup to ensure it works for you. The `/etc/sudoers` file has a lot of options and examples to help you, and [the Gentoo sudo guide](https://wiki.gentoo.org/wiki/Sudo) has more information. Finishing this installation will be somewhat easier if you have a way to sudo from the `pleroma` user, but it might be best to not allow that user to sudo during normal operation, and as such there will be a reminder at the end of this guide to double check if you would like to lock down the `pleroma` user after initial setup.
 
-**Note**: To execute a single command as the Pleroma system user, use `sudo -Hu pleroma command`. You can also switch to a shell by using `sudo -Hu pleroma $SHELL`. If you don't have or want `sudo` or would like to use the system as the `pleroma` user for instance maintenance tasks, you can simply use `su - pleroma` to switch to the `pleroma` user.
+**Note**: To execute a single command as the Akkoma system user, use `sudo -Hu pleroma command`. You can also switch to a shell by using `sudo -Hu pleroma $SHELL`. If you don't have or want `sudo` or would like to use the system as the `pleroma` user for instance maintenance tasks, you can simply use `su - pleroma` to switch to the `pleroma` user.
 
-* Git clone the PleromaBE repository and make the Pleroma user the owner of the directory:
+* Git clone the AkkomaBE repository and make the Akkoma user the owner of the directory:
 
 It is highly recommended you use your own fork for the `https://path/to/repo` part below, however if you foolishly decide to forego using your own fork, the primary repo `https://git.pleroma.social/pleroma/pleroma` will work here.
 
@@ -127,7 +127,7 @@ It is highly recommended you use your own fork for the `https://path/to/repo` pa
 pleroma$ cd ~/pleroma
 ```
 
-* Install the dependencies for Pleroma and answer with `yes` if it asks you to install `Hex`:
+* Install the dependencies for Akkoma and answer with `yes` if it asks you to install `Hex`:
 
 ```shell
 pleroma$ mix deps.get
@@ -141,7 +141,7 @@ pleroma$ MIX_ENV=prod mix pleroma.instance gen
 
   * Answer with `yes` if it asks you to install `rebar3`.
 
-  * This part precompiles some parts of Pleroma, so it might take a few moments
+  * This part precompiles some parts of Akkoma, so it might take a few moments
 
   * After that it will ask you a few questions about your instance and generates a configuration file in `config/generated_config.exs`.
 
@@ -163,7 +163,7 @@ pleroma$ sudo -Hu postgres psql -f config/setup_db.psql
 pleroma$ MIX_ENV=prod mix ecto.migrate
 ```
 
-* Now you can start Pleroma already
+* Now you can start Akkoma already
 
 ```shell
 pleroma$ MIX_ENV=prod mix phx.server
@@ -173,7 +173,7 @@ It probably won't work over the public internet quite yet, however, as we still 
 
 ### Finalize installation
 
-Assuming you want to open your newly installed federated social network to, well, the federation, you should run nginx or some other webserver/proxy in front of Pleroma. It is also a good idea to set up Pleroma to run as a system service.
+Assuming you want to open your newly installed federated social network to, well, the federation, you should run nginx or some other webserver/proxy in front of Akkoma. It is also a good idea to set up Akkoma to run as a system service.
 
 #### Nginx
 
@@ -258,7 +258,7 @@ If you would like to use other webservers or proxies, there are example configur
 
 #### Create the uploads folder
 
-Even if you are using S3, Pleroma needs someplace to store media posted on your instance. If you are using the `/home/pleroma/pleroma` root folder suggested by this guide, simply:
+Even if you are using S3, Akkoma needs someplace to store media posted on your instance. If you are using the `/home/pleroma/pleroma` root folder suggested by this guide, simply:
 
 ```shell
  pleroma$ mkdir -p ~/pleroma/uploads

@@ -2,7 +2,7 @@
 
 {! backend/installation/otp_vs_from_source.include !}
 
-This guide covers a installation using an OTP release. To install Pleroma from source, please check out the corresponding guide for your distro.
+This guide covers a installation using an OTP release. To install Akkoma from source, please check out the corresponding guide for your distro.
 
 ## Pre-requisites
 * A machine running Linux with GNU (e.g. Debian, Ubuntu) or musl (e.g. Alpine) libc and `x86_64`, `aarch64` or `armv7l` CPU, you have root access to. If you are not sure if it's compatible see [Detecting flavour section](#detecting-flavour) below
@@ -23,7 +23,7 @@ If your platform is supported the output will contain the flavour string, you wi
 
 ### Installing the required packages
 
-Other than things bundled in the OTP release Pleroma depends on:
+Other than things bundled in the OTP release Akkoma depends on:
 
 * curl (to download the release build)
 * unzip (needed to unpack release builds)
@@ -104,9 +104,9 @@ Restart PostgreSQL to apply configuration changes:
     systemctl restart postgresql
     ```
 
-### Installing Pleroma
+### Installing Akkoma
 ```sh
-# Create a Pleroma user
+# Create a Akkoma user
 adduser --system --shell  /bin/false --home /opt/pleroma pleroma
 
 # Set the flavour environment variable to the string you got in Detecting flavour section.
@@ -169,7 +169,7 @@ su pleroma -s $SHELL -lc "./bin/pleroma stop"
 certbot certonly --standalone --preferred-challenges http -d yourinstance.tld
 ```
 
-#### Copy Pleroma nginx configuration to the nginx folder
+#### Copy Akkoma nginx configuration to the nginx folder
 
 The location of nginx configs is dependent on the distro
 
@@ -209,7 +209,7 @@ nginx -t
     systemctl start nginx
     ```
 
-At this point if you open your (sub)domain in a browser you should see a 502 error, that's because Pleroma is not started yet.
+At this point if you open your (sub)domain in a browser you should see a 502 error, that's because Akkoma is not started yet.
 
 ### Setting up a system service
 
@@ -233,7 +233,7 @@ At this point if you open your (sub)domain in a browser you should see a 502 err
     systemctl enable pleroma
     ```
 
-If everything worked, you should see Pleroma-FE when visiting your domain. If that didn't happen, try reviewing the installation steps, starting Pleroma in the foreground and seeing if there are any errrors.
+If everything worked, you should see Akkoma-FE when visiting your domain. If that didn't happen, try reviewing the installation steps, starting Akkoma in the foreground and seeing if there are any errrors.
 
 Questions about the installation or didn’t it work as it should be, ask in [#pleroma:libera.chat](https://matrix.to/#/#pleroma:libera.chat) via Matrix or **#pleroma** on **libera.chat** via IRC, you can also [file an issue on our Gitlab](https://git.pleroma.social/pleroma/pleroma-support/issues/new).
 

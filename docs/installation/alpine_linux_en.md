@@ -71,18 +71,18 @@ sudo rc-update add postgresql
 sudo apk add ffmpeg imagemagick exiftool
 ```
 
-### Install PleromaBE
+### Install AkkomaBE
 
-* Add a new system user for the Pleroma service:
+* Add a new system user for the Akkoma service:
 
 ```shell
 sudo addgroup pleroma
 sudo adduser -S -s /bin/false -h /opt/pleroma -H -G pleroma pleroma
 ```
 
-**Note**: To execute a single command as the Pleroma system user, use `sudo -Hu pleroma command`. You can also switch to a shell by using `sudo -Hu pleroma $SHELL`. If you don’t have and want `sudo` on your system, you can use `su` as root user (UID 0) for a single command by using `su -l pleroma -s $SHELL -c 'command'` and `su -l pleroma -s $SHELL` for starting a shell.
+**Note**: To execute a single command as the Akkoma system user, use `sudo -Hu pleroma command`. You can also switch to a shell by using `sudo -Hu pleroma $SHELL`. If you don’t have and want `sudo` on your system, you can use `su` as root user (UID 0) for a single command by using `su -l pleroma -s $SHELL -c 'command'` and `su -l pleroma -s $SHELL` for starting a shell.
 
-* Git clone the PleromaBE repository and make the Pleroma user the owner of the directory:
+* Git clone the AkkomaBE repository and make the Akkoma user the owner of the directory:
 
 ```shell
 sudo mkdir -p /opt/pleroma
@@ -96,7 +96,7 @@ sudo -Hu pleroma git clone -b stable https://git.pleroma.social/pleroma/pleroma 
 cd /opt/pleroma
 ```
 
-* Install the dependencies for Pleroma and answer with `yes` if it asks you to install `Hex`:
+* Install the dependencies for Akkoma and answer with `yes` if it asks you to install `Hex`:
 
 ```shell
 sudo -Hu pleroma mix deps.get
@@ -107,7 +107,7 @@ sudo -Hu pleroma mix deps.get
   * This may take some time, because parts of pleroma get compiled first.
   * After that it will ask you a few questions about your instance and generates a configuration file in `config/generated_config.exs`.
 
-* Check the configuration and if all looks right, rename it, so Pleroma will load it (`prod.secret.exs` for productive instance, `dev.secret.exs` for development instances):
+* Check the configuration and if all looks right, rename it, so Akkoma will load it (`prod.secret.exs` for productive instance, `dev.secret.exs` for development instances):
 
 ```shell
 sudo -Hu pleroma mv config/{generated_config.exs,prod.secret.exs}
@@ -125,7 +125,7 @@ sudo -Hu postgres psql -f config/setup_db.psql
 sudo -Hu pleroma MIX_ENV=prod mix ecto.migrate
 ```
 
-* Now you can start Pleroma already
+* Now you can start Akkoma already
 
 ```shell
 sudo -Hu pleroma MIX_ENV=prod mix phx.server
@@ -133,7 +133,7 @@ sudo -Hu pleroma MIX_ENV=prod mix phx.server
 
 ### Finalize installation
 
-If you want to open your newly installed instance to the world, you should run nginx or some other webserver/proxy in front of Pleroma and you should consider to create an OpenRC service file for Pleroma.
+If you want to open your newly installed instance to the world, you should run nginx or some other webserver/proxy in front of Akkoma and you should consider to create an OpenRC service file for Akkoma.
 
 #### Nginx
 
