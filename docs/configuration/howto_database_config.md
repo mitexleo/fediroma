@@ -1,7 +1,7 @@
 # How to activate Akkoma in-database configuration
 ## Explanation
 
-The configuration of Akkoma (and previously Pleroma) has traditionally been managed with a config file, e.g. `config/prod.secret.exs`. This method requires a restart of the application for any configuration changes to take effect. We have made it possible to control most settings in the AdminFE interface after running a migration script.
+The configuration of Akkoma (and Pleroma) has traditionally been managed with a config file, e.g. `config/prod.secret.exs`. This method requires a restart of the application for any configuration changes to take effect. We have made it possible to control most settings in the AdminFE interface after running a migration script.
 
 ## Migration to database config
 
