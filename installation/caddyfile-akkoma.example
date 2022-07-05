@@ -1,4 +1,4 @@
-# default Caddyfile config for Pleroma
+# default Caddyfile config for Akkoma
 #
 # Simple installation instructions:
 # 1. Replace 'example.tld' with your instance's domain wherever it appears.
@@ -6,7 +6,7 @@
 
 example.tld  {
   log {
-    output file /var/log/caddy/pleroma.log
+    output file /var/log/caddy/akkoma.log
   }
 
   encode gzip
