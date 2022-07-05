@@ -36,7 +36,7 @@ sudo apk add git build-base cmake file-dev
 * Install Erlang and Elixir:
 
 ```shell
-sudo apk add erlang erlang-runtime-tools erlang-xmerl elixir
+sudo apk add erlang elixir
 ```
 
 * Install `erlang-eldap` if you want to enable ldap authenticator
