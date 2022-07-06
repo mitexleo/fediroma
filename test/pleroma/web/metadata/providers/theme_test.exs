@@ -1,8 +1,4 @@
-# Pleroma: A lightweight social networking server
-# Copyright © 2017-2021 Pleroma Authors <https://pleroma.social/>
-# SPDX-License-Identifier: AGPL-3.0-only
-
-defmodule Pleroma.Web.Metadata.Providers.OpenGraphTest do
+defmodule Pleroma.Web.Metadata.Providers.ThemeTest do
   use Pleroma.DataCase
   alias Pleroma.Web.Metadata.Providers.Theme
 
