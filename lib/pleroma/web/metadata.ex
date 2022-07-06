@@ -25,7 +25,8 @@ defmodule Pleroma.Web.Metadata do
   def build_tags(params) do
     providers = [
       Pleroma.Web.Metadata.Providers.RelMe,
-      Pleroma.Web.Metadata.Providers.RestrictIndexing
+      Pleroma.Web.Metadata.Providers.RestrictIndexing,
+      Pleroma.Web.Metadata.Providers.Theme
       | activated_providers()
     ]
 
