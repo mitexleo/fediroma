@@ -23,21 +23,13 @@ defmodule Mix.Pleroma do
     Pleroma.Config.Oban.warn()
     Pleroma.Application.limiters_setup()
     Application.put_env(:phoenix, :serve_endpoints, false, persistent: true)
+    Finch.start_link(name: MyFinch)
 
     unless System.get_env("DEBUG") do
       Logger.remove_backend(:console)
     end
 
-    adapter = Application.get_env(:tesla, :adapter)
-
-    apps =
-      if adapter == Tesla.Adapter.Gun do
-        [:gun | @apps]
-      else
-        [:hackney | @apps]
-      end
-
-    Enum.each(apps, &Application.ensure_all_started/1)
+    Enum.each(@apps, &Application.ensure_all_started/1)
 
     oban_config = [
       crontab: [],
@@ -57,7 +49,7 @@ defmodule Mix.Pleroma do
         {Majic.Pool,
          [name: Pleroma.MajicPool, pool_size: Pleroma.Config.get([:majic_pool, :size], 2)]}
       ] ++
-        http_children(adapter)
+        elasticsearch_children()
 
     cachex_children = Enum.map(@cachex_children, &Pleroma.Application.build_cachex(&1, []))
 
@@ -130,10 +122,13 @@ defmodule Mix.Pleroma do
     ~S(') <> String.replace(path, ~S('), ~S(\')) <> ~S(')
   end
 
-  defp http_children(Tesla.Adapter.Gun) do
-    Pleroma.Gun.ConnectionPool.children() ++
-      [{Task, &Pleroma.HTTP.AdapterHelper.Gun.limiter_setup/0}]
-  end
+  def elasticsearch_children do
+    config = Pleroma.Config.get([Pleroma.Search, :module])
 
-  defp http_children(_), do: []
+    if config == Pleroma.Search.Elasticsearch do
+      [Pleroma.Search.Elasticsearch.Cluster]
+    else
+      []
+    end
+  end
 end

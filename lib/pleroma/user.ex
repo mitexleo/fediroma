@@ -151,6 +151,7 @@ defmodule Pleroma.User do
     field(:pinned_objects, :map, default: %{})
     field(:is_suggested, :boolean, default: false)
     field(:last_status_at, :naive_datetime)
+    field(:language, :string)
 
     embeds_one(
       :notification_settings,
@@ -734,7 +735,8 @@ defmodule Pleroma.User do
       :password_confirmation,
       :emoji,
       :accepts_chat_messages,
-      :registration_reason
+      :registration_reason,
+      :language
     ])
     |> validate_required([:name, :nickname, :password, :password_confirmation])
     |> validate_confirmation(:password)
@@ -1089,11 +1091,24 @@ defmodule Pleroma.User do
     |> update_and_set_cache()
   end
 
-  def update_and_set_cache(changeset) do
+  def update_and_set_cache(%{data: %Pleroma.User{} = user} = changeset) do
+    was_superuser_before_update = User.superuser?(user)
+
     with {:ok, user} <- Repo.update(changeset, stale_error_field: :id) do
-      Pleroma.Elasticsearch.maybe_put_into_elasticsearch(user)
       set_cache(user)
     end
+    |> maybe_remove_report_notifications(was_superuser_before_update)
+  end
+
+  defp maybe_remove_report_notifications({:ok, %Pleroma.User{} = user} = result, true) do
+    if not User.superuser?(user),
+      do: user |> Notification.destroy_multiple_from_types(["pleroma:report"])
+
+    result
+  end
+
+  defp maybe_remove_report_notifications(result, _) do
+    result
   end
 
   def get_user_friends_ap_ids(user) do
@@ -2271,6 +2286,38 @@ defmodule Pleroma.User do
     |> unique_constraint(:email)
     |> validate_format(:email, @email_regex)
     |> update_and_set_cache()
+  end
+
+  def alias_users(user) do
+    user.also_known_as
+    |> Enum.map(&User.get_cached_by_ap_id/1)
+    |> Enum.filter(fn user -> user != nil end)
+  end
+
+  def add_alias(user, new_alias_user) do
+    current_aliases = user.also_known_as || []
+    new_alias_ap_id = new_alias_user.ap_id
+
+    if new_alias_ap_id in current_aliases do
+      {:ok, user}
+    else
+      user
+      |> cast(%{also_known_as: current_aliases ++ [new_alias_ap_id]}, [:also_known_as])
+      |> update_and_set_cache()
+    end
+  end
+
+  def delete_alias(user, alias_user) do
+    current_aliases = user.also_known_as || []
+    alias_ap_id = alias_user.ap_id
+
+    if alias_ap_id in current_aliases do
+      user
+      |> cast(%{also_known_as: current_aliases -- [alias_ap_id]}, [:also_known_as])
+      |> update_and_set_cache()
+    else
+      {:error, :no_such_alias}
+    end
   end
 
   # Internal function; public one is `deactivate/2`

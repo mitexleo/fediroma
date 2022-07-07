@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 defmodule Pleroma.Web.ActivityPub.ActivityPub do
+  alias Akkoma.Collections
   alias Pleroma.Activity
   alias Pleroma.Activity.Ir.Topics
   alias Pleroma.Config
@@ -139,6 +140,9 @@ defmodule Pleroma.Web.ActivityPub.ActivityPub do
       ConcurrentLimiter.limit(Pleroma.Web.RichMedia.Helpers, fn ->
         Task.start(fn -> Pleroma.Web.RichMedia.Helpers.fetch_data_for_activity(activity) end)
       end)
+
+      # Add local posts to search index
+      if local, do: Pleroma.Search.add_to_index(activity)
 
       {:ok, activity}
     else
@@ -413,7 +417,8 @@ defmodule Pleroma.Web.ActivityPub.ActivityPub do
       "type" => "Move",
       "actor" => origin.ap_id,
       "object" => origin.ap_id,
-      "target" => target.ap_id
+      "target" => target.ap_id,
+      "to" => [origin.follower_address]
     }
 
     with true <- origin.ap_id in target.also_known_as,
@@ -1660,10 +1665,27 @@ defmodule Pleroma.Web.ActivityPub.ActivityPub do
   end
 
   def pin_data_from_featured_collection(%{
-        "type" => type,
-        "orderedItems" => objects
-      })
+        "type" => "OrderedCollection",
+        "first" => first
+      }) do
+    with {:ok, page} <- Fetcher.fetch_and_contain_remote_object_from_id(first) do
+      page
+      |> Map.get("orderedItems")
+      |> Map.new(fn %{"id" => object_ap_id} -> {object_ap_id, NaiveDateTime.utc_now()} end)
+    else
+      e ->
+        Logger.error("Could not decode featured collection at fetch #{first}, #{inspect(e)}")
+        {:ok, %{}}
+    end
+  end
+
+  def pin_data_from_featured_collection(
+        %{
+          "type" => type
+        } = collection
+      )
       when type in ["OrderedCollection", "Collection"] do
+    {:ok, objects} = Collections.Fetcher.fetch_collection(collection)
     Map.new(objects, fn %{"id" => object_ap_id} -> {object_ap_id, NaiveDateTime.utc_now()} end)
   end
 

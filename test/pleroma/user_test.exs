@@ -5,6 +5,7 @@
 defmodule Pleroma.UserTest do
   alias Pleroma.Activity
   alias Pleroma.Builders.UserBuilder
+  alias Pleroma.Notification
   alias Pleroma.Object
   alias Pleroma.Repo
   alias Pleroma.Tests.ObanHelpers
@@ -2153,6 +2154,26 @@ defmodule Pleroma.UserTest do
       assert {:ok, user} = Cachex.get(:user_cache, "ap_id:#{user.ap_id}")
       assert %User{bio: "test-bio"} = User.get_cached_by_ap_id(user.ap_id)
     end
+
+    test "removes report notifs when user isn't superuser any more" do
+      report_activity = insert(:report_activity)
+      user = insert(:user, is_moderator: true, is_admin: true)
+      {:ok, _} = Notification.create_notifications(report_activity)
+
+      assert [%Pleroma.Notification{type: "pleroma:report"}] = Notification.for_user(user)
+
+      {:ok, user} = user |> User.admin_api_update(%{is_moderator: false})
+      # is still superuser because still admin
+      assert [%Pleroma.Notification{type: "pleroma:report"}] = Notification.for_user(user)
+
+      {:ok, user} = user |> User.admin_api_update(%{is_moderator: true, is_admin: false})
+      # is still superuser because still moderator
+      assert [%Pleroma.Notification{type: "pleroma:report"}] = Notification.for_user(user)
+
+      {:ok, user} = user |> User.admin_api_update(%{is_moderator: false})
+      # is not a superuser any more
+      assert [] = Notification.for_user(user)
+    end
   end
 
   describe "following/followers synchronization" do
@@ -2499,5 +2520,81 @@ defmodule Pleroma.UserTest do
     %{id: id} = insert(:note_activity, user: user)
     %{object: %{data: %{"id" => object_id}}} = Activity.get_by_id_with_object(id)
     object_id
+  end
+
+  describe "add_alias/2" do
+    test "should add alias for another user" do
+      user = insert(:user)
+      user2 = insert(:user)
+
+      assert {:ok, user_updated} = user |> User.add_alias(user2)
+
+      assert user_updated.also_known_as |> length() == 1
+      assert user2.ap_id in user_updated.also_known_as
+    end
+
+    test "should add multiple aliases" do
+      user = insert(:user)
+      user2 = insert(:user)
+      user3 = insert(:user)
+
+      assert {:ok, user} = user |> User.add_alias(user2)
+      assert {:ok, user_updated} = user |> User.add_alias(user3)
+
+      assert user_updated.also_known_as |> length() == 2
+      assert user2.ap_id in user_updated.also_known_as
+      assert user3.ap_id in user_updated.also_known_as
+    end
+
+    test "should not add duplicate aliases" do
+      user = insert(:user)
+      user2 = insert(:user)
+
+      assert {:ok, user} = user |> User.add_alias(user2)
+
+      assert {:ok, user_updated} = user |> User.add_alias(user2)
+
+      assert user_updated.also_known_as |> length() == 1
+      assert user2.ap_id in user_updated.also_known_as
+    end
+  end
+
+  describe "alias_users/1" do
+    test "should get aliases for a user" do
+      user = insert(:user)
+      user2 = insert(:user, also_known_as: [user.ap_id])
+
+      aliases = user2 |> User.alias_users()
+
+      assert aliases |> length() == 1
+
+      alias_user = aliases |> Enum.at(0)
+
+      assert alias_user.ap_id == user.ap_id
+    end
+  end
+
+  describe "delete_alias/2" do
+    test "should delete existing alias" do
+      user = insert(:user)
+      user2 = insert(:user, also_known_as: [user.ap_id])
+
+      assert {:ok, user_updated} = user2 |> User.delete_alias(user)
+
+      assert user_updated.also_known_as == []
+    end
+
+    test "should report error on non-existing alias" do
+      user = insert(:user)
+      user2 = insert(:user)
+      user3 = insert(:user, also_known_as: [user.ap_id])
+
+      assert {:error, :no_such_alias} = user3 |> User.delete_alias(user2)
+
+      user3_updated = User.get_cached_by_ap_id(user3.ap_id)
+
+      assert user3_updated.also_known_as |> length() == 1
+      assert user.ap_id in user3_updated.also_known_as
+    end
   end
 end

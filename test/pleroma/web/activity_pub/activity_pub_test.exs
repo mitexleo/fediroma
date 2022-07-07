@@ -314,6 +314,44 @@ defmodule Pleroma.Web.ActivityPub.ActivityPubTest do
     end
   end
 
+  test "fetches user featured collection using the first property" do
+    featured_url = "https://friendica.example.com/raha/collections/featured"
+    first_url = "https://friendica.example.com/featured/raha?page=1"
+
+    featured_data =
+      "test/fixtures/friendica/friendica_featured_collection.json"
+      |> File.read!()
+
+    page_data =
+      "test/fixtures/friendica/friendica_featured_collection_first.json"
+      |> File.read!()
+
+    Tesla.Mock.mock(fn
+      %{
+        method: :get,
+        url: ^featured_url
+      } ->
+        %Tesla.Env{
+          status: 200,
+          body: featured_data,
+          headers: [{"content-type", "application/activity+json"}]
+        }
+
+      %{
+        method: :get,
+        url: ^first_url
+      } ->
+        %Tesla.Env{
+          status: 200,
+          body: page_data,
+          headers: [{"content-type", "application/activity+json"}]
+        }
+    end)
+
+    {:ok, data} = ActivityPub.fetch_and_prepare_featured_from_ap_id(featured_url)
+    assert Map.has_key?(data, "http://inserted")
+  end
+
   test "it fetches the appropriate tag-restricted posts" do
     user = insert(:user)
 
@@ -1739,8 +1777,11 @@ defmodule Pleroma.Web.ActivityPub.ActivityPubTest do
                  "target" => ^new_ap_id,
                  "type" => "Move"
                },
-               local: true
+               local: true,
+               recipients: recipients
              } = activity
+
+      assert old_user.follower_address in recipients
 
       params = %{
         "op" => "move_following",
@@ -1771,6 +1812,42 @@ defmodule Pleroma.Web.ActivityPub.ActivityPubTest do
 
       assert {:error, "Target account must have the origin in `alsoKnownAs`"} =
                ActivityPub.move(old_user, new_user)
+    end
+
+    test "do not move remote user following relationships" do
+      %{ap_id: old_ap_id} = old_user = insert(:user)
+      %{ap_id: new_ap_id} = new_user = insert(:user, also_known_as: [old_ap_id])
+      follower_remote = insert(:user, local: false)
+
+      User.follow(follower_remote, old_user)
+
+      assert User.following?(follower_remote, old_user)
+
+      assert {:ok, activity} = ActivityPub.move(old_user, new_user)
+
+      assert %Activity{
+               actor: ^old_ap_id,
+               data: %{
+                 "actor" => ^old_ap_id,
+                 "object" => ^old_ap_id,
+                 "target" => ^new_ap_id,
+                 "type" => "Move"
+               },
+               local: true
+             } = activity
+
+      params = %{
+        "op" => "move_following",
+        "origin_id" => old_user.id,
+        "target_id" => new_user.id
+      }
+
+      assert_enqueued(worker: Pleroma.Workers.BackgroundWorker, args: params)
+
+      Pleroma.Workers.BackgroundWorker.perform(%Oban.Job{args: params})
+
+      assert User.following?(follower_remote, old_user)
+      refute User.following?(follower_remote, new_user)
     end
   end
 

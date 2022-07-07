@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- Added move account API
+- Added ability to set instance accent-color via theme-color
+
+### Removed
+- SSH frontend, to be potentially re-enabled via a bridge rather than wired into the main system
+- Gopher frontend, as above
+
+### Fixed
+- ES8 support for bulk indexing activities
+
 ## 2.5.2
 
 ### Added
@@ -16,6 +27,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 - Updated `no_empty` MRF to not error when recieving misskey markdown
+
+### Security
+- Ensure local-only statuses do not get leaked
 
 ## 2.5.1
 
@@ -47,6 +61,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Readded mastoFE
 - Added support for custom emoji reactions
 - Added `emoji_url` in notifications to allow for custom emoji rendering
+- Make backend-rendered pages translatable. This includes emails. Pages returned as a HTTP response are translated using the language specified in the `userLanguage` cookie, or the `Accept-Language` header. Emails are translated using the `language` field when registering. This language can be changed by `PATCH /api/v1/accounts/update_credentials` with the `language` field.
 
 ### Fixed
 - Subscription(Bell) Notifications: Don't create from Pipeline Ingested replies
@@ -64,7 +79,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Removed
 
-## 2.4.1 - 2021-08-29
+### Security
+- Private `/objects/` and `/activities/` leaking if cached by authenticated user
+- SweetXML library DTD bomb
+
+## 2.4.2 - 2022-01-10
+
+### Fixed
+- Federation issues caused by HTTP pool checkout timeouts
+- Compatibility with Elixir 1.13
+
+### Upgrade notes
+
+1. Restart Pleroma
 
 ### Changed
 - Make `mix pleroma.database set_text_search_config` run concurrently and indefinitely
@@ -97,6 +124,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Improved Twittercard and OpenGraph meta tag generation including thumbnails and image dimension metadata when available.
 - AdminAPI: sort users so the newest are at the top.
 - ActivityPub Client-to-Server(C2S): Limitation on the type of Activity/Object are lifted as they are now passed through ObjectValidators
+- MRF (`AntiFollowbotPolicy`): Bot accounts are now also considered followbots. Users can still allow bots to follow them by first following the bot.
 
 ### Added
 

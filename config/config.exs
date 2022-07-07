@@ -175,12 +175,11 @@ config :mime, :types, %{
   "application/ld+json" => ["activity+json"]
 }
 
-config :tesla, adapter: Tesla.Adapter.Hackney
+config :tesla, :adapter, {Tesla.Adapter.Finch, name: MyFinch}
 
 # Configures http settings, upstream proxy etc.
 config :pleroma, :http,
   proxy_url: nil,
-  send_user_agent: true,
   user_agent: :default,
   adapter: []
 
@@ -363,7 +362,8 @@ config :pleroma, :activitypub,
   follow_handshake_timeout: 500,
   note_replies_output_limit: 5,
   sign_object_fetches: true,
-  authorized_fetch_mode: false
+  authorized_fetch_mode: false,
+  max_collection_objects: 50
 
 config :pleroma, :streamer,
   workers: 3,
@@ -439,11 +439,7 @@ config :pleroma, :media_proxy,
     redirect_on_failure: false,
     max_body_length: 25 * 1_048_576,
     # Note: max_read_duration defaults to Pleroma.ReverseProxy.max_read_duration_default/1
-    max_read_duration: 30_000,
-    http: [
-      follow_redirect: true,
-      pool: :media
-    ]
+    max_read_duration: 30_000
   ],
   whitelist: []
 
@@ -474,17 +470,14 @@ config :phoenix, :json_library, Jason
 
 config :phoenix, :filter_parameters, ["password", "confirm"]
 
-config :pleroma, :gopher,
-  enabled: false,
-  ip: {0, 0, 0, 0},
-  port: 9999
-
 config :pleroma, Pleroma.Web.Metadata,
   providers: [
     Pleroma.Web.Metadata.Providers.OpenGraph,
     Pleroma.Web.Metadata.Providers.TwitterCard
   ],
   unfurl_nsfw: false
+
+config :pleroma, Pleroma.Web.Metadata.Providers.Theme, theme_color: "#593196"
 
 config :pleroma, Pleroma.Web.Preload,
   providers: [
@@ -573,7 +566,8 @@ config :pleroma, Oban,
     remote_fetcher: 2,
     attachments_cleanup: 1,
     new_users_digest: 1,
-    mute_expire: 5
+    mute_expire: 5,
+    search_indexing: 10
   ],
   plugins: [Oban.Plugins.Pruner],
   crontab: [
@@ -584,7 +578,8 @@ config :pleroma, Oban,
 config :pleroma, :workers,
   retries: [
     federator_incoming: 5,
-    federator_outgoing: 5
+    federator_outgoing: 5,
+    search_indexing: 2
   ]
 
 config :pleroma, Pleroma.Formatter,
@@ -606,9 +601,6 @@ config :pleroma, :ldap,
   tlsopts: [],
   base: System.get_env("LDAP_BASE") || "dc=example,dc=com",
   uid: System.get_env("LDAP_UID") || "cn"
-
-config :esshd,
-  enabled: false
 
 oauth_consumer_strategies =
   "OAUTH_CONSUMER_STRATEGIES"
@@ -774,51 +766,6 @@ config :pleroma, Pleroma.Repo,
   parameters: [gin_fuzzy_search_limit: "500"],
   prepare: :unnamed
 
-config :pleroma, :connections_pool,
-  reclaim_multiplier: 0.1,
-  connection_acquisition_wait: 250,
-  connection_acquisition_retries: 5,
-  max_connections: 250,
-  max_idle_time: 30_000,
-  retry: 0,
-  connect_timeout: 5_000
-
-config :pleroma, :pools,
-  federation: [
-    size: 50,
-    max_waiting: 10,
-    recv_timeout: 10_000
-  ],
-  media: [
-    size: 50,
-    max_waiting: 20,
-    recv_timeout: 15_000
-  ],
-  upload: [
-    size: 25,
-    max_waiting: 5,
-    recv_timeout: 15_000
-  ],
-  default: [
-    size: 10,
-    max_waiting: 2,
-    recv_timeout: 5_000
-  ]
-
-config :pleroma, :hackney_pools,
-  federation: [
-    max_connections: 50,
-    timeout: 150_000
-  ],
-  media: [
-    max_connections: 50,
-    timeout: 150_000
-  ],
-  upload: [
-    max_connections: 25,
-    timeout: 300_000
-  ]
-
 config :pleroma, :majic_pool, size: 2
 
 private_instance? = :if_instance_is_private
@@ -834,8 +781,6 @@ config :pleroma, :mrf,
   policies: [Pleroma.Web.ActivityPub.MRF.ObjectAgePolicy, Pleroma.Web.ActivityPub.MRF.TagPolicy],
   transparency: true,
   transparency_exclusions: []
-
-config :tzdata, :http_client, Pleroma.HTTP.Tzdata
 
 config :ex_aws, http_client: Pleroma.HTTP.ExAws
 
@@ -854,17 +799,32 @@ config :pleroma, Pleroma.User.Backup,
 
 config :pleroma, ConcurrentLimiter, [
   {Pleroma.Web.RichMedia.Helpers, [max_running: 5, max_waiting: 5]},
-  {Pleroma.Web.ActivityPub.MRF.MediaProxyWarmingPolicy, [max_running: 5, max_waiting: 5]}
+  {Pleroma.Web.ActivityPub.MRF.MediaProxyWarmingPolicy, [max_running: 5, max_waiting: 5]},
+  {Pleroma.Search, [max_running: 30, max_waiting: 50]}
 ]
 
-config :pleroma, :search, provider: Pleroma.Search.Builtin
+config :pleroma, Pleroma.Search, module: Pleroma.Search.DatabaseSearch
 
-config :pleroma, :telemetry,
-  slow_queries_logging: [
-    enabled: false,
-    min_duration: 500_000,
-    exclude_sources: [nil, "oban_jobs"]
-  ]
+config :pleroma, Pleroma.Search.Meilisearch,
+  url: "http://127.0.0.1:7700/",
+  private_key: nil,
+  initial_indexing_chunk_size: 100_000
+
+config :pleroma, Pleroma.Search.Elasticsearch.Cluster,
+  url: "http://localhost:9200",
+  username: "elastic",
+  password: "changeme",
+  api: Elasticsearch.API.HTTP,
+  json_library: Jason,
+  indexes: %{
+    activities: %{
+      settings: "priv/es-mappings/activity.json",
+      store: Pleroma.Search.Elasticsearch.Store,
+      sources: [Pleroma.Activity],
+      bulk_page_size: 1000,
+      bulk_wait_interval: 15_000
+    }
+  }
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

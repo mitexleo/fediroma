@@ -15,22 +15,18 @@ defmodule Pleroma.Config.TransferTask do
 
   defp reboot_time_keys,
     do: [
-      {:pleroma, :hackney_pools},
       {:pleroma, :shout},
       {:pleroma, Oban},
       {:pleroma, :rate_limit},
       {:pleroma, :markup},
-      {:pleroma, :streamer},
-      {:pleroma, :pools},
-      {:pleroma, :connections_pool}
+      {:pleroma, :streamer}
     ]
 
   defp reboot_time_subkeys,
     do: [
       {:pleroma, Pleroma.Captcha, [:seconds_valid]},
       {:pleroma, Pleroma.Upload, [:proxy_remote]},
-      {:pleroma, :instance, [:upload_limit]},
-      {:pleroma, :gopher, [:enabled]}
+      {:pleroma, :instance, [:upload_limit]}
     ]
 
   def start_link(restart_pleroma? \\ true) do

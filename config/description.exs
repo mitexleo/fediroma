@@ -1689,6 +1689,13 @@ config :pleroma, :config_description, [
         type: :integer,
         description: "Following handshake timeout",
         suggestions: [500]
+      },
+      %{
+        key: :max_collection_objects,
+        type: :integer,
+        description:
+          "The maximum number of items to fetch from a remote collections. Setting this too low can lead to only getting partial collections, but too high and you can end up fetching far too many objects.",
+        suggestions: [50]
       }
     ]
   },
@@ -1969,6 +1976,21 @@ config :pleroma, :config_description, [
         label: "Unfurl NSFW",
         type: :boolean,
         description: "When enabled NSFW attachments will be shown in previews"
+      }
+    ]
+  },
+  %{
+    group: :pleroma,
+    key: Pleroma.Web.Metadata.Providers.Theme,
+    type: :group,
+    description: "Specific provider to hand out themes to instances that scrape index.html",
+    children: [
+      %{
+        key: :theme_color,
+        type: :string,
+        description:
+          "The 'accent color' of the instance, used in places like misskey's instance ticker",
+        suggestions: ["#593196"]
       }
     ]
   },
@@ -2619,10 +2641,6 @@ config :pleroma, :config_description, [
         suggestions: ["localhost:9020", {:socks5, :localhost, 3090}]
       },
       %{
-        key: :send_user_agent,
-        type: :boolean
-      },
-      %{
         key: :user_agent,
         type: [:string, :atom],
         description:
@@ -2936,147 +2954,6 @@ config :pleroma, :config_description, [
   },
   %{
     group: :pleroma,
-    key: :connections_pool,
-    type: :group,
-    description: "Advanced settings for `Gun` connections pool",
-    children: [
-      %{
-        key: :connection_acquisition_wait,
-        type: :integer,
-        description:
-          "Timeout to acquire a connection from pool. The total max time is this value multiplied by the number of retries. Default: 250ms.",
-        suggestions: [250]
-      },
-      %{
-        key: :connection_acquisition_retries,
-        type: :integer,
-        description:
-          "Number of attempts to acquire the connection from the pool if it is overloaded. Default: 5",
-        suggestions: [5]
-      },
-      %{
-        key: :max_connections,
-        type: :integer,
-        description: "Maximum number of connections in the pool. Default: 250 connections.",
-        suggestions: [250]
-      },
-      %{
-        key: :connect_timeout,
-        type: :integer,
-        description: "Timeout while `gun` will wait until connection is up. Default: 5000ms.",
-        suggestions: [5000]
-      },
-      %{
-        key: :reclaim_multiplier,
-        type: :integer,
-        description:
-          "Multiplier for the number of idle connection to be reclaimed if the pool is full. For example if the pool maxes out at 250 connections and this setting is set to 0.3, the pool will reclaim at most 75 idle connections if it's overloaded. Default: 0.1",
-        suggestions: [0.1]
-      }
-    ]
-  },
-  %{
-    group: :pleroma,
-    key: :pools,
-    type: :group,
-    description: "Advanced settings for `Gun` workers pools",
-    children:
-      Enum.map([:federation, :media, :upload, :default], fn pool_name ->
-        %{
-          key: pool_name,
-          type: :keyword,
-          description: "Settings for #{pool_name} pool.",
-          children: [
-            %{
-              key: :size,
-              type: :integer,
-              description: "Maximum number of concurrent requests in the pool.",
-              suggestions: [50]
-            },
-            %{
-              key: :max_waiting,
-              type: :integer,
-              description:
-                "Maximum number of requests waiting for other requests to finish. After this number is reached, the pool will start returning errrors when a new request is made",
-              suggestions: [10]
-            },
-            %{
-              key: :recv_timeout,
-              type: :integer,
-              description: "Timeout for the pool while gun will wait for response",
-              suggestions: [10_000]
-            }
-          ]
-        }
-      end)
-  },
-  %{
-    group: :pleroma,
-    key: :hackney_pools,
-    type: :group,
-    description: "Advanced settings for `Hackney` connections pools",
-    children: [
-      %{
-        key: :federation,
-        type: :keyword,
-        description: "Settings for federation pool.",
-        children: [
-          %{
-            key: :max_connections,
-            type: :integer,
-            description: "Number workers in the pool.",
-            suggestions: [50]
-          },
-          %{
-            key: :timeout,
-            type: :integer,
-            description: "Timeout while `hackney` will wait for response.",
-            suggestions: [150_000]
-          }
-        ]
-      },
-      %{
-        key: :media,
-        type: :keyword,
-        description: "Settings for media pool.",
-        children: [
-          %{
-            key: :max_connections,
-            type: :integer,
-            description: "Number workers in the pool.",
-            suggestions: [50]
-          },
-          %{
-            key: :timeout,
-            type: :integer,
-            description: "Timeout while `hackney` will wait for response.",
-            suggestions: [150_000]
-          }
-        ]
-      },
-      %{
-        key: :upload,
-        type: :keyword,
-        description: "Settings for upload pool.",
-        children: [
-          %{
-            key: :max_connections,
-            type: :integer,
-            description: "Number workers in the pool.",
-            suggestions: [25]
-          },
-          %{
-            key: :timeout,
-            type: :integer,
-            description: "Timeout while `hackney` will wait for response.",
-            suggestions: [300_000]
-          }
-        ]
-      }
-    ]
-  },
-  %{
-    group: :pleroma,
     key: :restrict_unauthenticated,
     label: "Restrict Unauthenticated",
     type: :group,
@@ -3354,6 +3231,134 @@ config :pleroma, :config_description, [
             type: :integer,
             description: "Max waiting jobs.",
             suggestion: [5]
+          }
+        ]
+      }
+    ]
+  },
+  %{
+    group: :pleroma,
+    key: Pleroma.Search,
+    type: :group,
+    description: "General search settings.",
+    children: [
+      %{
+        key: :module,
+        type: :keyword,
+        description: "Selected search module.",
+        suggestion: [Pleroma.Search.DatabaseSearch, Pleroma.Search.Meilisearch]
+      }
+    ]
+  },
+  %{
+    group: :pleroma,
+    key: Pleroma.Search.Meilisearch,
+    type: :group,
+    description: "Meilisearch settings.",
+    children: [
+      %{
+        key: :url,
+        type: :string,
+        description: "Meilisearch URL.",
+        suggestion: ["http://127.0.0.1:7700/"]
+      },
+      %{
+        key: :private_key,
+        type: :string,
+        description:
+          "Private key for meilisearch authentication, or `nil` to disable private key authentication.",
+        suggestion: [nil]
+      },
+      %{
+        key: :initial_indexing_chunk_size,
+        type: :int,
+        description:
+          "Amount of posts in a batch when running the initial indexing operation. Should probably not be more than 100000" <>
+            " since there's a limit on maximum insert size",
+        suggestion: [100_000]
+      }
+    ]
+  },
+  %{
+    group: :pleroma,
+    key: Pleroma.Search.Elasticsearch.Cluster,
+    type: :group,
+    description: "Elasticsearch settings.",
+    children: [
+      %{
+        key: :url,
+        type: :string,
+        description: "Elasticsearch URL.",
+        suggestion: ["http://127.0.0.1:9200/"]
+      },
+      %{
+        key: :username,
+        type: :string,
+        description: "Username to connect to ES. Set to nil if your cluster is unauthenticated.",
+        suggestion: ["elastic"]
+      },
+      %{
+        key: :password,
+        type: :string,
+        description: "Password to connect to ES. Set to nil if your cluster is unauthenticated.",
+        suggestion: ["changeme"]
+      },
+      %{
+        key: :api,
+        type: :module,
+        description:
+          "The API module used by Elasticsearch. Should always be Elasticsearch.API.HTTP",
+        suggestion: [Elasticsearch.API.HTTP]
+      },
+      %{
+        key: :json_library,
+        type: :module,
+        description:
+          "The JSON module used to encode/decode when communicating with Elasticsearch",
+        suggestion: [Jason]
+      },
+      %{
+        key: :indexes,
+        type: :map,
+        description: "The indices to set up in Elasticsearch",
+        children: [
+          %{
+            key: :activities,
+            type: :map,
+            description: "Config for the index to use for activities",
+            children: [
+              %{
+                key: :settings,
+                type: :string,
+                description:
+                  "Path to the file containing index settings for the activities index. Should contain a mapping.",
+                suggestion: ["priv/es-mappings/activity.json"]
+              },
+              %{
+                key: :store,
+                type: :module,
+                description: "The internal store module",
+                suggestion: [Pleroma.Search.Elasticsearch.Store]
+              },
+              %{
+                key: :sources,
+                type: {:list, :module},
+                description: "The internal types to use for this index",
+                suggestion: [[Pleroma.Activity]]
+              },
+              %{
+                key: :bulk_page_size,
+                type: :int,
+                description: "Size for bulk put requests, mostly used on building the index",
+                suggestion: [5000]
+              },
+              %{
+                key: :bulk_wait_interval,
+                type: :int,
+                description: "Time to wait between bulk put requests (in ms)",
+                suggestion: [15_000]
+              }
+            ]
           }
         ]
       }
