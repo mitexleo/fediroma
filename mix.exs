@@ -160,7 +160,7 @@ defmodule Pleroma.Mixfile do
       {:timex, "~> 3.6"},
       {:ueberauth, "~> 0.4"},
       {:linkify,
-       git: "https://git.ihatebeinga.live/floatingghost/linkify.git",
+       git: "https://akkoma.dev/AkkomaGang/linkify.git",
        branch: "bugfix/line-ending-buffer"},
       {:http_signatures, "~> 0.1.1"},
       {:telemetry, "~> 0.3"},
