@@ -1118,6 +1118,8 @@ Refer to [the frontend CLI task](../../administration/CLI_tasks/frontend) for ho
 
 If you wish masto-fe to also be enabled, you will also need to run the install task for `mastodon-fe`. Not doing this will lead to the frontend not working.
 
+If you choose not to install a frontend for whatever reason, it is recommended that you enable [`:static_fe`](#static_fe) to allow remote users to click "view remote source". Don't bother with this if you've got no unauthenticated access though.
+
 ### Theme settings
 
 Settings to change theme as exposed to the outside world, for software
