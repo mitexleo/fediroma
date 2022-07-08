@@ -1120,6 +1120,8 @@ If you wish masto-fe to also be enabled, you will also need to run the install t
 
 If you choose not to install a frontend for whatever reason, it is recommended that you enable [`:static_fe`](#static_fe) to allow remote users to click "view remote source". Don't bother with this if you've got no unauthenticated access though.
 
+You can also replace the default "no frontend" page by placing an `index.html` file under your `instance/static/` directory.
+
 ### Theme settings
 
 Settings to change theme as exposed to the outside world, for software
