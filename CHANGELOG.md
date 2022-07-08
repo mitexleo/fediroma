@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added move account API
 - Added ability to set instance accent-color via theme-color
 - A fallback page for when a user does not have a frontend installed
+- Uploader: Add support for uploading attachments using IPFS
 
 ### Removed
 - SSH frontend, to be potentially re-enabled via a bridge rather than wired into the main system

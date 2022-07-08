@@ -222,8 +222,12 @@ defmodule Pleroma.Upload do
           ""
         end
 
-    [base_url, path]
-    |> Path.join()
+    if String.contains?(base_url, Pleroma.Uploaders.IPFS.placeholder()) do
+      String.replace(base_url, Pleroma.Uploaders.IPFS.placeholder(), path)
+    else
+      [base_url, path]
+      |> Path.join()
+    end
   end
 
   defp url_from_spec(_upload, _base_url, {:url, url}), do: url
@@ -259,6 +263,9 @@ defmodule Pleroma.Upload do
         else
           Path.join([upload_base_url, bucket_with_namespace])
         end
+
+      Pleroma.Uploaders.IPFS ->
+        Config.get([Pleroma.Uploaders.IPFS, :get_gateway_url])
 
       _ ->
         public_endpoint || upload_base_url || Pleroma.Web.Endpoint.url() <> "/media/"
