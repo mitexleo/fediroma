@@ -12,6 +12,32 @@ defmodule Pleroma.Web.Plugs.InstanceStatic do
   """
   @behaviour Plug
 
+  def file_path(conn, path) do
+    instance_path =
+      Path.join(Pleroma.Config.get([:instance, :static_dir], "instance/static/"), path)
+
+    # Subdomain overrides
+    extra_frontends = Pleroma.Config.get([:frontends, :extra])
+
+    subdomain =
+      conn.host
+      |> String.split(".")
+      |> List.first()
+
+    extra_frontend = Enum.find(extra_frontends, fn f -> f["subdomain"] == subdomain end)
+
+    frontend_path =
+      if is_nil(extra_frontend) do
+        Pleroma.Web.Plugs.FrontendStatic.file_path(path, :primary)
+      else
+        Pleroma.Web.Plugs.FrontendStatic.file_path(path, extra_frontend["key"])
+      end
+
+    (File.exists?(instance_path) && instance_path) ||
+      (frontend_path && File.exists?(frontend_path) && frontend_path) ||
+      Path.join(Application.app_dir(:pleroma, "priv/static/"), path)
+  end
+
   def file_path(path) do
     instance_path =
       Path.join(Pleroma.Config.get([:instance, :static_dir], "instance/static/"), path)

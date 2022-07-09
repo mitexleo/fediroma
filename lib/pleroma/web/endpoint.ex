@@ -6,6 +6,7 @@ defmodule Pleroma.Web.Endpoint do
   use Phoenix.Endpoint, otp_app: :pleroma
 
   require Pleroma.Constants
+  require Pleroma.Web.Plugs.SubdomainStatic
 
   alias Pleroma.Config
 
@@ -18,6 +19,7 @@ defmodule Pleroma.Web.Endpoint do
   plug(Pleroma.Web.Plugs.UploadedMedia)
 
   @static_cache_control "public, no-cache"
+  @extra_frontends Config.get([:frontends, :extra])
 
   # InstanceStatic needs to be before Plug.Static to be able to override shipped-static files
   # If you're adding new paths to `only:` you'll need to configure them in InstanceStatic as well
@@ -42,6 +44,10 @@ defmodule Pleroma.Web.Endpoint do
       "cache-control" => @static_cache_control
     }
   )
+
+  # Subdomain frontends should override primary
+  @extra_frontends
+  |> Enum.map(&Pleroma.Web.Plugs.SubdomainStatic.generate_plug/1)
 
   # Careful! No `only` restriction here, as we don't know what frontends contain.
   plug(Pleroma.Web.Plugs.FrontendStatic,
