@@ -277,10 +277,10 @@ defmodule Pleroma.Application do
 
   defp http_children do
     config =
-        [:http, :adapter]
-        |> Config.get([])
-        |> Keyword.put(:name, MyFinch)
-    
+      [:http, :adapter]
+      |> Config.get([])
+      |> Keyword.put(:name, MyFinch)
+
     [{Finch, config}]
   end
 end
