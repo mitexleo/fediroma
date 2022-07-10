@@ -43,7 +43,7 @@ you will not be able to federate without an SSL certificate. You should
 be able to use the snakeoil certificate that comes standard with most
 distributions or generate one from scratch, then force elixir to accept it.
 
-HTTP clients are none too keep to accept self-signed certs, but we can do
+HTTP clients are none too keen to accept self-signed certs, but we can do
 this:
 
 ```elixir
