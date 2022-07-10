@@ -195,12 +195,16 @@ defmodule Pleroma.Web.MastodonAPI.FilterControllerTest do
 
       # Tolerance of a few seconds to avoid random failures
       response_expiry = NaiveDateTime.from_iso8601!(response["expires_at"])
-      expected_expiry = NaiveDateTime.utc_now()
-               |> NaiveDateTime.add(in_seconds)
+
+      expected_expiry =
+        NaiveDateTime.utc_now()
+        |> NaiveDateTime.add(in_seconds)
+
       expiry_diff =
         response_expiry
         |> NaiveDateTime.diff(expected_expiry)
         |> abs()
+
       assert expiry_diff < 5
 
       filter = Filter.get(response["id"], user)
