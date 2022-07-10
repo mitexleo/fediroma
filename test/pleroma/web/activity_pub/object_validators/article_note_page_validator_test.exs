@@ -86,7 +86,11 @@ defmodule Pleroma.Web.ActivityPub.ObjectValidators.ArticleNotePageValidatorTest 
       %{
         valid?: true,
         changes: %{
-          source: %{"content" => ^expected_content, "mediaType" => "text/x.misskeymarkdown"}
+          content: ^expected_content,
+          source: %{
+            "content" => "@akkoma_user linkifylink #dancedance $[jelly mfm goes here] \n\n## aaa",
+            "mediaType" => "text/x.misskeymarkdown"
+          }
         }
       } = ArticleNotePageValidator.cast_and_validate(note)
     end
@@ -107,7 +111,11 @@ defmodule Pleroma.Web.ActivityPub.ObjectValidators.ArticleNotePageValidatorTest 
       %{
         valid?: true,
         changes: %{
-          source: %{"content" => ^expected_content, "mediaType" => "text/x.misskeymarkdown"}
+          content: ^expected_content,
+          source: %{
+            "content" => "@akkoma_user linkifylink #dancedance $[jelly mfm goes here] \n\n## aaa",
+            "mediaType" => "text/x.misskeymarkdown"
+          }
         }
       } = ArticleNotePageValidator.cast_and_validate(note)
     end
