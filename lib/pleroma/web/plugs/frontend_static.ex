@@ -45,17 +45,17 @@ defmodule Pleroma.Web.Plugs.FrontendStatic do
     end
   end
 
-  defp invalid_path?(list) do
+  def invalid_path?(list) do
     invalid_path?(list, :binary.compile_pattern(["/", "\\", ":", "\0"]))
   end
 
-  defp invalid_path?([h | _], _match) when h in [".", "..", ""], do: true
-  defp invalid_path?([h | t], match), do: String.contains?(h, match) or invalid_path?(t)
-  defp invalid_path?([], _match), do: false
+  def invalid_path?([h | _], _match) when h in [".", "..", ""], do: true
+  def invalid_path?([h | t], match), do: String.contains?(h, match) or invalid_path?(t)
+  def invalid_path?([], _match), do: false
 
-  defp api_route?([]), do: false
+  def api_route?([]), do: false
 
-  defp api_route?([h | t]) do
+  def api_route?([h | t]) do
     api_routes = Pleroma.Web.Router.get_api_routes()
     if h in api_routes, do: true, else: api_route?(t)
   end

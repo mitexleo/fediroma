@@ -28,11 +28,14 @@ defmodule Pleroma.Web.Plugs.SubdomainStaticPlugTest do
 
   test "overrides existing static files when the request is on the subdomain", %{conn: conn} do
     clear_config([:frontends, :extra], [
-        %{"subdomain" => "edge", "key" => :edge}
+      %{"subdomain" => "edge", "key" => :edge}
     ])
-    clear_config([:frontends, :edge], 
-        %{"name" => "edge", "ref" => "maximum"}
+
+    clear_config(
+      [:frontends, :edge],
+      %{"name" => "edge", "ref" => "maximum"}
     )
+
     name = "edge"
     ref = "maximum"
 
