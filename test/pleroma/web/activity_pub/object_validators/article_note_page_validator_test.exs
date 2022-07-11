@@ -93,7 +93,7 @@ defmodule Pleroma.Web.ActivityPub.ObjectValidators.ArticleNotePageValidatorTest 
           content: content,
           source: %{
             "content" =>
-              "@akkoma_user @remote_user linkifylink #dancedance $[jelly mfm goes here] \n\n## aaa",
+              "@akkoma_user @remote_user @oops_not_a_mention linkifylink #dancedance $[jelly mfm goes here] \n\n## aaa",
             "mediaType" => "text/x.misskeymarkdown"
           }
         }
@@ -105,11 +105,13 @@ defmodule Pleroma.Web.ActivityPub.ObjectValidators.ArticleNotePageValidatorTest 
       assert content =~
                "<span class=\"h-card\"><a class=\"u-url mention\" data-user=\"#{remote_user.id}\" href=\"#{remote_user.ap_id}\" rel=\"ugc\">@<span>remote_user</span></a></span>"
 
+      assert content =~ "@oops_not_a_mention"
       assert content =~ "$[jelly mfm goes here] <br><br>## aaa"
     end
 
     test "a misskey MFM status with a _misskey_content field should work and be linked", _ do
-      local_user = insert(:user, %{nickname: "akkoma_user"})
+      local_user =
+        insert(:user, %{nickname: "akkoma_user", ap_id: "http://localhost:4001/users/akkoma_user"})
 
       insert(:user, %{ap_id: "https://misskey.local.live/users/92hzkskwgy"})
 

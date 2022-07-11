@@ -5,7 +5,7 @@
   "summary": null,
   "content": "this gets replaced",
   "source": {
-    "content": "@akkoma_user @remote_user linkifylink #dancedance $[jelly mfm goes here] \n\n## aaa",
+    "content": "@akkoma_user @remote_user @oops_not_a_mention linkifylink #dancedance $[jelly mfm goes here] \n\n## aaa",
     "mediaType": "text/x.misskeymarkdown"
   },
   "published": "2022-07-10T15:37:36.368Z",
