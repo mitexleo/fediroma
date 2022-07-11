@@ -108,7 +108,12 @@ defmodule Pleroma.Web.ActivityPub.ObjectValidators.ArticleNotePageValidator do
   end
 
   defp fix_misskey_content(%{"_misskey_content" => content} = object) do
-    {linked, _, _} = Utils.format_input(content, "text/x.misskeymarkdown")
+    mention_handler = fn nick, buffer, opts, acc ->
+      remote_mention_resolver(object, nick, buffer, opts, acc)
+    end
+
+    {linked, _, _} =
+      Utils.format_input(content, "text/x.misskeymarkdown", mention_handler: mention_handler)
 
     object
     |> Map.put("source", %{
