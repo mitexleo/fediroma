@@ -3095,6 +3095,26 @@ config :pleroma, :config_description, [
         description:
           "A map containing available frontends and parameters for their installation.",
         children: frontend_options
+      },
+      %{
+        key: :extra,
+        type: {:list, :map},
+        description: "A list of additional frontends to serve",
+        children: [
+          %{
+            key: "subdomain",
+            label: "Subdomain",
+            type: :string,
+            description:
+              "The subdomain to serve the frontend on. A value of 'abc' would mean we're serving on abc.mydomain.net."
+          },
+          %{
+            key: "key",
+            label: "Key",
+            type: :atom,
+            description: "Reference of the frontend to serve, as configured in :frontends."
+          }
+        ]
       }
     ]
   },

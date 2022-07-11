@@ -749,6 +749,14 @@ config :pleroma, :frontends,
         "https://gitlab.com/soapbox-pub/soapbox-fe/-/jobs/artifacts/${ref}/download?job=build-production",
       "ref" => "v2.0.0",
       "build_dir" => "static"
+    },
+    "kaiteki" => %{
+      "name" => "kaiteki",
+      "git" => "https://github.com/Kaiteki-Fedi/Kaiteki",
+      "build_url" =>
+        "https://akkoma-updates.s3-website.fr-par.scw.cloud/frontend/kaiteki.zip",
+      "ref" => "alpha",
+      "build_dir" => "web"
     }
   }
 
