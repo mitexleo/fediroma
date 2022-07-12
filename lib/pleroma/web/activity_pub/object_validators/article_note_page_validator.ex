@@ -147,6 +147,10 @@ defmodule Pleroma.Web.ActivityPub.ObjectValidators.ArticleNotePageValidator do
 
   defp fix_source(object), do: object
 
+  def fix_attachments(%{"attachment" => attachment} = data) when is_map(attachment),
+    do: Map.put(data, "attachment", [attachment])
+  def fix_attachments(data), do: data
+
   defp fix(data) do
     data
     |> CommonFixes.fix_actor()
