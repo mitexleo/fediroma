@@ -194,7 +194,7 @@ defmodule Pleroma.Mixfile do
       {:restarter, path: "./restarter"},
       {:majic, "~> 1.0"},
       {:eblurhash, "~> 1.2.2"},
-      {:open_api_spex, "~> 3.11"},
+      {:open_api_spex, "~> 3.10"},
       {:search_parser,
        git: "https://github.com/FloatingGhost/pleroma-contrib-search-parser.git",
        ref: "08971a81e68686f9ac465cfb6661d51c5e4e1e7f"},
