@@ -38,3 +38,23 @@ If you wish masto-fe to also be enabled, you will also need to run the install t
 If you choose not to install a frontend for whatever reason, it is recommended that you enable [`:static_fe`](#static_fe) to allow remote users to click "view remote source". Don't bother with this if you've got no unauthenticated access though.
 
 You can also replace the default "no frontend" page by placing an `index.html` file under your `instance/static/` directory.
+
+## Swagger (openAPI) documentation viewer
+
+If you're a developer and you'd like a human-readable rendering of the
+API documentation, you can enable [Swagger UI](https://github.com/swagger-api/swagger-ui).
+
+In your config:
+
+```elixir
+config :pleroma, :frontends,
+  swagger: %{
+    "name" => "swagger-ui",
+    "ref" => "stable",
+    "enabled" => true
+  }
+```
+
+Then run the [pleroma.frontend cli task](../../administration/CLI_tasks/frontend) with the name of `swagger-ui` to install the distribution files.
+
+You will now be able to view documentation at `/akkoma/swaggerui`
