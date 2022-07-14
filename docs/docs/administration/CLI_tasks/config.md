@@ -1,6 +1,6 @@
 # Transfering the config to/from the database
 
-{! backend/administration/CLI_tasks/general_cli_task_info.include !}
+{! administration/CLI_tasks/general_cli_task_info.include !}
 
 ## Transfer config from file to DB.
 

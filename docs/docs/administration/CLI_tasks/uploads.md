@@ -1,6 +1,6 @@
 # Managing uploads
 
-{! backend/administration/CLI_tasks/general_cli_task_info.include !}
+{! administration/CLI_tasks/general_cli_task_info.include !}
 
 ## Migrate uploads from local to remote storage
 === "OTP"

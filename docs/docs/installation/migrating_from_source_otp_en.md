@@ -1,6 +1,6 @@
 # Switching a from-source install to OTP releases
 
-{! backend/installation/otp_vs_from_source.include !}
+{! installation/otp_vs_from_source.include !}
 
 In this guide we cover how you can migrate from a from source installation to one using OTP releases.
 
@@ -142,4 +142,4 @@ Refer to [Running mix tasks](otp_en.md#running-mix-tasks) section from OTP relea
 ## Updating
 Refer to [Updating](otp_en.md#updating) section from OTP release installation guide.
 
-{! backend/support.include !}
+{! support.include !}

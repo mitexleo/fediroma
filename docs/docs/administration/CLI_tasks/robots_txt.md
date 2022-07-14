@@ -1,6 +1,6 @@
 # Managing robots.txt
 
-{! backend/administration/CLI_tasks/general_cli_task_info.include !}
+{! administration/CLI_tasks/general_cli_task_info.include !}
 
 ## Generate a new robots.txt file and add it to the static directory
 

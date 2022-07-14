@@ -2,7 +2,7 @@
 
 This document was written for FreeBSD 12.1, but should be work on future releases.
 
-{! backend/installation/generic_dependencies.include !}
+{! installation/generic_dependencies.include !}
 
 ## Installing software used in this guide
 
@@ -213,4 +213,4 @@ Restart nginx with `# service nginx restart` and you should be up and running.
 Make sure your time is in sync, or other instances will receive your posts with
 incorrect timestamps. You should have ntpd running.
 
-{! backend/support.include !}
+{! support.include !}

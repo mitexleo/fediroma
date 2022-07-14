@@ -185,4 +185,4 @@ sudo -Hu akkoma MIX_ENV=prod mix pleroma.user new <username> <your@emailaddress>
 
 #### その他の設定とカスタマイズ
 
-{! backend/installation/further_reading.include !}
+{! installation/further_reading.include !}

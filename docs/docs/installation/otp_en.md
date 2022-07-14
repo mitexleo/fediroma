@@ -1,6 +1,6 @@
 # Installing on Linux using OTP releases
 
-{! backend/installation/otp_vs_from_source.include !}
+{! installation/otp_vs_from_source.include !}
 
 This guide covers a installation using an OTP release. To install Akkoma from source, please check out the corresponding guide for your distro.
 
@@ -235,7 +235,7 @@ At this point if you open your (sub)domain in a browser you should see a 502 err
 
 If everything worked, you should see Akkoma-FE when visiting your domain. If that didn't happen, try reviewing the installation steps, starting Akkoma in the foreground and seeing if there are any errrors.
 
-{! backend/support.include !}
+{! support.include !}
 
 ## Post installation
 
@@ -300,6 +300,6 @@ This will create an account withe the username of 'joeuser' with the email addre
 
 ## Further reading
 
-{! backend/installation/further_reading.include !}
+{! installation/further_reading.include !}
 
-{! backend/support.include !}
+{! support.include !}

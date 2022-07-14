@@ -1,6 +1,6 @@
 # Installing on NetBSD
 
-{! backend/installation/generic_dependencies.include !}
+{! installation/generic_dependencies.include !}
 
 ## Installing software used in this guide
 
@@ -204,6 +204,6 @@ incorrect timestamps. You should have ntpd running.
 
 #### Further reading
 
-{! backend/installation/further_reading.include !}
+{! installation/further_reading.include !}
 
-{! backend/support.include !}
+{! support.include !}

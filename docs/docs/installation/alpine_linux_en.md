@@ -1,6 +1,6 @@
 # Installing on Alpine Linux
 
-{! backend/installation/otp_vs_from_source_source.include !}
+{! installation/otp_vs_from_source_source.include !}
 
 ## Installation
 
@@ -10,7 +10,7 @@ As of Alpine Linux v3.16, `doas` is the preferred way of running privileged comm
 If you are running an earlier version, replace `doas` with `sudo` (and use `sudo -Hu akkoma` instead of `doas -u akkoma`).
 If you want to run this guide with root, ignore the `doas` at the beginning of the lines, unless it calls a user like `doas -u akkoma`; in this case, use `su -l <username> -s $SHELL -c 'command'` instead.
 
-{! backend/installation/generic_dependencies.include !}
+{! installation/generic_dependencies.include !}
 
 ### Prepare the system
 
@@ -223,6 +223,6 @@ doas -u akkoma env MIX_ENV=prod mix pleroma.user new <username> <your@emailaddre
 
 #### Further reading
 
-{! backend/installation/further_reading.include !}
+{! installation/further_reading.include !}
 
-{! backend/support.include !}
+{! support.include !}

@@ -1,12 +1,12 @@
 # Installing on Gentoo GNU/Linux
 
-{! backend/installation/otp_vs_from_source_source.include !}
+{! installation/otp_vs_from_source_source.include !}
 
 ## Installation
 
 This guide will assume that you have administrative rights, either as root or a user with [sudo permissions](https://wiki.gentoo.org/wiki/Sudo). Lines that begin with `#` indicate that they should be run as the superuser. Lines using `$` should be run as the indicated user, e.g. `akkoma$` should be run as the `akkoma` user.
 
-{! backend/installation/generic_dependencies.include !}
+{! installation/generic_dependencies.include !}
 
 ### Your make.conf, package.use, and USE flags
 
@@ -295,6 +295,6 @@ If you opted to allow sudo for the `akkoma` user but would like to remove the ab
 
 #### Further reading
 
-{! backend/installation/further_reading.include !}
+{! installation/further_reading.include !}
 
-{! backend/support.include !}
+{! support.include !}

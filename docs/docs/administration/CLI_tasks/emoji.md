@@ -1,6 +1,6 @@
 # Managing emoji packs
 
-{! backend/administration/CLI_tasks/general_cli_task_info.include !}
+{! administration/CLI_tasks/general_cli_task_info.include !}
 
 ## Lists emoji packs and metadata specified in the manifest
 

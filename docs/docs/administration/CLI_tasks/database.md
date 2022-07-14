@@ -1,6 +1,6 @@
 # Database maintenance tasks
 
-{! backend/administration/CLI_tasks/general_cli_task_info.include !}
+{! administration/CLI_tasks/general_cli_task_info.include !}
 
 !!! danger
     These mix tasks can take a long time to complete. Many of them were written to address specific database issues that happened because of bugs in migrations or other specific scenarios. Do not run these tasks "just in case" if everything is fine your instance.

@@ -4,7 +4,7 @@ This guide describes the installation and configuration of akkoma (and the requi
 
 For any additional information regarding commands and configuration files mentioned here, check the man pages [online](https://man.openbsd.org/) or directly on your server with the man command.
 
-{! backend/installation/generic_dependencies.include !}
+{! installation/generic_dependencies.include !}
 
 ### Preparing the system
 #### Required software
@@ -252,6 +252,6 @@ LC_ALL=en_US.UTF-8 MIX_ENV=prod mix pleroma.user new <username> <your@emailaddre
 
 #### Further reading
 
-{! backend/installation/further_reading.include !}
+{! installation/further_reading.include !}
 
-{! backend/support.include !}
+{! support.include !}

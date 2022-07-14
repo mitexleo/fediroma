@@ -1,6 +1,6 @@
 # Installing on Arch Linux
 
-{! backend/installation/otp_vs_from_source_source.include !}
+{! installation/otp_vs_from_source_source.include !}
 
 ## Installation
 
@@ -214,6 +214,6 @@ sudo -Hu akkoma MIX_ENV=prod mix pleroma.user new <username> <your@emailaddress>
 
 #### Further reading
 
-{! backend/installation/further_reading.include !}
+{! installation/further_reading.include !}
 
-{! backend/support.include !}
+{! support.include !}
