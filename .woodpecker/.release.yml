@@ -92,8 +92,7 @@ pipeline:
     environment:
       MIX_ENV: prod
     commands:
-      - xbps-install -Suy
-      - xbps-install -uy xbps
+      - xbps-install -Suy || xbps-install -uy xbps
       - xbps-install -Suy
       - xbps-install -y git gcc musl-devel make cmake file-devel rclone wget zip libmagic elixir
       - rm -rf release || true
