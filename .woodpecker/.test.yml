@@ -4,6 +4,9 @@ matrix:
 
 pipeline:
   lint:
+    when:
+      event:
+      - pull_request
     image: pleromaforkci/ci-base:1.13
     commands:
     - mix local.hex --force
