@@ -13,11 +13,11 @@ Example:
 ```elixir
 config :pleroma, :frontends,
   primary: %{
-    "name" => "pleroma",
-    "ref" => "stable"
+    "name" => "pleroma-fe",
+    "ref" => "develop"
   },
   admin: %{
-    "name" => "admin",
+    "name" => "admin-fe",
     "ref" => "develop"
   }
 ```
