@@ -82,7 +82,7 @@ pipeline:
       event:
         - push
       branch:
-        - void-fix
+        - develop
     secrets:
     - SCW_ACCESS_KEY
     - SCW_SECRET_KEY
