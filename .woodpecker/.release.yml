@@ -113,4 +113,3 @@ pipeline:
       - export PLEROMA_BUILD_BRANCH=develop
       - zip akkoma-${tag}.zip -r release
       - rclone copyto akkoma-${tag}.zip scaleway:akkoma-updates/develop/akkoma-${tag}-musl11.zip
-
