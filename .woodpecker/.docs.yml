@@ -3,6 +3,8 @@ pipeline:
     when:
       event:
         - push
+      branch:
+        - stable-docs
     secrets:
     - SCW_ACCESS_KEY
     - SCW_SECRET_KEY
