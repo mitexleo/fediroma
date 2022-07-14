@@ -22,4 +22,5 @@ pipeline:
       - pip install -r requirements.txt
       - mkdocs build  
       - zip -r docs.zip site/*
-      - rclone copy site/* scaleway:akkoma-docs/$CI_COMMIT_BRANCH/
+      - cd site
+      - rclone copy . scaleway:akkoma-docs/$CI_COMMIT_BRANCH/
