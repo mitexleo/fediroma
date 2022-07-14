@@ -1,11 +1,11 @@
 site_name: Akkoma Documentation
 theme:
-  favicon: 'images/pleroma_logo_vector_bg_32.png'
+  favicon: 'images/akko_badday.png'
   name: 'material'
   custom_dir: 'theme'
   # Disable google fonts
   font: false
-  logo: 'images/pleroma_logo_vector_nobg.svg'
+  logo: 'images/akko_badday.png'
   features:
     - tabs
   palette:
