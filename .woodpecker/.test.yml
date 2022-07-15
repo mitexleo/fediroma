@@ -23,6 +23,7 @@ pipeline:
     commands:
     - mix local.hex --force
     - mix local.rebar --force
+    - mix deps.get
     - mix compile
 
   test:
@@ -40,6 +41,7 @@ pipeline:
     commands:
     - mix local.hex --force
     - mix local.rebar --force
+    - mix deps.get
     - mix ecto.drop -f -q
     - mix ecto.create
     - mix ecto.migrate
