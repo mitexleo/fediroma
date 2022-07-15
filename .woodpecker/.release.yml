@@ -20,7 +20,8 @@ pipeline:
       branch:
         - develop
         - stable
-        - historical-builds        
+      tag:
+        - test-*
     secrets:
     - SCW_ACCESS_KEY
     - SCW_SECRET_KEY
