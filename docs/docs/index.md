@@ -18,7 +18,7 @@ Installation instructions can be found in the installation section of these docs
 Great! Now you can explore the fediverse! Open the login page for your Akkoma instance (e.g. <https://pleroma.soykaf.com>) and login with your username and password. (If you don't have an account yet, click on Register)
 
 ### Pleroma-FE
-The default front-end used by Akkoma is Pleroma-FE. You can find more information on what it is and how to use it in the [Introduction to Pleroma-FE](../frontend).
+The default front-end used by Akkoma is Pleroma-FE. You can find more information on what it is and how to use it in the [Introduction to Pleroma-FE](https://docs-fe.akkoma.dev/stable/).
 
 ### Mastodon interface
 If the Pleroma-FE interface isn't your thing, or you're just trying something new but you want to keep using the familiar Mastodon interface, we got that too!
