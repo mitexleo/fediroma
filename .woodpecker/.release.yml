@@ -26,6 +26,7 @@ pipeline:
       MIX_ENV: prod
     commands:
       - echo $CI_COMMIT_BRANCH
+      - echo $CI_COMMIT_TAG
       - rm ~/nope
       - apt-get update && apt-get install -y cmake libmagic-dev rclone zip imagemagick libmagic-dev
       - wget https://github.com/scaleway/scaleway-cli/releases/download/v2.5.1/scaleway-cli_2.5.1_linux_amd64
