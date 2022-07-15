@@ -14,11 +14,11 @@ Example:
 config :pleroma, :frontends,
   primary: %{
     "name" => "pleroma-fe",
-    "ref" => "develop"
+    "ref" => "stable"
   },
   admin: %{
     "name" => "admin-fe",
-    "ref" => "develop"
+    "ref" => "stable"
   }
 ```
 
