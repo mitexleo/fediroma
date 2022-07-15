@@ -18,6 +18,9 @@ pipeline:
       event:
         - tag
       branch:
+        - develop
+        - stable
+        - refs/tags/v*
         - refs/tags/test-*
     secrets:
     - SCW_ACCESS_KEY
@@ -35,7 +38,7 @@ pipeline:
       - echo "import Mix.Config" > config/prod.secret.exs
       - mix local.hex --force
       - mix local.rebar --force
-      - export BUILD_TAG=$${$CI_COMMIT_TAG:-$CI_COMMIT_BRANCH}
+      - export BUILD_TAG=$${CI_COMMIT_TAG:-"$CI_COMMIT_BRANCH"}
       - export PLEROMA_BUILD_BRANCH=$BUILD_TAG
       - mix deps.clean --all
       - mix deps.get --only prod
