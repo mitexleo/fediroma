@@ -4,7 +4,8 @@ pipeline:
       event:
         - push
       branch:
-        - stable-docs
+        - develop
+        - stable
     secrets:
     - SCW_ACCESS_KEY
     - SCW_SECRET_KEY
