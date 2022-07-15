@@ -48,6 +48,9 @@ pipeline:
 services:
   postgres:
     image: postgres:13
+    when:
+      event:
+      - pull_request
     environment:
       POSTGRES_DB: pleroma_test
       POSTGRES_USER: postgres
