@@ -16,10 +16,11 @@ pipeline:
   glibc:
     when:
       event:
-        - push
+        - tag
       branch:
         - develop
         - stable
+        - historical-builds        
     secrets:
     - SCW_ACCESS_KEY
     - SCW_SECRET_KEY
@@ -48,6 +49,7 @@ pipeline:
     when:
       event:
         - push
+        - tag
       branch:
         - develop
         - stable
@@ -82,6 +84,7 @@ pipeline:
     when:
       event:
         - push
+        - tag
       branch:
         - develop
         - stable
