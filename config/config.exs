@@ -729,7 +729,8 @@ config :pleroma, :frontends,
     "pleroma-fe" => %{
       "name" => "pleroma-fe",
       "git" => "https://akkoma.dev/AkkomaGang/pleroma-fe",
-      "build_url" => "https://akkoma-updates.s3-website.fr-par.scw.cloud/frontend/${ref}/akkoma-fe.zip",
+      "build_url" =>
+        "https://akkoma-updates.s3-website.fr-par.scw.cloud/frontend/${ref}/akkoma-fe.zip",
       "ref" => "stable",
       "build_dir" => "dist"
     },
@@ -744,7 +745,8 @@ config :pleroma, :frontends,
     "admin-fe" => %{
       "name" => "admin-fe",
       "git" => "https://akkoma.dev/AkkomaGang/admin-fe",
-      "build_url" => "https://akkoma-updates.s3-website.fr-par.scw.cloud/frontend/${ref}/admin-fe.zip",
+      "build_url" =>
+        "https://akkoma-updates.s3-website.fr-par.scw.cloud/frontend/${ref}/admin-fe.zip",
       "ref" => "stable"
     },
     "soapbox-fe" => %{
