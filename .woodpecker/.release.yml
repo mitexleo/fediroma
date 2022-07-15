@@ -17,10 +17,6 @@ pipeline:
     when:
       event:
         - tag
-      branch:
-        - develop
-        - stable
-        - test-* # woodpecker is dumdum
     secrets:
     - SCW_ACCESS_KEY
     - SCW_SECRET_KEY
@@ -29,6 +25,8 @@ pipeline:
     environment:
       MIX_ENV: prod
     commands:
+      - echo $CI_COMMIT_BRANCH
+      - rm ~/nope
       - apt-get update && apt-get install -y cmake libmagic-dev rclone zip imagemagick libmagic-dev
       - wget https://github.com/scaleway/scaleway-cli/releases/download/v2.5.1/scaleway-cli_2.5.1_linux_amd64
       - mv scaleway-cli_2.5.1_linux_amd64 scaleway-cli
