@@ -1,12 +1,12 @@
 variables:
-  &scw-secrets
+  - &scw-secrets
     - SCW_ACCESS_KEY
     - SCW_SECRET_KEY
     - SCW_DEFAULT_ORGANIZATION_ID
-  &setup-scw-s3 "wget https://github.com/scaleway/scaleway-cli/releases/download/v2.5.1/scaleway-cli_2.5.1_linux_amd64 && mv scaleway-cli_2.5.1_linux_amd64 scaleway-cli && chmod +x scaleway-cli && ./scaleway-cli object config install type=rclone"
+  - &setup-scw-s3 "wget https://github.com/scaleway/scaleway-cli/releases/download/v2.5.1/scaleway-cli_2.5.1_linux_amd64 && mv scaleway-cli_2.5.1_linux_amd64 scaleway-cli && chmod +x scaleway-cli && ./scaleway-cli object config install type=rclone"
 
-  &setup-hex "mix local.hex --force &&  mix local.rebar --force"
-  &build-on
+  - &setup-hex "mix local.hex --force &&  mix local.rebar --force"
+  - &build-on
     when:
       event:
       - push
@@ -16,9 +16,9 @@ variables:
       - stable
       - refs/tags/v*
       - refs/tags/stable-*  
-  &tag-build 'export BUILD_TAG=$${CI_COMMIT_TAG:-"$CI_COMMIT_BRANCH"} && export PLEROMA_BUILD_BRANCH=$BUILD_TAG'
+  - &tag-build 'export BUILD_TAG=$${CI_COMMIT_TAG:-"$CI_COMMIT_BRANCH"} && export PLEROMA_BUILD_BRANCH=$BUILD_TAG'
 
-  &clean "(rm -rf release || true) && (rm -rf _build || true) && (rm -rf /root/.mix) && (rm scaleway-cli || true) && (mix deps.clean --all)"
+  - &clean "(rm -rf release || true) && (rm -rf _build || true) && (rm -rf /root/.mix) && (rm scaleway-cli || true) && (mix deps.clean --all)"
 
 
 pipeline:
