@@ -16,6 +16,7 @@ variables:
       - stable
       - refs/tags/v*
       - refs/tags/stable-*  
+      - docker-build
   - &tag-build 'export BUILD_TAG=$${CI_COMMIT_TAG:-"$CI_COMMIT_BRANCH"} && export PLEROMA_BUILD_BRANCH=$BUILD_TAG'
 
   - &clean "(rm -rf release || true) && (rm -rf _build || true) && (rm -rf /root/.mix) && (rm scaleway-cli || true) && (mix deps.clean --all)"
