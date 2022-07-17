@@ -30,7 +30,7 @@ pipeline:
     environment:
       MIX_ENV: prod
     commands:
-      - apt-get update && apt-get install -y cmake libmagic-dev rclone zip imagemagick libmagic-dev
+      - apt-get update && apt-get install -y cmake libmagic-dev rclone zip imagemagick libmagic-dev git
       - *clean
       - *setup-scw-s3
       - echo "import Mix.Config" > config/prod.secret.exs
