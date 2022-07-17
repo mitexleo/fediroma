@@ -3,53 +3,38 @@ variables:
     - SCW_ACCESS_KEY
     - SCW_SECRET_KEY
     - SCW_DEFAULT_ORGANIZATION_ID
-  &setup-scw-s3
-    - wget https://github.com/scaleway/scaleway-cli/releases/download/v2.5.1/scaleway-cli_2.5.1_linux_amd64
-    - mv scaleway-cli_2.5.1_linux_amd64 scaleway-cli
-    - chmod +x scaleway-cli
-    - ./scaleway-cli object config install type=rclone
-  &setup-hex
-    - mix local.hex --force
-    - mix local.rebar --force
+  &setup-scw-s3 "wget https://github.com/scaleway/scaleway-cli/releases/download/v2.5.1/scaleway-cli_2.5.1_linux_amd64 && mv scaleway-cli_2.5.1_linux_amd64 scaleway-cli && chmod +x scaleway-cli && ./scaleway-cli object config install type=rclone"
+
+  &setup-hex "mix local.hex --force &&  mix local.rebar --force"
   &build-on
-    event:
-    - push
-    - tag
-    branch:
-    - develop
-    - stable
-    - refs/tags/v*
-    - refs/tags/stable-*  
-  &tag-build
-    - export BUILD_TAG=$${CI_COMMIT_TAG:-"$CI_COMMIT_BRANCH"}
-    - export PLEROMA_BUILD_BRANCH=$BUILD_TAG
-  &clean
-    - rm -rf release || true
-    - rm -rf _build || true
-    - rm -rf /root/.mix
-    - rm scaleway-cli || true
-    - mix deps.clean --all
+    when:
+      event:
+      - push
+      - tag
+      branch:
+      - develop
+      - stable
+      - refs/tags/v*
+      - refs/tags/stable-*  
+  &tag-build 'export BUILD_TAG=$${CI_COMMIT_TAG:-"$CI_COMMIT_BRANCH"} && export PLEROMA_BUILD_BRANCH=$BUILD_TAG'
+
+  &clean "(rm -rf release || true) && (rm -rf _build || true) && (rm -rf /root/.mix) && (rm scaleway-cli || true) && (mix deps.clean --all)"
 
 
 pipeline:
   glibc:
     image: hexpm/elixir:1.13.4-erlang-24.3.4.2-ubuntu-focal-20211006
-    when:
-      <<: *build-on
-    secrets:
-      <<: *scw-secrets
+    <<: *build-on
+    secrets: *scw-secrets
     environment:
       MIX_ENV: prod
     commands:
       - apt-get update && apt-get install -y cmake libmagic-dev rclone zip imagemagick libmagic-dev
-      <<: *clean
-
-      <<: *setup-scw-s3
-
+      - *clean
+      - *setup-scw-s3
       - echo "import Mix.Config" > config/prod.secret.exs
-      <<: *setup-hex
-      <<: *tag-build
-
+      - *setup-hex
+      - *tag-build
       - mix deps.get --only prod
       - mix release --path release
       - zip akkoma-${tag}.zip -r release
@@ -57,19 +42,16 @@ pipeline:
 
   musl:
     image: hexpm/elixir:1.13.4-erlang-24.3.4.2-alpine-3.16.0
-    when:
-      <<: *build-on
-    secrets:
-      <<: *scw-secrets
+    <<: *build-on
+    secrets: *scw-secrets
     environment:
       MIX_ENV: prod
     commands:
       - apk add git gcc g++ musl-dev make cmake file-dev rclone wget zip imagemagick
-      <<: *clean
-      <<: *setup-scw-s3
-      <<: *setup-hex
-      <<: *tag-build
-
+      - *clean
+      - *setup-scw-s3
+      - *setup-hex
+      - *tag-build
       - mix deps.get --only prod
       - mix release --path release
       - zip akkoma-${tag}.zip -r release
@@ -77,8 +59,7 @@ pipeline:
 
   docker:
     image: woodpeckerci/plugin-docker-buildx
-    when:
-      <<: *build-on
+    <<: *build-on
     secrets: [docker_username, docker_password]
     settings:
       repo: akkoma/akkoma
