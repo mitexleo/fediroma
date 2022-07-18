@@ -24,7 +24,7 @@ variables:
 
 pipeline:
   glibc:
-    image: hexpm/elixir:1.13.4-erlang-24.3.4.2-ubuntu-focal-20211006
+    image: elixir:1.13
     <<: *build-on
     secrets: *scw-secrets
     environment:
@@ -42,7 +42,7 @@ pipeline:
       - rclone copyto akkoma-${tag}.zip scaleway:akkoma-updates/$BUILD_TAG/akkoma-${tag}.zip
 
   musl:
-    image: hexpm/elixir:1.13.4-erlang-24.3.4.2-alpine-3.16.0
+    image: elixir:1.13-alpine
     <<: *build-on
     secrets: *scw-secrets
     environment:
@@ -57,13 +57,3 @@ pipeline:
       - mix release --path release
       - zip akkoma-${tag}.zip -r release
       - rclone copyto akkoma-${tag}.zip scaleway:akkoma-updates/$BUILD_TAG/akkoma-${tag}-musl.zip
-
-  docker:
-    image: woodpeckerci/plugin-docker-buildx
-    <<: *build-on
-    secrets: [docker_username, docker_password]
-    settings:
-      repo: akkoma/akkoma
-      dockerfile: Dockerfile
-      platforms: linux/arm/v7,linux/arm64/v8,linux/amd64
-      tag: [latest, alpine]
