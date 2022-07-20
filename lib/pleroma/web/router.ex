@@ -447,8 +447,6 @@ defmodule Pleroma.Web.Router do
       get("/mascot", MascotController, :show)
       put("/mascot", MascotController, :update)
 
-      post("/scrobble", ScrobbleController, :create)
-
       get("/backups", BackupController, :index)
       post("/backups", BackupController, :create)
     end
@@ -470,7 +468,6 @@ defmodule Pleroma.Web.Router do
 
   scope "/api/v1/pleroma", Pleroma.Web.PleromaAPI do
     pipe_through(:api)
-    get("/accounts/:id/scrobbles", ScrobbleController, :index)
     get("/federation_status", InstancesController, :show)
   end
 
