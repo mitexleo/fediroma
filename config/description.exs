@@ -951,8 +951,8 @@ config :pleroma, :config_description, [
       %{
         key: :local_bubble,
         type: {:list, :string},
-        description: "List of instances that make up your local bubble (closely-related instances). Used to populate the 'bubble' timeline.",
-        suggestions: ["otp.akkoma.dev"]
+        description:
+          "List of instances that make up your local bubble (closely-related instances). Used to populate the 'bubble' timeline (domain only)."
       }
     ]
   },
