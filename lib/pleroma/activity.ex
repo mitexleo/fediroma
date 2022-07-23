@@ -293,7 +293,6 @@ defmodule Pleroma.Activity do
   end
 
   def get_quoted_activity_from_object(%Object{data: %{"quoteUri" => ap_id}}) do
-    IO.puts(ap_id)
     get_create_by_object_ap_id_with_object(ap_id)
   end
 

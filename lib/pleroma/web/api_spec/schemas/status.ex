@@ -222,7 +222,7 @@ defmodule Pleroma.Web.ApiSpec.Schemas.Status do
                 type: :string,
                 description: "The source content of the status"
               },
-              mediaType: %{
+              mediaType: %Schema{
                 type: :string,
                 description: "The source MIME type of the status",
                 example: "text/plain"

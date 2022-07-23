@@ -31,6 +31,7 @@ defmodule Pleroma.Web.ActivityPub.Transmogrifier do
   Modifies an incoming AP object (mastodon format) to our internal format.
   """
   def fix_object(object, options \\ []) do
+    IO.inspect(object)
     object
     |> strip_internal_fields()
     |> fix_actor()
@@ -43,7 +44,6 @@ defmodule Pleroma.Web.ActivityPub.Transmogrifier do
     |> fix_content_map()
     |> fix_addressing()
     |> fix_summary()
-    |> fix_quote_url()
   end
 
   def fix_summary(%{"summary" => nil} = object) do
@@ -599,6 +599,12 @@ defmodule Pleroma.Web.ActivityPub.Transmogrifier do
 
   def set_reply_to_uri(obj), do: obj
 
+  def set_quote_url(%{"quoteUri" => quote} = object) when is_binary(quote) do
+    Map.put(object, "quoteUrl", quote)
+  end
+
+  def set_quote_url(obj), do: obj
+
   @doc """
   Serialized Mastodon-compatible `replies` collection containing _self-replies_.
   Based on Mastodon's ActivityPub::NoteSerializer#replies.
@@ -653,6 +659,7 @@ defmodule Pleroma.Web.ActivityPub.Transmogrifier do
     |> prepare_attachments
     |> set_conversation
     |> set_reply_to_uri
+    |> set_quote_url()
     |> set_replies
     |> strip_internal_fields
     |> strip_internal_tags
