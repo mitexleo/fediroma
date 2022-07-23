@@ -112,6 +112,7 @@ defmodule Pleroma.Web.Federator do
       e ->
         # Just drop those for now
         Logger.debug(fn -> "Unhandled activity\n" <> Jason.encode!(params, pretty: true) end)
+        IO.inspect(e)
         {:error, e}
     end
   end

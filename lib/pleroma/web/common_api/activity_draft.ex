@@ -22,6 +22,8 @@ defmodule Pleroma.Web.CommonAPI.ActivityDraft do
             attachments: [],
             in_reply_to: nil,
             in_reply_to_conversation: nil,
+            quote_id: nil,
+            quote: nil,
             visibility: nil,
             expires_at: nil,
             extra: nil,
@@ -36,6 +38,7 @@ defmodule Pleroma.Web.CommonAPI.ActivityDraft do
             object: nil,
             preview?: false,
             changes: %{}
+
 
   def new(user, params) do
     %__MODULE__{user: user}
@@ -54,6 +57,7 @@ defmodule Pleroma.Web.CommonAPI.ActivityDraft do
     |> with_valid(&in_reply_to/1)
     |> with_valid(&in_reply_to_conversation/1)
     |> with_valid(&visibility/1)
+    |> with_valid(&quote_id/1)
     |> content()
     |> with_valid(&to_and_cc/1)
     |> with_valid(&context/1)
@@ -107,6 +111,18 @@ defmodule Pleroma.Web.CommonAPI.ActivityDraft do
     in_reply_to_conversation = Participation.get(draft.params[:in_reply_to_conversation_id])
     %__MODULE__{draft | in_reply_to_conversation: in_reply_to_conversation}
   end
+
+  defp quote_id(%{params: %{quote_id: ""}} = draft), do: draft
+
+  defp quote_id(%{params: %{quote_id: id}} = draft) when is_binary(id) do
+    %__MODULE__{draft | quote: Activity.get_by_id(id)}
+  end
+
+  defp quote_id(%{params: %{quote_id: %Activity{} = quote}} = draft) do
+    %__MODULE__{draft | quote: quote}
+  end
+
+  defp quote_id(draft), do: draft
 
   defp visibility(%{params: params} = draft) do
     case CommonAPI.get_visibility(params, draft.in_reply_to, draft.in_reply_to_conversation) do

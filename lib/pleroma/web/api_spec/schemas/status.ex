@@ -133,6 +133,14 @@ defmodule Pleroma.Web.ApiSpec.Schemas.Status do
         type: :boolean,
         description: "Have you pinned this status? Only appears if the status is pinnable."
       },
+      quote_id: %Schema{
+        type: :string,
+        description: "ID of the status being quoted",
+        nullable: true
+      },
+      quote: %Schema{
+
+      },
       pleroma: %Schema{
         type: :object,
         properties: %{
@@ -201,6 +209,25 @@ defmodule Pleroma.Web.ApiSpec.Schemas.Status do
             nullable: true,
             description:
               "A datetime (ISO 8601) that states when the post was pinned or `null` if the post is not pinned"
+          }
+        }
+      },
+      akkoma: %Schema{
+        type: :object,
+        properties: %{
+          source: %Schema{
+            type: :object,
+            properties: %{
+              content: %Schema{
+                type: :string,
+                description: "The source content of the status"
+              },
+              mediaType: %{
+                type: :string,
+                description: "The source MIME type of the status",
+                example: "text/plain"
+              },
+            }
           }
         }
       },
