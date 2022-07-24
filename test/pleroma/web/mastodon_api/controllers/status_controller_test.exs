@@ -2069,7 +2069,7 @@ defmodule Pleroma.Web.MastodonAPI.StatusControllerTest do
                  "quote_id" => "oops"
                })
                |> json_response_and_validate_schema(422)
-	end
+    end
   end
 
   describe "get status history" do
