@@ -114,14 +114,15 @@ defmodule Pleroma.Web.CommonAPI.ActivityDraft do
   defp quote_id(%{params: %{quote_id: ""}} = draft), do: draft
 
   defp quote_id(%{params: %{quote_id: id}} = draft) when is_binary(id) do
-    quote = Activity.get_by_id(id)
-    # only quote public/unlisted statuses
-    visibility = CommonAPI.get_quoted_visibility(quote)
-
-    if visibility in ["public", "unlisted"] do
+    with {:activity, %Activity{} = quote} <- {:activity, Activity.get_by_id(id)},
+         visibility <- CommonAPI.get_quoted_visibility(quote),
+         {:visibility, true} <- {:visibility, visibility in ["public", "unlisted"]} do
       %__MODULE__{draft | quote: Activity.get_by_id(id)}
     else
-      add_error(draft, dgettext("errors", "You can only quote public or unlisted statuses"))
+      {:activity, _} ->
+        add_error(draft, dgettext("errors", "You can't quote a status that doesn't exist"))
+      {:visibility, false} ->
+        add_error(draft, dgettext("errors", "You can only quote public or unlisted statuses"))
     end
   end
 

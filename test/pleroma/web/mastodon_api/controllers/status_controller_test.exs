@@ -2030,5 +2030,16 @@ defmodule Pleroma.Web.MastodonAPI.StatusControllerTest do
                })
                |> json_response_and_validate_schema(422)
     end
+
+    test "posting a quote of a status that doesn't exist", %{conn: conn} do
+      assert %{"error" => "You can't quote a status that doesn't exist"} =
+               conn
+               |> put_req_header("content-type", "application/json")
+               |> post("/api/v1/statuses", %{
+                 "status" => "I fight for eorzea!",
+                 "quote_id" => "oops"
+               })
+               |> json_response_and_validate_schema(422)
+    end
   end
 end
