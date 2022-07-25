@@ -730,12 +730,12 @@ defmodule Pleroma.User do
     end
   end
 
-  defp put_ap_id(changeset) do
+  def put_ap_id(changeset) do
     ap_id = ap_id(%User{nickname: get_field(changeset, :nickname)})
     put_change(changeset, :ap_id, ap_id)
   end
 
-  defp put_following_and_follower_and_featured_address(changeset) do
+  def put_following_and_follower_and_featured_address(changeset) do
     user = %User{nickname: get_field(changeset, :nickname)}
     followers = ap_followers(user)
     following = ap_following(user)
@@ -1448,11 +1448,17 @@ defmodule Pleroma.User do
         blocker
       end
 
-    # clear any requested follows as well
+    # clear any requested follows from both sides as well
     blocked =
       case CommonAPI.reject_follow_request(blocked, blocker) do
         {:ok, %User{} = updated_blocked} -> updated_blocked
         nil -> blocked
+      end
+
+    blocker =
+      case CommonAPI.reject_follow_request(blocker, blocked) do
+        {:ok, %User{} = updated_blocker} -> updated_blocker
+        nil -> blocker
       end
 
     unsubscribe(blocked, blocker)
@@ -2035,7 +2041,7 @@ defmodule Pleroma.User do
     |> Enum.map(&String.downcase/1)
   end
 
-  defp local_nickname_regex do
+  def local_nickname_regex do
     if Config.get([:instance, :extended_nickname_format]) do
       @extended_local_nickname_regex
     else
