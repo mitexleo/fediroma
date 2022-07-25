@@ -365,7 +365,7 @@ defmodule Pleroma.Web.MastodonAPI.StatusView do
       application: build_application(object.data["generator"]),
       language: nil,
       emojis: build_emojis(object.data["emoji"]),
-      quote_id: (if quote, do: quote.id, else: nil),
+      quote_id: if(quote, do: quote.id, else: nil),
       quote: maybe_render_quote(quote, opts),
       pleroma: %{
         local: activity.local,
@@ -619,6 +619,7 @@ defmodule Pleroma.Web.MastodonAPI.StatusView do
         opts
         |> Map.put(:activity, quote)
         |> Map.put(:do_not_recurse, true)
+
       render("show.json", opts)
     end
   end

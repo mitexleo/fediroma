@@ -163,7 +163,6 @@ defmodule Pleroma.Web.ActivityPub.ObjectValidators.ArticleNotePageValidator do
   end
 
   def changeset(struct, data) do
-    IO.inspect(data)
     data = fix(data)
 
     struct

@@ -500,8 +500,7 @@ defmodule Pleroma.Web.ApiSpec.StatusOperation do
         quote_id: %Schema{
           nullable: true,
           type: :string,
-          description:
-            "Will quote a given status."
+          description: "Will quote a given status."
         }
       },
       example: %{

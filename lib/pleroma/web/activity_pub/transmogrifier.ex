@@ -31,7 +31,6 @@ defmodule Pleroma.Web.ActivityPub.Transmogrifier do
   Modifies an incoming AP object (mastodon format) to our internal format.
   """
   def fix_object(object, options \\ []) do
-    IO.inspect(object)
     object
     |> strip_internal_fields()
     |> fix_actor()

@@ -305,7 +305,9 @@ defmodule Pleroma.Web.MastodonAPI.StatusViewTest do
       },
       akkoma: %{
         source: HTML.filter_tags(object_data["content"])
-      }
+      },
+      quote_id: nil,
+      quote: nil
     }
 
     assert status == expected

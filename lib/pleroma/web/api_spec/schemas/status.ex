@@ -139,7 +139,9 @@ defmodule Pleroma.Web.ApiSpec.Schemas.Status do
         nullable: true
       },
       quote: %Schema{
-
+        allOf: [%OpenApiSpex.Reference{"$ref": "#/components/schemas/Status"}],
+        nullable: true,
+        description: "Quoted status (if any)"
       },
       pleroma: %Schema{
         type: :object,
@@ -216,18 +218,26 @@ defmodule Pleroma.Web.ApiSpec.Schemas.Status do
         type: :object,
         properties: %{
           source: %Schema{
-            type: :object,
-            properties: %{
-              content: %Schema{
-                type: :string,
-                description: "The source content of the status"
-              },
-              mediaType: %Schema{
-                type: :string,
-                description: "The source MIME type of the status",
-                example: "text/plain"
-              },
-            }
+            nullable: true,
+            oneOf: [
+              %Schema{type: :string, example: 'plaintext content'},
+              %Schema{
+                type: :object,
+                properties: %{
+                  content: %Schema{
+                    type: :string,
+                    description: "The source content of the status",
+                    nullable: true
+                  },
+                  mediaType: %Schema{
+                    type: :string,
+                    description: "The source MIME type of the status",
+                    example: "text/plain",
+                    nullable: true
+                  }
+                }
+              }
+            ]
           }
         }
       },

@@ -39,7 +39,6 @@ defmodule Pleroma.Web.CommonAPI.ActivityDraft do
             preview?: false,
             changes: %{}
 
-
   def new(user, params) do
     %__MODULE__{user: user}
     |> put_params(params)
@@ -118,6 +117,7 @@ defmodule Pleroma.Web.CommonAPI.ActivityDraft do
     quote = Activity.get_by_id(id)
     # only quote public/unlisted statuses
     visibility = CommonAPI.get_quoted_visibility(quote)
+
     if visibility in ["public", "unlisted"] do
       %__MODULE__{draft | quote: Activity.get_by_id(id)}
     else
