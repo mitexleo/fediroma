@@ -121,6 +121,7 @@ defmodule Pleroma.Web.CommonAPI.ActivityDraft do
     else
       {:activity, _} ->
         add_error(draft, dgettext("errors", "You can't quote a status that doesn't exist"))
+
       {:visibility, false} ->
         add_error(draft, dgettext("errors", "You can only quote public or unlisted statuses"))
     end
