@@ -407,7 +407,7 @@ config :pleroma, :mrf_vocabulary,
   accept: [],
   reject: []
 
-config :pleroma, :mrf_inline_quote, prefix: "Quote"
+config :pleroma, :mrf_inline_quote, prefix: "RE"
 
 # threshold of 7 days
 config :pleroma, :mrf_object_age,

@@ -21,7 +21,7 @@ defmodule Pleroma.Web.ActivityPub.MRF.InlineQuotePolicy do
     end
   end
 
-  defp filter_object(%{"quoteUrl" => quote_url} = object) do
+  defp filter_object(%{"quoteUri" => quote_url} = object) do
     content = object["content"] || ""
 
     if has_inline_quote?(content, quote_url) do
@@ -30,18 +30,18 @@ defmodule Pleroma.Web.ActivityPub.MRF.InlineQuotePolicy do
       prefix = Pleroma.Config.get([:mrf_inline_quote, :prefix])
 
       content =
-        if String.ends_with?(content, "</p>"),
-          do:
-            String.trim_trailing(content, "</p>") <>
-              build_inline_quote(prefix, quote_url) <> "</p>",
-          else: content <> build_inline_quote(prefix, quote_url)
+        if String.ends_with?(content, "</p>") do
+          String.trim_trailing(content, "</p>") <> build_inline_quote(prefix, quote_url) <> "</p>"
+        else
+          content <> build_inline_quote(prefix, quote_url)
+        end
 
       Map.put(object, "content", content)
     end
   end
 
   @impl true
-  def filter(%{"object" => %{"quoteUrl" => _} = object} = activity) do
+  def filter(%{"object" => %{"quoteUri" => _} = object} = activity) do
     {:ok, Map.put(activity, "object", filter_object(object))}
   end
 
@@ -63,7 +63,7 @@ defmodule Pleroma.Web.ActivityPub.MRF.InlineQuotePolicy do
           key: :prefix,
           type: :string,
           description: "Prefix before the link",
-          suggestions: ["RT", "QT", "RE", "RN"]
+          suggestions: ["RE", "QT", "RT", "RN"]
         }
       ]
     }
