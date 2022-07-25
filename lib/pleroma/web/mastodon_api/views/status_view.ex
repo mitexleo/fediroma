@@ -612,7 +612,7 @@ defmodule Pleroma.Web.MastodonAPI.StatusView do
   defp maybe_render_quote(nil, _), do: nil
 
   defp maybe_render_quote(quote, opts) do
-    if opts[:do_not_recurse] do
+    if opts[:do_not_recurse] || !visible_for_user?(quote, opts[:for]) do
       nil
     else
       opts =
