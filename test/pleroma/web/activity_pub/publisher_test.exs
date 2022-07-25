@@ -267,7 +267,7 @@ defmodule Pleroma.Web.ActivityPub.PublisherTest do
   end
 
   describe "publish/2" do
-    test_with_mock "doesn't publish a non-public activity to quarantined instances.",
+    test_with_mock "doesn't publish any activity to quarantined instances.",
                    Pleroma.Web.Federator.Publisher,
                    [:passthrough],
                    [] do
