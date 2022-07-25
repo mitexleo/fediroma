@@ -290,7 +290,8 @@ defmodule Pleroma.Web.ActivityPub.PublisherTest do
           user: actor,
           recipients: [follower.ap_id]
         )
-      public_note_activity = 
+
+      public_note_activity =
         insert(:note_activity,
           user: actor,
           recipients: [follower.ap_id, @as_public]
@@ -309,6 +310,7 @@ defmodule Pleroma.Web.ActivityPub.PublisherTest do
                  id: note_activity.data["id"]
                })
              )
+
       assert not called(
                Pleroma.Web.Federator.Publisher.enqueue_one(Publisher, %{
                  inbox: "https://domain.com/users/nick1/inbox",
@@ -360,6 +362,7 @@ defmodule Pleroma.Web.ActivityPub.PublisherTest do
                    [:passthrough],
                    [] do
       Config.put([:instance, :quarantined_instances], [])
+
       follower =
         insert(:user, %{
           local: false,
