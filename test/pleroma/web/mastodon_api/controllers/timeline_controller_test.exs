@@ -999,7 +999,8 @@ defmodule Pleroma.Web.MastodonAPI.TimelineControllerTest do
 
     test "filtering", %{conn: conn, user: user} do
       clear_config([:instance, :local_bubble], [])
-      local_user = insert(:user)
+      # our endpoint host has a port in it so let's set the AP ID
+      local_user = insert(:user, %{ap_id: "https://localhost/users/user"})
       remote_user = insert(:user, %{ap_id: "https://example.com/users/remote_user"})
       {:ok, user, local_user} = User.follow(user, local_user)
       {:ok, _user, remote_user} = User.follow(user, remote_user)
