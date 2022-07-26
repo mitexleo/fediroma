@@ -207,7 +207,6 @@ defmodule Pleroma.Web.ActivityPub.Transmogrifier do
   def fix_quote_url(%{"_misskey_quote" => quote_url} = object, options) do
     object
     |> Map.put("quoteUri", quote_url)
-    |> IO.inspect()
     |> fix_quote_url(options)
   end
 
