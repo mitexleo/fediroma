@@ -401,6 +401,7 @@ defmodule Pleroma.Web.ActivityPub.PublisherTest do
                    [:passthrough],
                    [] do
       clear_config([:instance, :quarantined_instances], [])
+
       fetcher =
         insert(:user,
           local: false,
