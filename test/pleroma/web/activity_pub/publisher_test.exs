@@ -23,7 +23,10 @@ defmodule Pleroma.Web.ActivityPub.PublisherTest do
     :ok
   end
 
-  setup_all do: clear_config([:instance, :federating], true)
+  setup_all do
+    clear_config([:instance, :federating], true)
+    clear_config([:instance, :quarantined_instances], [])
+  end
 
   describe "gather_webfinger_links/1" do
     test "it returns links" do
@@ -397,6 +400,7 @@ defmodule Pleroma.Web.ActivityPub.PublisherTest do
                    Pleroma.Web.Federator.Publisher,
                    [:passthrough],
                    [] do
+      clear_config([:instance, :quarantined_instances], [])
       fetcher =
         insert(:user,
           local: false,
