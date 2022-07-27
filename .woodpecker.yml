@@ -50,6 +50,21 @@ pipeline:
     - mix local.rebar --force
     - mix format --check-formatted
 
+  build:
+    image: akkoma/ci-base:latest
+    <<: *on-pr-open
+    environment:
+      MIX_ENV: test
+      POSTGRES_DB: pleroma_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      DB_HOST: postgres
+    commands:
+      - mix local.hex --force
+      - mix local.rebar --force
+      - mix deps.get
+      - mix compile
+
   test:
     image: akkoma/ci-base:latest
     <<: *on-pr-open

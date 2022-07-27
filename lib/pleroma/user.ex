@@ -663,8 +663,6 @@ defmodule Pleroma.User do
   # Used to auto-register LDAP accounts which won't have a password hash stored locally
   def register_changeset_ldap(struct, params = %{password: password})
       when is_nil(password) do
-    params = Map.put_new(params, :accepts_chat_messages, true)
-
     params =
       if Map.has_key?(params, :email) do
         Map.put_new(params, :email, params[:email])
@@ -676,8 +674,7 @@ defmodule Pleroma.User do
     |> cast(params, [
       :name,
       :nickname,
-      :email,
-      :accepts_chat_messages
+      :email
     ])
     |> validate_required([:name, :nickname])
     |> unique_constraint(:nickname)
