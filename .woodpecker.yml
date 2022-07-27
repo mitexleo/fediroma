@@ -50,17 +50,6 @@ pipeline:
     - mix local.rebar --force
     - mix format --check-formatted
 
-  build:
-    image: akkoma/ci-base:latest
-    <<: *on-pr-open
-    environment:
-      MIX_ENV: test
-    commands:
-    - mix local.hex --force
-    - mix local.rebar --force
-    - mix deps.get
-    - mix compile
-
   test:
     image: akkoma/ci-base:latest
     <<: *on-pr-open
@@ -74,6 +63,7 @@ pipeline:
     - mix local.hex --force
     - mix local.rebar --force
     - mix deps.get
+    - mix compile
     - mix ecto.drop -f -q
     - mix ecto.create
     - mix ecto.migrate
