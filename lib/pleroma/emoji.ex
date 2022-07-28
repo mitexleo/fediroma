@@ -125,7 +125,7 @@ defmodule Pleroma.Emoji do
     |> String.split("\n")
     |> Enum.filter(fn line ->
       line != "" and not String.starts_with?(line, "#") and
-        String.contains?(line, "qualified")
+        String.contains?(line, "fully-qualified")
     end)
     |> Enum.map(fn line ->
       line
