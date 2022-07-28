@@ -147,8 +147,7 @@ If that doesn’t work, make sure, that nginx is not already running. If it stil
 * Copy the example nginx configuration and activate it:
 
 ```shell
-sudo cp /opt/akkoma/installation/nginx/akkoma.nginx /etc/nginx/sites-available/akkoma.nginx
-sudo ln -s /etc/nginx/sites-available/akkoma.nginx /etc/nginx/sites-enabled/akkoma.nginx
+sudo cp /opt/akkoma/installation/nginx/akkoma.nginx /etc/nginx/conf.d/akkoma.conf
 ```
 
 * Before starting nginx edit the configuration and change it to your needs (e.g. change servername, change cert paths)
