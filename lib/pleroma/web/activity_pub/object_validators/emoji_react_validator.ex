@@ -79,8 +79,7 @@ defmodule Pleroma.Web.ActivityPub.ObjectValidators.EmojiReactValidator do
   defp matches_shortcode?(s), do: Regex.match?(@emoji_regex, s)
 
   defp fix_emoji_qualification(%{"content" => emoji} = data) do
-    # Emoji variation sequence
-    new_emoji = emoji <> "\uFE0F"
+    new_emoji = Pleroma.Emoji.fully_qualify_emoji(emoji)
 
     cond do
       Pleroma.Emoji.is_unicode_emoji?(emoji) ->
