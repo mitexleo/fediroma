@@ -112,8 +112,8 @@ pipeline:
       - export DEST=scaleway:akkoma-updates/$${CI_COMMIT_TAG:-"$CI_COMMIT_BRANCH"}/akkoma-amd64.zip
       - /bin/sh /entrypoint.sh
     environment:
-      SOURCE: akkoma-amd64.zip
-      DEST: scaleway:akkoma-updates/$${CI_COMMIT_TAG:-"$CI_COMMIT_BRANCH"}/akkoma-amd64.zip
+      SOURCE: akkoma-ubuntu-jammy.zip
+      DEST: scaleway:akkoma-updates/$${CI_COMMIT_TAG:-"$CI_COMMIT_BRANCH"}/akkoma-ubuntu-jammy.zip
 
   debian-bullseye:
     image: elixir:1.13.4
