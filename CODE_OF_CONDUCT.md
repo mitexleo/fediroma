@@ -3,7 +3,7 @@
 The Akkoma project aims to be **enjoyable** for anyone to participate in, regardless of their identity or level of expertise. To achieve this, the community must create an environment which is **safe** and **equitable**; the following guidelines have been created with these goals in mind.
 
 1. **Treat individuals with respect.** Differing experiences and viewpoints deserve to be respected, and bigotry and harassment are not tolerated under any circumstances.
-    - Individuals should at all times be treated as equals, regardless of their age, gender, sexuality, race, ethnicity, _or any other characteristic_.
+    - Individuals should at all times be treated as equals, regardless of their age, gender, sexuality, race, ethnicity, _or any other characteristic_, intrinsic or otherwise.
     - Behaviour that is harmful in nature should be addressed and corrected *regardless of intent*.
     - Respect personal boundaries and ask for clarification whenever they are unclear.
     - (Obviously, hate does not count as merely a "differing viewpoint", because it is harmful in nature.)
