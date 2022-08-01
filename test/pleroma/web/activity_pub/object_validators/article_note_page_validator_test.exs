@@ -133,6 +133,7 @@ defmodule Pleroma.Web.ActivityPub.ObjectValidators.ArticleNotePageValidatorTest 
         "<span class=\"h-card\"><a class=\"u-url mention\" data-user=\"#{local_user.id}\" href=\"#{local_user.ap_id}\" rel=\"ugc\">@<span>akkoma_user</span></a></span> linkifylink <a class=\"hashtag\" data-tag=\"dancedance\" href=\"http://localhost:4001/tag/dancedance\">#dancedance</a> $[jelly mfm goes here] <br><br>## aaa"
 
       changes = ArticleNotePageValidator.cast_and_validate(note)
+
       %{
         valid?: true,
         changes: %{
@@ -142,6 +143,7 @@ defmodule Pleroma.Web.ActivityPub.ObjectValidators.ArticleNotePageValidatorTest 
           }
         }
       } = changes
+
       assert changes.changes[:content] == expected_content
     end
   end
