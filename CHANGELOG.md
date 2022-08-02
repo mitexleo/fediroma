@@ -173,7 +173,7 @@ you might end up in a situation where you don't have an ability to get it.
 - Attachment dimensions and blurhashes are federated when available.
 - Mastodon API: support `poll` notification.
 - Pinned posts federation
-- Possibility to discover users like `user@example.org`, while Pleroma is working on `pleroma.example.org`. Additional configuration required.
+- Possibility to discover users like `user@example.org`, while Akkoma is working on `akkoma.example.org`. Additional configuration required.
 
 ### Fixed
 - Don't crash so hard when email settings are invalid.
