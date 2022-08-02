@@ -19,7 +19,7 @@ defmodule Pleroma.Config.DeprecationWarnings do
     {[:instance, :mrf_transparency_exclusions], [:mrf, :transparency_exclusions],
      "\n* `config :pleroma, :instance, mrf_transparency_exclusions` is now `config :pleroma, :mrf, transparency_exclusions`"},
     {[:instance, :quarantined_instances], [:mrf_simple, :reject],
-      "\n* `config :pleroma, :instance, :quarantined_instances` is now covered by `:pleroma, :mrf_simple, :reject`"}
+     "\n* `config :pleroma, :instance, :quarantined_instances` is now covered by `:pleroma, :mrf_simple, :reject`"}
   ]
 
   def check_simple_policy_tuples do
