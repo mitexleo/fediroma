@@ -21,4 +21,4 @@ The Akkoma project aims to be **enjoyable** for anyone to participate in, regard
     - Avoid bringing up past events that do not accurately reflect an individual's current actions or beliefs. (This is, of course, different from providing evidence of a recurring pattern of behaviour.)
 
 ---
-This document was created by ~keith as part of punks default repository template, and is licensed under CC-BY-SA 4.0. The original template is here: <https://bytes.keithhacks.cyou/keith/default-template>
+This document was adapted from one created by ~keith as part of punks default repository template, and is licensed under CC-BY-SA 4.0. The original template is here: <https://bytes.keithhacks.cyou/keith/default-template>
