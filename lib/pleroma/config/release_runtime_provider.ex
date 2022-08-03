@@ -31,7 +31,7 @@ defmodule Pleroma.Config.ReleaseRuntimeProvider do
         warning = [
           IO.ANSI.red(),
           IO.ANSI.bright(),
-          "!!! Config path is not declared! Please ensure it exists and that PLEROMA_CONFIG_PATH is unset or points to an existing file",
+          "!!! Config path is not declared! Please ensure it exists and that AKKOMA_CONFIG_PATH and/or PLEROMA_CONFIG_PATH is unset or points to an existing file",
           IO.ANSI.reset()
         ]
 
