@@ -14,10 +14,10 @@ defmodule Pleroma.Config.ReleaseRuntimeProvider do
     config_path =
       cond do
         opts[:config_path] -> opts[:config_path]
-        System.get_env("PLEROMA_CONFIG_PATH") -> System.get_env("PLEROMA_CONFIG_PATH")
         System.get_env("AKKOMA_CONFIG_PATH") -> System.get_env("AKKOMA_CONFIG_PATH")
-        File.exists?("/etc/akkoma/config.exs") -> "/etc/akkoma/config.exs"
-        true -> "/etc/pleroma/config.exs"
+        System.get_env("PLEROMA_CONFIG_PATH") -> System.get_env("PLEROMA_CONFIG_PATH")
+        File.exists?("/etc/pleroma/config.exs") -> "/etc/pleroma/config.exs"
+        true -> "/etc/akkoma/config.exs"
       end
 
     with_runtime_config =
