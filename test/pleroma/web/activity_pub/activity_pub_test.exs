@@ -1390,7 +1390,6 @@ defmodule Pleroma.Web.ActivityPub.ActivityPubTest do
       assert is_nil(activity)
       assert is_nil(Utils.fetch_latest_follow(follower, followed))
     end
-
   end
 
   describe "timeline post-processing" do
