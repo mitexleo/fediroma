@@ -12,6 +12,7 @@ defmodule Pleroma.Repo.Migrations.RemoveRemoteCancelledFollowRequests do
     AND
         local = false;
     """
+
     execute(statement)
 
     statement = """
@@ -24,6 +25,7 @@ defmodule Pleroma.Repo.Migrations.RemoveRemoteCancelledFollowRequests do
     AND
         local = false;
     """
+
     execute(statement)
   end
 

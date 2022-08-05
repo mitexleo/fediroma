@@ -350,8 +350,7 @@ defmodule Pleroma.Web.ActivityPub.ActivityPub do
          {:ok, activity} <- Repo.delete(follow_activity),
          unfollow_data <- make_unfollow_data(follower, followed, follow_activity, activity_id),
          unfollow_activity <- remote_unfollow_data(unfollow_data),
-          _ <- notify_and_stream(unfollow_activity)
-      do
+         _ <- notify_and_stream(unfollow_activity) do
       {:ok, activity}
     else
       nil -> nil
@@ -361,6 +360,7 @@ defmodule Pleroma.Web.ActivityPub.ActivityPub do
 
   defp remote_unfollow_data(data) do
     {recipients, _, _} = get_recipients(data)
+
     %Activity{
       data: data,
       local: false,
