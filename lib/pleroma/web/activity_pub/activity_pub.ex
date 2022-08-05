@@ -347,11 +347,11 @@ defmodule Pleroma.Web.ActivityPub.ActivityPub do
     # On a remote unfollow, _remove_ their activity from the database, since some software (MISSKEEEEY)
     # uses deterministic ids for follows.
     with %Activity{} = follow_activity <- fetch_latest_follow(follower, followed),
-         {:ok, activity} <- Repo.delete(follow_activity),
+         {:ok, _activity} <- Repo.delete(follow_activity),
          unfollow_data <- make_unfollow_data(follower, followed, follow_activity, activity_id),
          unfollow_activity <- remote_unfollow_data(unfollow_data),
          _ <- notify_and_stream(unfollow_activity) do
-      {:ok, activity}
+      {:ok, unfollow_activity}
     else
       nil -> nil
       {:error, error} -> Repo.rollback(error)
