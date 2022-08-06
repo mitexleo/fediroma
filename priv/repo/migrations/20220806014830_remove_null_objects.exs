@@ -6,6 +6,7 @@ defmodule Pleroma.Repo.Migrations.RemoveNullObjects do
     DELETE FROM objects
     WHERE (data->>'type') is null;
     """
+
     execute(statement)
   end
 

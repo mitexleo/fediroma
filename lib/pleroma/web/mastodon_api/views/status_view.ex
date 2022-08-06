@@ -57,11 +57,11 @@ defmodule Pleroma.Web.MastodonAPI.StatusView do
     end)
   end
 
-  defp get_context_id(%{data: %{"context_id" => context_id}}) when not is_nil(context_id),
-    do: context_id
-
   defp get_context_id(%{data: %{"context" => context}}) when is_binary(context),
     do: :erlang.crc32(context)
+
+  defp get_context_id(%{data: %{"context_id" => context_id}}) when not is_nil(context_id),
+    do: context_id
 
   defp get_context_id(_), do: nil
 
