@@ -41,6 +41,8 @@ defmodule Pleroma.HTTP.AdapterHelper do
   def maybe_add_proxy_pool(opts, nil), do: opts
 
   def maybe_add_proxy_pool(opts, proxy) do
+    Logger.info("Using HTTP Proxy: #{inspect(proxy)}")
+
     opts
     |> maybe_add_pools()
     |> maybe_add_default_pool()
