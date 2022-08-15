@@ -375,6 +375,7 @@ defmodule Pleroma.Web.MastodonAPI.StatusView do
       emojis: build_emojis(object.data["emoji"]),
       quote_id: if(quote, do: quote.id, else: nil),
       quote: maybe_render_quote(quote, opts),
+      emoji_reactions: emoji_reactions,
       pleroma: %{
         local: activity.local,
         conversation_id: get_context_id(activity),
