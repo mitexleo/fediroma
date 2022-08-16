@@ -56,7 +56,6 @@ defmodule Pleroma.Web.MastodonAPI.NotificationController do
     params =
       Map.new(params, fn {k, v} -> {to_string(k), v} end)
       |> Map.put_new("include_types", @default_notification_types)
-
     notifications = MastodonAPI.get_notifications(user, params)
 
     conn

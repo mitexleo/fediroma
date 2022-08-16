@@ -72,7 +72,7 @@ defmodule Pleroma.Web.MastodonAPI.WebsocketHandler do
   # We only receive pings for now
   def websocket_handle(:ping, state), do: {:ok, state}
 
-  def websocket_handle({:text, "ping"}, state) do
+  def websocket_handle({:text, ping}, state) when ping in ~w[ping PING] do
     if state.timer, do: Process.cancel_timer(state.timer)
     {:reply, {:text, "pong"}, %{state | timer: timer()}}
   end

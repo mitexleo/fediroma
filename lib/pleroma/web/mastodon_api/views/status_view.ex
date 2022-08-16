@@ -590,7 +590,8 @@ defmodule Pleroma.Web.MastodonAPI.StatusView do
       name: emoji,
       count: length(users),
       url: MediaProxy.url(url),
-      me: !!(current_user && current_user.ap_id in users)
+      me: !!(current_user && current_user.ap_id in users),
+      account_ids: Enum.map(users, fn user -> User.get_cached_by_ap_id(user).id end)
     }
   end
 
