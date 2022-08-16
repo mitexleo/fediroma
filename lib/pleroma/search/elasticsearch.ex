@@ -23,7 +23,7 @@ defmodule Pleroma.Search.Elasticsearch do
         timeout: "5s",
         sort: [
           "_score",
-          %{_timestamp: %{order: "desc", format: "basic_date_time"}}
+          %{"_timestamp" => %{order: "desc", format: "basic_date_time"}}
         ],
         query: %{
           bool: %{
@@ -65,7 +65,8 @@ defmodule Pleroma.Search.Elasticsearch do
         :activities
         |> Pleroma.Search.Elasticsearch.Store.search(q)
         |> Enum.filter(fn x ->
-          x.data["type"] == "Create" && x.object.data["type"] == "Note" && Visibility.visible_for_user?(x, user)
+          x.data["type"] == "Create" && x.object.data["type"] == "Note" &&
+            Visibility.visible_for_user?(x, user)
         end)
       end)
 
