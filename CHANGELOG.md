@@ -7,7 +7,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
-- support for fedibird-fe, and API parity for it to function
+- support for fedibird-fe, and non-breaking API parity for it to function
+
+### Fixed
+- Compatibility with latest meilisearch
+- Resolution of nested mix tasks (i.e search.meilisearch) in OTP releases
+- Elasticsearch returning likes and repeats, displaying as posts
 
 ### Removed
 - Non-finch HTTP adapters. `:tesla, :adapter` is now highly recommended to be set to the default.
