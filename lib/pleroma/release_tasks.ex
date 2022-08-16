@@ -35,11 +35,11 @@ defmodule Pleroma.ReleaseTasks do
     end
   end
 
-  defp task_match?(module_path, task) do
+  defp task_match?(["Mix", "Tasks", "Pleroma" | module_path], task) do
     module_path
     |> Enum.join(".")
     |> String.downcase()
-    |> String.ends_with?(String.downcase(task))
+    |> String.equivalent?(String.downcase(task))
   end
 
   def migrate(args) do
