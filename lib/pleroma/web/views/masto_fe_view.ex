@@ -14,6 +14,7 @@ defmodule Pleroma.Web.MastoFEView do
 
     %{
       meta: %{
+        title: Config.get([:instance, :name]),
         streaming_api_base_url: Pleroma.Web.Endpoint.websocket_url(),
         access_token: token,
         locale: "en",
