@@ -49,12 +49,12 @@ you have to get the _private key_, which is actually used for authentication.
 
 === "OTP"
     ```sh
-    ./bin/pleroma_ctl search.meilisearch show-keys <your master key here>
+    ./bin/pleroma_ctl meilisearch show-keys <your master key here>
     ```
 
 === "From Source"
     ```sh
-    mix pleroma.search.meilisearch show-keys <your master key here>
+    mix pleroma.meilisearch show-keys <your master key here>
     ```
 
 You will see a "Default Admin API Key", this is the key you actually put into your configuration file.
@@ -79,12 +79,12 @@ To start the initial indexing, run the `index` command:
 
 === "OTP"
     ```sh
-    ./bin/pleroma_ctl search.meilisearch index
+    ./bin/pleroma_ctl meilisearch index
     ```
 
 === "From Source"
     ```sh
-    mix pleroma.search.meilisearch index
+    mix pleroma.meilisearch index
     ```
 
 This will show you the total amount of posts to index, and then show you the amount of posts indexed currently, until the numbers eventually
@@ -94,12 +94,12 @@ of indexing and how many posts have actually been indexed, use the `stats` comma
 
 === "OTP"
     ```sh
-    ./bin/pleroma_ctl search.meilisearch stats
+    ./bin/pleroma_ctl meilisearch stats
     ```
 
 === "From Source"
     ```sh
-    mix pleroma.search.meilisearch stats
+    mix pleroma.meilisearch stats
     ```
 
 ### Clearing the index
@@ -109,12 +109,12 @@ use the `clear` command:
 
 === "OTP"
     ```sh
-    ./bin/pleroma_ctl search.meilisearch clear
+    ./bin/pleroma_ctl meilisearch clear
     ```
 
 === "From Source"
     ```sh
-    mix pleroma.search.meilisearch clear
+    mix pleroma.meilisearch clear
     ```
 
 This will clear **all** the posts from the search index. Note, that deleted posts are also removed from index by the instance itself, so
