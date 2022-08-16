@@ -30,7 +30,8 @@ defmodule Pleroma.Web.MastoFEView do
         mascot: User.get_mascot(user)["url"],
         show_quote_button: true,
         enable_reaction: true,
-        compact_reaction: false
+        compact_reaction: false,
+        advanced_layout: true
       },
       poll_limits: Config.get([:instance, :poll_limits]),
       rights: %{

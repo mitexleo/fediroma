@@ -32,8 +32,15 @@ defmodule Pleroma.Web.MastodonAPI.WebsocketHandler do
           req
         end
 
-      {:cowboy_websocket, req, %{user: user, topic: topic, count: 0, timer: nil},
-       %{idle_timeout: @timeout}}
+      {:cowboy_websocket, req,
+       %{
+         user: user,
+         topic: topic,
+         count: 0,
+         timer: nil,
+         subscriptions: [],
+         oauth_token: oauth_token
+       }, %{idle_timeout: @timeout}}
     else
       {:error, :bad_topic} ->
         Logger.debug("#{__MODULE__} bad topic #{inspect(req)}")
@@ -70,16 +77,45 @@ defmodule Pleroma.Web.MastodonAPI.WebsocketHandler do
     {:reply, {:text, "pong"}, %{state | timer: timer()}}
   end
 
+  def websocket_handle({:text, text}, state) do
+    with {:ok, json} <- Jason.decode(text) do
+      websocket_handle({:json, json}, state)
+    else
+      _ ->
+        Logger.error("#{__MODULE__} received text frame: #{text}")
+        {:ok, state}
+    end
+  end
+
+  def websocket_handle(
+        {:json, %{"type" => "subscribe", "stream" => stream_name}},
+        %{user: user, oauth_token: token} = state
+      ) do
+    with {:ok, topic} <- Streamer.get_topic(stream_name, user, token, %{}) do
+      new_subscriptions =
+        [topic | Map.get(state, :subscriptions, [])]
+        |> Enum.uniq()
+
+      {:ok, _topic} = Streamer.add_socket(topic, user)
+
+      {:ok, Map.put(state, :subscriptions, new_subscriptions)}
+    else
+      _ ->
+        Logger.error("#{__MODULE__} received invalid topic: #{stream_name}")
+        {:ok, state}
+    end
+  end
+
   def websocket_handle(frame, state) do
     Logger.error("#{__MODULE__} received frame: #{inspect(frame)}")
     {:ok, state}
   end
 
-  def websocket_info({:render_with_user, view, template, item}, state) do
+  def websocket_info({:render_with_user, view, template, item, topic}, state) do
     user = %User{} = User.get_cached_by_ap_id(state.user.ap_id)
 
     unless Streamer.filtered_by_user?(user, item) do
-      websocket_info({:text, view.render(template, item, user)}, %{state | user: user})
+      websocket_info({:text, view.render(template, item, user, topic)}, %{state | user: user})
     else
       {:ok, state}
     end

@@ -272,6 +272,7 @@ defmodule Pleroma.Web.MastodonAPI.StatusViewTest do
       spoiler_text: HTML.filter_tags(object_data["summary"]),
       visibility: "public",
       media_attachments: [],
+      emoji_reactions: [],
       mentions: [],
       tags: [
         %{
