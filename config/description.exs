@@ -1373,6 +1373,12 @@ config :pleroma, :config_description, [
             label: "Hide site name",
             type: :boolean,
             description: "Whether to hide the site name from the navbar"
+          },
+          %{
+            key: :renderMisskeyMarkdown,
+            label: "Render misskey markdown",
+            type: :boolean,
+            description: "Whether to render Misskey-flavoured markdown"
           }
         ]
       },
