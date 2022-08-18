@@ -191,7 +191,9 @@ defmodule Pleroma.Mixfile do
       {:ecto_psql_extras, "~> 0.6"},
       {:elasticsearch,
        git: "https://akkoma.dev/AkkomaGang/elasticsearch-elixir.git", ref: "main"},
-      {:mfm_parser, git: "https://akkoma.dev/AkkomaGang/mfm-parser.git", ref: "5054e0ba1ebcbd9a7916aec219528e3e58057241" },
+      {:mfm_parser,
+       git: "https://akkoma.dev/AkkomaGang/mfm-parser.git",
+       ref: "5054e0ba1ebcbd9a7916aec219528e3e58057241"},
 
       # indirect dependency version override
       {:plug, "~> 1.10.4", override: true},

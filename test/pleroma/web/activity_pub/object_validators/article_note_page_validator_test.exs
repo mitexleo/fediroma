@@ -113,7 +113,9 @@ defmodule Pleroma.Web.ActivityPub.ObjectValidators.ArticleNotePageValidatorTest 
                "<span class=\"h-card\"><a class=\"u-url mention\" data-user=\"#{full_tag_remote_user.id}\" href=\"#{full_tag_remote_user.ap_id}\" rel=\"ugc\">@<span>full_tag_remote_user</span></a></span>"
 
       assert content =~ "@oops_not_a_mention"
-      assert content =~ "<span class=\"mfm\" style=\"display: inline-block; animation: 1s linear 0s infinite normal both running mfm-rubberBand;\">mfm goes here</span> </p>aaa"
+
+      assert content =~
+               "<span class=\"mfm\" style=\"display: inline-block; animation: 1s linear 0s infinite normal both running mfm-rubberBand;\">mfm goes here</span> </p>aaa"
     end
 
     test "a misskey MFM status with a _misskey_content field should work and be linked", _ do
