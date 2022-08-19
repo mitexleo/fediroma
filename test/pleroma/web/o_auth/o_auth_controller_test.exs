@@ -611,7 +611,7 @@ defmodule Pleroma.Web.OAuth.OAuthControllerTest do
       end
     end
 
-    test "authorize from cookie" do
+    test "should not authorize from cookie" do
       user = insert(:user)
       app = insert(:oauth_app)
       oauth_token = insert(:oauth_token, user: user, app: app)
@@ -636,14 +636,7 @@ defmodule Pleroma.Web.OAuth.OAuthControllerTest do
         )
 
       target = redirected_to(conn)
-      assert target =~ redirect_uri
-
-      query = URI.parse(target).query |> URI.query_decoder() |> Map.new()
-
-      assert %{"state" => "statepassed", "code" => code} = query
-      auth = Repo.get_by(Authorization, token: code)
-      assert auth
-      assert auth.scopes == app.scopes
+      refute target =~ redirect_uri
     end
 
     test "redirect to on two-factor auth page" do

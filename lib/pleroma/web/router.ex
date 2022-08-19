@@ -793,10 +793,8 @@ defmodule Pleroma.Web.Router do
 
     get("/web/login", MastodonAPI.AuthController, :login)
     delete("/auth/sign_out", MastodonAPI.AuthController, :logout)
-
-    post("/auth/password", MastodonAPI.AuthController, :password_reset)
-
     get("/web/*path", MastoFEController, :index)
+    post("/auth/password", MastodonAPI.AuthController, :password_reset)
 
     get("/embed/:id", EmbedController, :show)
   end

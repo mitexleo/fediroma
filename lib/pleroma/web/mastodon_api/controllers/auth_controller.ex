@@ -34,7 +34,6 @@ defmodule Pleroma.Web.MastodonAPI.AuthController do
         |> UriHelper.modify_uri_params(%{"access_token" => oauth_token.token})
 
       conn
-      |> AuthHelper.put_session_token(oauth_token.token)
       |> redirect(to: redirect_to)
     else
       _ -> redirect_to_oauth_form(conn, params)
@@ -42,9 +41,9 @@ defmodule Pleroma.Web.MastodonAPI.AuthController do
   end
 
   def login(conn, params) do
-    with %{assigns: %{user: %User{}, token: %Token{app_id: app_id}}} <- conn,
+    with %{assigns: %{user: %User{}, token: %Token{app_id: app_id, token: token}}} <- conn,
          {:ok, %{id: ^app_id}} <- local_mastofe_app() do
-      redirect(conn, to: local_mastodon_post_login_path(conn))
+      redirect(conn, to: local_mastodon_post_login_path(conn) <> "?access_token=#{token}")
     else
       _ -> redirect_to_oauth_form(conn, params)
     end

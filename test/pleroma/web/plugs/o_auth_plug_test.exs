@@ -90,15 +90,15 @@ defmodule Pleroma.Web.Plugs.OAuthPlugTest do
       %{conn: conn}
     end
 
-    test "if session-stored token matches a valid OAuth token, assigns :user and :token", %{
+    test "if session-stored token matches a valid OAuth token, should not assign :user and :token", %{
       conn: conn,
       user: user,
       token: oauth_token
     } do
       conn = OAuthPlug.call(conn, %{})
 
-      assert conn.assigns.user && conn.assigns.user.id == user.id
-      assert conn.assigns.token && conn.assigns.token.id == oauth_token.id
+      refute conn.assigns[:user]
+      refute conn.assigns[:token]
     end
 
     test "if session-stored token matches an expired OAuth token, does nothing", %{

@@ -77,33 +77,45 @@ defmodule Pleroma.Web.OAuth.OAuthController do
     available_scopes = (app && app.scopes) || []
     scopes = Scopes.fetch_scopes(params, available_scopes)
 
-    user =
-      with %{assigns: %{user: %User{} = user}} <- conn do
-        user
-      else
-        _ -> nil
-      end
+    # if we already have a token for this specific setup, we can use that
+    with %App{} <- app,
+         {:ok, _} <- Scopes.validate(scopes, app.scopes),
+         {:ok, %Token{} = token} <- Token.get_by_app(app) do
+      token = Repo.preload(token, :app)
 
-    scopes =
-      if scopes == [] do
-        available_scopes
-      else
-        scopes
-      end
+      conn
+      |> assign(:token, token)
+      |> handle_existing_authorization(params)
+    else
+      _ ->
+        user =
+          with %{assigns: %{user: %User{} = user}} <- conn do
+            user
+          else
+            _ -> nil
+          end
 
-    # Note: `params` might differ from `conn.params`; use `@params` not `@conn.params` in template
-    render(conn, Authenticator.auth_template(), %{
-      user: user,
-      app: app && Map.delete(app, :client_secret),
-      response_type: params["response_type"],
-      client_id: params["client_id"],
-      available_scopes: available_scopes,
-      scopes: scopes,
-      redirect_uri: params["redirect_uri"],
-      state: params["state"],
-      params: params,
-      view_module: OAuthView
-    })
+        scopes =
+          if scopes == [] do
+            available_scopes
+          else
+            scopes
+          end
+
+        # Note: `params` might differ from `conn.params`; use `@params` not `@conn.params` in template
+        render(conn, Authenticator.auth_template(), %{
+          user: user,
+          app: app && Map.delete(app, :client_secret),
+          response_type: params["response_type"],
+          client_id: params["client_id"],
+          available_scopes: available_scopes,
+          scopes: scopes,
+          redirect_uri: params["redirect_uri"],
+          state: params["state"],
+          params: params,
+          view_module: OAuthView
+        })
+    end
   end
 
   defp handle_existing_authorization(
