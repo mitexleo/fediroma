@@ -7,7 +7,6 @@ defmodule Pleroma.Web.MastodonAPI.AuthController do
 
   import Pleroma.Web.ControllerHelper, only: [json_response: 3]
 
-  alias Pleroma.Helpers.AuthHelper
   alias Pleroma.Helpers.UriHelper
   alias Pleroma.User
   alias Pleroma.Web.OAuth.App
@@ -67,9 +66,8 @@ defmodule Pleroma.Web.MastodonAPI.AuthController do
   def logout(conn, _) do
     conn =
       with %{assigns: %{token: %Token{} = oauth_token}} <- conn,
-           session_token = AuthHelper.get_session_token(conn),
-           {:ok, %Token{token: ^session_token}} <- RevokeToken.revoke(oauth_token) do
-        AuthHelper.delete_session_token(conn)
+           {:ok, %Token{token: _session_token}} <- RevokeToken.revoke(oauth_token) do
+        conn
       else
         _ -> conn
       end

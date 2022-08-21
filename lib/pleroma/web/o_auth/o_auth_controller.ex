@@ -5,7 +5,6 @@
 defmodule Pleroma.Web.OAuth.OAuthController do
   use Pleroma.Web, :controller
 
-  alias Pleroma.Helpers.AuthHelper
   alias Pleroma.Helpers.UriHelper
   alias Pleroma.Maps
   alias Pleroma.MFA
@@ -78,7 +77,8 @@ defmodule Pleroma.Web.OAuth.OAuthController do
     scopes = Scopes.fetch_scopes(params, available_scopes)
 
     # if we already have a token for this specific setup, we can use that
-    with %App{} <- app,
+    with false <- Params.truthy_param?(params["force_login"]),
+         %App{} <- app,
          {:ok, _} <- Scopes.validate(scopes, app.scopes),
          {:ok, %Token{} = token} <- Token.get_by_app(app) do
       token = Repo.preload(token, :app)
@@ -330,9 +330,8 @@ defmodule Pleroma.Web.OAuth.OAuthController do
   # Bad request
   def token_exchange(%Plug.Conn{} = conn, params), do: bad_request(conn, params)
 
-  def after_token_exchange(%Plug.Conn{} = conn, %{token: token} = view_params) do
+  def after_token_exchange(%Plug.Conn{} = conn, %{token: _token} = view_params) do
     conn
-    |> AuthHelper.put_session_token(token.token)
     |> json(OAuthView.render("token.json", view_params))
   end
 
@@ -391,15 +390,7 @@ defmodule Pleroma.Web.OAuth.OAuthController do
 
   def token_revoke(%Plug.Conn{} = conn, %{"token" => token}) do
     with {:ok, %Token{} = oauth_token} <- Token.get_by_token(token),
-         {:ok, oauth_token} <- RevokeToken.revoke(oauth_token) do
-      conn =
-        with session_token = AuthHelper.get_session_token(conn),
-             %Token{token: ^session_token} <- oauth_token do
-          AuthHelper.delete_session_token(conn)
-        else
-          _ -> conn
-        end
-
+         {:ok, _oauth_token} <- RevokeToken.revoke(oauth_token) do
       json(conn, %{})
     else
       _error ->

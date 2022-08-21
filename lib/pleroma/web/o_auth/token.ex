@@ -41,7 +41,7 @@ defmodule Pleroma.Web.OAuth.Token do
 
   def get_by_app(%App{} = app) do
     app.id
-    |> Query.get_by_app()
+    |> Query.get_unexpired_by_app()
     |> Repo.find_resource()
   end
 
