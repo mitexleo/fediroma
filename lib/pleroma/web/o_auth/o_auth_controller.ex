@@ -71,16 +71,27 @@ defmodule Pleroma.Web.OAuth.OAuthController do
 
   def authorize(%Plug.Conn{} = conn, params), do: do_authorize(conn, params)
 
+  defp maybe_remove_token(%Plug.Conn{assigns: %{token: %{app: id}}} = conn, %App{id: id}) do
+    conn
+  end
+
+  defp maybe_remove_token(conn, _app) do
+    conn
+    |> assign(:token, nil)
+  end
+
   defp do_authorize(%Plug.Conn{} = conn, params) do
     app = Repo.get_by(App, client_id: params["client_id"])
+    conn = maybe_remove_token(conn, app)
     available_scopes = (app && app.scopes) || []
     scopes = Scopes.fetch_scopes(params, available_scopes)
 
     # if we already have a token for this specific setup, we can use that
     with false <- Params.truthy_param?(params["force_login"]),
          %App{} <- app,
-         {:ok, _} <- Scopes.validate(scopes, app.scopes),
-         {:ok, %Token{} = token} <- Token.get_by_app(app) do
+         %{assigns: %{user: %Pleroma.User{} = user}} <- conn,
+         {:ok, %Token{} = token} <- Token.get_preexisting_by_app_and_user(app, user),
+         true <- scopes == token.scopes do
       token = Repo.preload(token, :app)
 
       conn

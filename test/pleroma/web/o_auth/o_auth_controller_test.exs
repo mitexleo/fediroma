@@ -470,12 +470,17 @@ defmodule Pleroma.Web.OAuth.OAuthControllerTest do
       assert html_response(conn, 200) =~ ~s(type="submit")
     end
 
-    test "renders authentication page if user is already authenticated but user request with another client",
+    test "reuses authentication if the user is authenticated with another client",
          %{
-           app: app,
            conn: conn
          } do
-      token = insert(:oauth_token, app: app)
+      user = insert(:user)
+
+      app = insert(:oauth_app, redirect_uris: "https://redirect.url")
+      other_app = insert(:oauth_app, redirect_uris: "https://redirect.url")
+
+      token = insert(:oauth_token, user: user, app: app)
+      reusable_token = insert(:oauth_token, app: other_app, user: user)
 
       conn =
         conn
@@ -484,9 +489,108 @@ defmodule Pleroma.Web.OAuth.OAuthControllerTest do
           "/oauth/authorize",
           %{
             "response_type" => "code",
-            "client_id" => "another_client_id",
-            "redirect_uri" => OAuthController.default_redirect_uri(app),
+            "client_id" => other_app.client_id,
+            "redirect_uri" => OAuthController.default_redirect_uri(other_app),
             "scope" => "read"
+          }
+        )
+
+      assert URI.decode(redirected_to(conn)) ==
+               "https://redirect.url?access_token=#{reusable_token.token}"
+    end
+
+    test "does not reuse other people's tokens",
+         %{
+           conn: conn
+         } do
+      user = insert(:user)
+      other_user = insert(:user)
+
+      app = insert(:oauth_app, redirect_uris: "https://redirect.url")
+      other_app = insert(:oauth_app, redirect_uris: "https://redirect.url")
+
+      token = insert(:oauth_token, user: user, app: app)
+      _not_reusable_token = insert(:oauth_token, app: other_app, user: other_user)
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{token.token}")
+        |> get(
+          "/oauth/authorize",
+          %{
+            "response_type" => "code",
+            "client_id" => other_app.client_id,
+            "redirect_uri" => OAuthController.default_redirect_uri(other_app),
+            "scope" => "read"
+          }
+        )
+
+      assert html_response(conn, 200) =~ ~s(type="submit")
+    end
+
+    test "does not reuse expired tokens",
+         %{
+           conn: conn
+         } do
+      user = insert(:user)
+
+      app = insert(:oauth_app, redirect_uris: "https://redirect.url")
+
+      other_app = insert(:oauth_app, redirect_uris: "https://redirect.url")
+
+      token = insert(:oauth_token, user: user, app: app)
+
+      _not_reusable_token =
+        insert(:oauth_token,
+          app: other_app,
+          user: user,
+          valid_until: NaiveDateTime.add(NaiveDateTime.utc_now(), -60 * 100)
+        )
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{token.token}")
+        |> get(
+          "/oauth/authorize",
+          %{
+            "response_type" => "code",
+            "client_id" => other_app.client_id,
+            "redirect_uri" => OAuthController.default_redirect_uri(other_app),
+            "scope" => "read"
+          }
+        )
+
+      assert html_response(conn, 200) =~ ~s(type="submit")
+    end
+
+    test "does not reuse tokens with the wrong scopes",
+         %{
+           conn: conn
+         } do
+      user = insert(:user)
+
+      app = insert(:oauth_app, redirect_uris: "https://redirect.url")
+
+      other_app = insert(:oauth_app, redirect_uris: "https://redirect.url")
+
+      token = insert(:oauth_token, user: user, app: app, scopes: ["read"])
+
+      _not_reusable_token =
+        insert(:oauth_token,
+          app: other_app,
+          user: user
+        )
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{token.token}")
+        |> get(
+          "/oauth/authorize",
+          %{
+            "response_type" => "code",
+            "client_id" => other_app.client_id,
+            "redirect_uri" => OAuthController.default_redirect_uri(other_app),
+            "scope" => "read write"
           }
         )
 
