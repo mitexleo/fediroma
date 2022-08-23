@@ -96,6 +96,14 @@ defmodule Pleroma.Web.OAuth.Token do
     |> unique_constraint(:refresh_token)
   end
 
+  def get_or_exchange_token(%Authorization{} = auth, %App{} = app, %User{} = user) do
+    if auth.used do
+      get_preeexisting_by_app_and_user(app, user)
+    else
+      exchange_token(app, auth)
+    end
+  end
+
   defp put_valid_until(changeset, attrs) do
     valid_until =
       Map.get(attrs, :valid_until, NaiveDateTime.add(NaiveDateTime.utc_now(), lifespan()))

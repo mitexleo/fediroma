@@ -291,23 +291,9 @@ defmodule Pleroma.Web.OAuth.OAuthController do
     with {:ok, app} <- Token.Utils.fetch_app(conn),
          fixed_token = Token.Utils.fix_padding(params["code"]),
          {:ok, auth} <- Authorization.get_by_token(app, fixed_token),
-         %User{} = user <- User.get_cached_by_id(auth.user_id) do
-      if auth.used do
-        # reuse token, we already have a valid one
-        with {:ok, token} <- Token.get_preeexisting_by_app_and_user(app, user) do
-          after_token_exchange(conn, %{user: user, token: token})
-        else
-          error ->
-            handle_token_exchange_error(conn, error)
-        end
-      else
-        with {:ok, token} <- Token.exchange_token(app, auth) do
-          after_token_exchange(conn, %{user: user, token: token})
-        else
-          error ->
-            handle_token_exchange_error(conn, error)
-        end
-      end
+         %User{} = user <- User.get_cached_by_id(auth.user_id),
+         {:ok, token} <- Token.get_or_exchange_token(auth, app, user) do
+      after_token_exchange(conn, %{user: user, token: token})
     else
       error ->
         handle_token_exchange_error(conn, error)
