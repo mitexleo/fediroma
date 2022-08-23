@@ -22,12 +22,21 @@ defmodule Pleroma.Web.MastodonAPI.AuthController do
 
   @local_mastodon_name "Mastodon-Local"
 
+  defp get_or_exchange_token(%Authorization{} = auth, %App{} = app, %User{} = user) do
+    if auth.used do
+      Token.get_preeexisting_by_app_and_user(app, user)
+    else
+      Token.exchange_token(app, auth)
+    end
+  end
+
   @doc "GET /web/login"
   # Local Mastodon FE login callback action
   def login(conn, %{"code" => auth_token} = params) do
     with {:ok, app} <- local_mastofe_app(),
          {:ok, auth} <- Authorization.get_by_token(app, auth_token),
-         {:ok, oauth_token} <- Token.exchange_token(app, auth) do
+         %User{} = user <- User.get_cached_by_id(auth.user_id),
+         {:ok, oauth_token} <- get_or_exchange_token(auth, app, user) do
       redirect_to =
         conn
         |> local_mastodon_post_login_path()
