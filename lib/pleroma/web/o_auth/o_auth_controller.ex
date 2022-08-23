@@ -70,7 +70,21 @@ defmodule Pleroma.Web.OAuth.OAuthController do
     end
   end
 
-  def authorize(%Plug.Conn{} = conn, params), do: do_authorize(conn, params)
+  def authorize(%Plug.Conn{} = conn, params) do
+    # if we have a user in the session, attempt to authenticate as them
+    # otherwise show the login form
+    with user_id <- AuthHelper.get_session_user(conn),
+         false <- is_nil(user_id),
+         %User{} = user <- User.get_cached_by_id(user_id),
+         %App{} = app <- Repo.get_by(App, client_id: params["client_id"]),
+         {:ok, %Token{} = token} <- Token.get_preeexisting_by_app_and_user(app, user) do
+      conn
+      |> assign(:token, token)
+      |> handle_existing_authorization(params)
+    else
+      _ -> do_authorize(conn, params)
+    end
+  end
 
   defp do_authorize(%Plug.Conn{} = conn, params) do
     app = Repo.get_by(App, client_id: params["client_id"])
@@ -148,7 +162,9 @@ defmodule Pleroma.Web.OAuth.OAuthController do
   def create_authorization(%Plug.Conn{} = conn, %{"authorization" => _} = params, opts) do
     with {:ok, auth, user} <- do_create_authorization(conn, params, opts[:user]),
          {:mfa_required, _, _, false} <- {:mfa_required, user, auth, MFA.require?(user)} do
-      after_create_authorization(conn, auth, params)
+      conn
+      |> AuthHelper.put_session_user(user.id)
+      |> after_create_authorization(auth, params)
     else
       error ->
         handle_create_authorization_error(conn, error, params)
@@ -321,6 +337,7 @@ defmodule Pleroma.Web.OAuth.OAuthController do
   def after_token_exchange(%Plug.Conn{} = conn, %{token: token} = view_params) do
     conn
     |> AuthHelper.put_session_token(token.token)
+    |> AuthHelper.put_session_user(token.user_id)
     |> json(OAuthView.render("token.json", view_params))
   end
 

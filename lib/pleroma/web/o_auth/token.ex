@@ -70,6 +70,15 @@ defmodule Pleroma.Web.OAuth.Token do
     end
   end
 
+  def get_preeexisting_by_app_and_user(app, user) do
+    Query.get_by_app(app.id)
+    |> Query.get_by_user(user.id)
+    |> Query.get_unexpired()
+    |> Query.preload([:user])
+    |> Query.limit(1)
+    |> Repo.find_resource()
+  end
+
   defp put_token(changeset) do
     changeset
     |> change(%{token: Token.Utils.generate_token()})
