@@ -59,27 +59,30 @@ defmodule Pleroma.Web.OAuth.OAuthController do
   # after user already authorized to MastodonFE.
   # So we have to check client and token.
   def authorize(
-        %Plug.Conn{assigns: %{token: %Token{} = token}} = conn,
+        %Plug.Conn{assigns: %{token: %Token{} = token, user: %User{} = user}} = conn,
         %{"client_id" => client_id} = params
       ) do
     with %Token{} = t <- Repo.get_by(Token, token: token.token) |> Repo.preload(:app),
          ^client_id <- t.app.client_id do
       handle_existing_authorization(conn, params)
     else
-      _ -> do_authorize(conn, params)
+      _ ->
+        maybe_reuse_token(conn, params, user.id)
     end
   end
 
   def authorize(%Plug.Conn{} = conn, params) do
     # if we have a user in the session, attempt to authenticate as them
     # otherwise show the login form
-    with user_id <- AuthHelper.get_session_user(conn),
-         false <- is_nil(user_id),
-         %User{} = user <- User.get_cached_by_id(user_id),
+    maybe_reuse_token(conn, params, AuthHelper.get_session_user(conn))
+  end
+
+  defp maybe_reuse_token(conn, params, user_id) when is_binary(user_id) do
+    with %User{} = user <- User.get_cached_by_id(user_id),
          %App{} = app <- Repo.get_by(App, client_id: params["client_id"]),
          {:ok, %Token{} = token} <- Token.get_preeexisting_by_app_and_user(app, user),
-         {:ok, %Authorization{} = auth} <- Authorization.get_preeexisting_by_app_and_user(app, user) do
-      IO.inspect(params)
+         {:ok, %Authorization{} = auth} <-
+           Authorization.get_preeexisting_by_app_and_user(app, user) do
       conn
       |> assign(:token, token)
       |> after_create_authorization(auth, %{"authorization" => params})
@@ -87,6 +90,8 @@ defmodule Pleroma.Web.OAuth.OAuthController do
       _ -> do_authorize(conn, params)
     end
   end
+
+  defp maybe_reuse_token(conn, params, _user), do: do_authorize(conn, params)
 
   defp do_authorize(%Plug.Conn{} = conn, params) do
     app = Repo.get_by(App, client_id: params["client_id"])
@@ -283,12 +288,26 @@ defmodule Pleroma.Web.OAuth.OAuthController do
   end
 
   def token_exchange(%Plug.Conn{} = conn, %{"grant_type" => "authorization_code"} = params) do
-    with {:ok, app} <- IO.inspect(Token.Utils.fetch_app(conn)),
+    with {:ok, app} <- Token.Utils.fetch_app(conn),
          fixed_token = Token.Utils.fix_padding(params["code"]),
          {:ok, auth} <- Authorization.get_by_token(app, fixed_token),
-         %User{} = user <- User.get_cached_by_id(auth.user_id),
-         {:ok, token} <- IO.inspect(Token.exchange_token(app, auth)) do
-      after_token_exchange(conn, %{user: user, token: token})
+         %User{} = user <- User.get_cached_by_id(auth.user_id) do
+      if auth.used do
+        # reuse token, we already have a valid one
+        with {:ok, token} <- Token.get_preeexisting_by_app_and_user(app, user) do
+          after_token_exchange(conn, %{user: user, token: token})
+        else
+          error ->
+            handle_token_exchange_error(conn, error)
+        end
+      else
+        with {:ok, token} <- Token.exchange_token(app, auth) do
+          after_token_exchange(conn, %{user: user, token: token})
+        else
+          error ->
+            handle_token_exchange_error(conn, error)
+        end
+      end
     else
       error ->
         handle_token_exchange_error(conn, error)
