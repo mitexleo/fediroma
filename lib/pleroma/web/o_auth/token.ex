@@ -75,6 +75,7 @@ defmodule Pleroma.Web.OAuth.Token do
     |> Query.get_by_user(user.id)
     |> Query.get_unexpired()
     |> Query.preload([:user])
+    |> Query.sort_by_inserted_at()
     |> Query.limit(1)
     |> Repo.find_resource()
   end

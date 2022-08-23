@@ -47,6 +47,10 @@ defmodule Pleroma.Web.OAuth.Token.Query do
     from(q in query, limit: ^limit)
   end
 
+  def sort_by_inserted_at(query) do
+    from(q in query, order_by: [desc: :updated_at])
+  end
+
   @spec preload(query, any) :: query
   def preload(query \\ Token, assoc_preload \\ [])
 

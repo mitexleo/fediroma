@@ -77,10 +77,12 @@ defmodule Pleroma.Web.OAuth.OAuthController do
          false <- is_nil(user_id),
          %User{} = user <- User.get_cached_by_id(user_id),
          %App{} = app <- Repo.get_by(App, client_id: params["client_id"]),
-         {:ok, %Token{} = token} <- Token.get_preeexisting_by_app_and_user(app, user) do
+         {:ok, %Token{} = token} <- Token.get_preeexisting_by_app_and_user(app, user),
+         {:ok, %Authorization{} = auth} <- Authorization.get_preeexisting_by_app_and_user(app, user) do
+      IO.inspect(params)
       conn
       |> assign(:token, token)
-      |> handle_existing_authorization(params)
+      |> after_create_authorization(auth, %{"authorization" => params})
     else
       _ -> do_authorize(conn, params)
     end
@@ -281,11 +283,11 @@ defmodule Pleroma.Web.OAuth.OAuthController do
   end
 
   def token_exchange(%Plug.Conn{} = conn, %{"grant_type" => "authorization_code"} = params) do
-    with {:ok, app} <- Token.Utils.fetch_app(conn),
+    with {:ok, app} <- IO.inspect(Token.Utils.fetch_app(conn)),
          fixed_token = Token.Utils.fix_padding(params["code"]),
          {:ok, auth} <- Authorization.get_by_token(app, fixed_token),
          %User{} = user <- User.get_cached_by_id(auth.user_id),
-         {:ok, token} <- Token.exchange_token(app, auth) do
+         {:ok, token} <- IO.inspect(Token.exchange_token(app, auth)) do
       after_token_exchange(conn, %{user: user, token: token})
     else
       error ->
