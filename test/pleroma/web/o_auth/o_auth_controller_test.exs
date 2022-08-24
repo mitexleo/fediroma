@@ -499,7 +499,6 @@ defmodule Pleroma.Web.OAuth.OAuthControllerTest do
            app: app,
            conn: conn
          } do
-
       user = insert(:user)
       token = insert(:oauth_token, app: app, user: user)
 
@@ -512,14 +511,14 @@ defmodule Pleroma.Web.OAuth.OAuthControllerTest do
         |> AuthHelper.put_session_token(token.token)
         |> AuthHelper.put_session_user(user.id)
         |> get(
-             "/oauth/authorize",
-             %{
-               "response_type" => "code",
-               "client_id" => other_app.client_id,
-               "redirect_uri" => OAuthController.default_redirect_uri(other_app),
-               "scope" => "read"
-             }
-           )
+          "/oauth/authorize",
+          %{
+            "response_type" => "code",
+            "client_id" => other_app.client_id,
+            "redirect_uri" => OAuthController.default_redirect_uri(other_app),
+            "scope" => "read"
+          }
+        )
 
       assert URI.decode(redirected_to(conn)) ==
                "https://other_redirect.url?code=#{authorization.token}"
@@ -530,7 +529,6 @@ defmodule Pleroma.Web.OAuth.OAuthControllerTest do
            app: app,
            conn: conn
          } do
-
       user = insert(:user)
       token = insert(:oauth_token, app: app, user: user)
 
@@ -542,14 +540,14 @@ defmodule Pleroma.Web.OAuth.OAuthControllerTest do
         |> AuthHelper.put_session_token(token.token)
         |> AuthHelper.put_session_user(user.id)
         |> get(
-             "/oauth/authorize",
-             %{
-               "response_type" => "code",
-               "client_id" => other_app.client_id,
-               "redirect_uri" => OAuthController.default_redirect_uri(other_app),
-               "scope" => "read"
-             }
-           )
+          "/oauth/authorize",
+          %{
+            "response_type" => "code",
+            "client_id" => other_app.client_id,
+            "redirect_uri" => OAuthController.default_redirect_uri(other_app),
+            "scope" => "read"
+          }
+        )
 
       assert html_response(conn, 200) =~ ~s(type="submit")
     end
@@ -559,7 +557,6 @@ defmodule Pleroma.Web.OAuth.OAuthControllerTest do
            app: app,
            conn: conn
          } do
-
       user = insert(:user)
       other_user = insert(:user)
       token = insert(:oauth_token, app: app, user: user)
@@ -573,14 +570,14 @@ defmodule Pleroma.Web.OAuth.OAuthControllerTest do
         |> AuthHelper.put_session_token(token.token)
         |> AuthHelper.put_session_user(user.id)
         |> get(
-             "/oauth/authorize",
-             %{
-               "response_type" => "code",
-               "client_id" => other_app.client_id,
-               "redirect_uri" => OAuthController.default_redirect_uri(other_app),
-               "scope" => "read"
-             }
-           )
+          "/oauth/authorize",
+          %{
+            "response_type" => "code",
+            "client_id" => other_app.client_id,
+            "redirect_uri" => OAuthController.default_redirect_uri(other_app),
+            "scope" => "read"
+          }
+        )
 
       assert html_response(conn, 200) =~ ~s(type="submit")
     end
@@ -590,27 +587,32 @@ defmodule Pleroma.Web.OAuth.OAuthControllerTest do
            app: app,
            conn: conn
          } do
-
       user = insert(:user)
       token = insert(:oauth_token, app: app, user: user)
 
       other_app = insert(:oauth_app, redirect_uris: "https://other_redirect.url")
       _authorization = insert(:oauth_authorization, user: user, app: other_app)
-      _reusable_token = insert(:oauth_token, app: other_app, user: user, valid_until: NaiveDateTime.add(NaiveDateTime.utc_now(), -100))
+
+      _reusable_token =
+        insert(:oauth_token,
+          app: other_app,
+          user: user,
+          valid_until: NaiveDateTime.add(NaiveDateTime.utc_now(), -100)
+        )
 
       conn =
         conn
         |> AuthHelper.put_session_token(token.token)
         |> AuthHelper.put_session_user(user.id)
         |> get(
-             "/oauth/authorize",
-             %{
-               "response_type" => "code",
-               "client_id" => other_app.client_id,
-               "redirect_uri" => OAuthController.default_redirect_uri(other_app),
-               "scope" => "read"
-             }
-           )
+          "/oauth/authorize",
+          %{
+            "response_type" => "code",
+            "client_id" => other_app.client_id,
+            "redirect_uri" => OAuthController.default_redirect_uri(other_app),
+            "scope" => "read"
+          }
+        )
 
       assert html_response(conn, 200) =~ ~s(type="submit")
     end
