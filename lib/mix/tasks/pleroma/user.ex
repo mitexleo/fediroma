@@ -258,6 +258,35 @@ defmodule Mix.Tasks.Pleroma.User do
     end
   end
 
+  def run(["broadcast_public_keys" | _rest]) do
+    start_pleroma()
+
+    Pleroma.User.Query.build(%{
+      local: true,
+      is_active: true
+    })
+    |> Pleroma.Repo.chunk_stream(50, :batches)
+    |> Stream.each(fn users ->
+      users
+      |> Enum.each(fn user ->
+        IO.puts("Broadcasting: #{user.ap_id}")
+        changeset = User.update_changeset(user, %{ keys: user.keys })
+        {:ok, unpersisted_user} = Ecto.Changeset.apply_action(changeset, :update)
+        updated_object =
+          Pleroma.Web.ActivityPub.UserView.render("user.json", user: unpersisted_user)
+          |> Map.delete("@context")
+
+        {:ok, update_data, []} = Builder.update(user, updated_object)
+        {:ok, _update, _} =
+          Pipeline.common_pipeline(update_data,
+            local: true,
+            user_update_changeset: changeset
+          )
+      end)
+    end)
+    |> Stream.run()
+  end
+
   def run(["invite" | rest]) do
     {options, [], []} =
       OptionParser.parse(rest,
