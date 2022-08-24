@@ -270,13 +270,15 @@ defmodule Mix.Tasks.Pleroma.User do
       users
       |> Enum.each(fn user ->
         IO.puts("Broadcasting: #{user.ap_id}")
-        changeset = User.update_changeset(user, %{ keys: user.keys })
+        changeset = User.update_changeset(user, %{keys: user.keys})
         {:ok, unpersisted_user} = Ecto.Changeset.apply_action(changeset, :update)
+
         updated_object =
           Pleroma.Web.ActivityPub.UserView.render("user.json", user: unpersisted_user)
           |> Map.delete("@context")
 
         {:ok, update_data, []} = Builder.update(user, updated_object)
+
         {:ok, _update, _} =
           Pipeline.common_pipeline(update_data,
             local: true,
