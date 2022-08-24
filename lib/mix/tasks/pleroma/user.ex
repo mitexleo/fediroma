@@ -258,32 +258,26 @@ defmodule Mix.Tasks.Pleroma.User do
     end
   end
 
-  def run(["broadcast_public_keys" | _rest]) do
+  def run(["refetch_public_keys" | _rest]) do
     start_pleroma()
 
     Pleroma.User.Query.build(%{
-      local: true,
+      external: true,
       is_active: true
     })
     |> Pleroma.Repo.chunk_stream(50, :batches)
     |> Stream.each(fn users ->
       users
       |> Enum.each(fn user ->
-        IO.puts("Broadcasting: #{user.ap_id}")
-        changeset = User.update_changeset(user, %{keys: user.keys})
-        {:ok, unpersisted_user} = Ecto.Changeset.apply_action(changeset, :update)
+        IO.puts("Re-Resolving: #{user.ap_id}")
 
-        updated_object =
-          Pleroma.Web.ActivityPub.UserView.render("user.json", user: unpersisted_user)
-          |> Map.delete("@context")
-
-        {:ok, update_data, []} = Builder.update(user, updated_object)
-
-        {:ok, _update, _} =
-          Pipeline.common_pipeline(update_data,
-            local: true,
-            user_update_changeset: changeset
-          )
+        with {:ok, user} <- Pleroma.User.fetch_by_ap_id(user.ap_id),
+             changeset <- Pleroma.User.update_changeset(user),
+             {:ok, _user} <- Pleroma.User.update_and_set_cache(changeset) do
+          :ok
+        else
+          error -> IO.puts("Could not resolve: #{user.ap_id}, #{inspect(error)}")
+        end
       end)
     end)
     |> Stream.run()
