@@ -55,37 +55,50 @@ defmodule Pleroma.Web.ActivityPub.Builder do
     {:ok, data, []}
   end
 
+  defp unicode_emoji_react(object, data, emoji) do
+    data
+    |> Map.put("content", emoji)
+    |> Map.put("type", "EmojiReact")
+  end
+
+  defp custom_emoji_react(object, data, emoji) do
+    if String.contains?("@") do
+      # Attempt to resolve remote emoji
+      [emoji_code, instance] = String.split(emoji, "@")
+    else
+      with %{} = emojo <- Emoji.get(emoji) do
+        path = emojo |> Map.get(:file)
+        url = "#{Endpoint.url()}#{path}"
+
+        data
+        |> Map.put("content", emoji)
+        |> Map.put("type", "EmojiReact")
+        |> Map.put("tag", [
+          %{}
+          |> Map.put("id", url)
+          |> Map.put("type", "Emoji")
+          |> Map.put("name", emojo.code)
+          |> Map.put(
+               "icon",
+               %{}
+               |> Map.put("type", "Image")
+               |> Map.put("url", url)
+             )
+        ])
+      else
+        _ -> {:error, "Emoji does not exist"}
+      end
+    end
+  end
+
   @spec emoji_react(User.t(), Object.t(), String.t()) :: {:ok, map(), keyword()}
   def emoji_react(actor, object, emoji) do
     with {:ok, data, meta} <- object_action(actor, object) do
       data =
         if Emoji.is_unicode_emoji?(emoji) do
-          data
-          |> Map.put("content", emoji)
-          |> Map.put("type", "EmojiReact")
+          unicode_emoji_react(object, data, emoji)
         else
-          with %{} = emojo <- Emoji.get(emoji) do
-            path = emojo |> Map.get(:file)
-            url = "#{Endpoint.url()}#{path}"
-
-            data
-            |> Map.put("content", emoji)
-            |> Map.put("type", "EmojiReact")
-            |> Map.put("tag", [
-              %{}
-              |> Map.put("id", url)
-              |> Map.put("type", "Emoji")
-              |> Map.put("name", emojo.code)
-              |> Map.put(
-                "icon",
-                %{}
-                |> Map.put("type", "Image")
-                |> Map.put("url", url)
-              )
-            ])
-          else
-            _ -> {:error, "Emoji does not exist"}
-          end
+          custom_emoji_react(object, data, emoji)
         end
 
       {:ok, data, meta}
