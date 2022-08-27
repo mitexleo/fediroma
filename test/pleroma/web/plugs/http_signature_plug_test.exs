@@ -89,7 +89,9 @@ defmodule Pleroma.Web.Plugs.HTTPSignaturePlugTest do
       params = %{"actor" => "someparam"}
       path = URI.parse(obj.data["id"]).path
       conn = build_conn(:get, path, params)
-      assert ["/notice/#{act.id}", "/notice/#{act.id}?actor=someparam"] == HTTPSignaturePlug.route_aliases(conn)
+
+      assert ["/notice/#{act.id}", "/notice/#{act.id}?actor=someparam"] ==
+               HTTPSignaturePlug.route_aliases(conn)
     end
   end
 end
