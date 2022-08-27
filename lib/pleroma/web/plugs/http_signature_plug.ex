@@ -27,11 +27,11 @@ defmodule Pleroma.Web.Plugs.HTTPSignaturePlug do
     end
   end
 
-  def route_aliases(%{path_info: ["objects", id]}) do
+  def route_aliases(%{path_info: ["objects", id], query_string: query_string}) do
     ap_id = Router.Helpers.o_status_url(Pleroma.Web.Endpoint, :object, id)
 
     with %Activity{} = activity <- Activity.get_by_object_ap_id_with_object(ap_id) do
-      ["/notice/#{activity.id}"]
+      ["/notice/#{activity.id}", "/notice/#{activity.id}?#{query_string}"]
     else
       _ -> []
     end
