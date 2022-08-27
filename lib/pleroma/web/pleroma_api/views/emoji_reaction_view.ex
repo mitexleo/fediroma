@@ -13,7 +13,7 @@ defmodule Pleroma.Web.PleromaAPI.EmojiReactionView do
   def emoji_name(emoji, url) do
     url = URI.parse(url)
 
-    if url.host == Endpoint.host() do
+    if url.host == Pleroma.Web.Endpoint.host() do
       emoji
     else
       "#{emoji}@#{url.host}"

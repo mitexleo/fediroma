@@ -329,7 +329,7 @@ defmodule Pleroma.Web.ActivityPub.Utils do
         object
       ) do
     reactions = get_cached_emoji_reactions(object)
-    emoji = stripped_emoji_name(emoji)
+    emoji = Pleroma.Emoji.stripped_name(emoji)
     url = emoji_url(emoji, activity)
 
     new_reactions =
@@ -356,12 +356,6 @@ defmodule Pleroma.Web.ActivityPub.Utils do
     update_element_in_object("reaction", new_reactions, object, count)
   end
 
-  defp stripped_emoji_name(name) do
-    name
-    |> String.replace_leading(":", "")
-    |> String.replace_trailing(":", "")
-  end
-
   defp emoji_url(
          name,
          %Activity{
@@ -384,7 +378,7 @@ defmodule Pleroma.Web.ActivityPub.Utils do
         %Activity{data: %{"content" => emoji, "actor" => actor}} = activity,
         object
       ) do
-    emoji = stripped_emoji_name(emoji)
+    emoji = Pleroma.Emoji.stripped_name(emoji)
     reactions = get_cached_emoji_reactions(object)
     url = emoji_url(emoji, activity)
 

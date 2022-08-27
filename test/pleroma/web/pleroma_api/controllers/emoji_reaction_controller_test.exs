@@ -17,22 +17,23 @@ defmodule Pleroma.Web.PleromaAPI.EmojiReactionControllerTest do
     user = insert(:user)
     other_user = insert(:user)
 
-    {:ok, activity} = CommonAPI.post(user, %{status: "#cofe"})
+    note = insert(:note, user: user, reactions: %{reactions: %{"👍" => [other_user.ap_id]}})
+    activity = insert(:note_activity, note: note, user: user)
 
     result =
       conn
       |> assign(:user, other_user)
       |> assign(:token, insert(:oauth_token, user: other_user, scopes: ["write:statuses"]))
-      |> put("/api/v1/pleroma/statuses/#{activity.id}/reactions/☕")
+      |> put("/api/v1/pleroma/statuses/#{activity.id}/reactions/\u26A0")
       |> json_response_and_validate_schema(200)
 
     # We return the status, but this our implementation detail.
     assert %{"id" => id} = result
     assert to_string(activity.id) == id
-
+    IO.inspect(result)
     assert result["pleroma"]["emoji_reactions"] == [
              %{
-               "name" => "☕",
+               "name" => "\u26A0\uFE0F",
                "count" => 1,
                "me" => true,
                "url" => nil,
