@@ -55,39 +55,66 @@ defmodule Pleroma.Web.ActivityPub.Builder do
     {:ok, data, []}
   end
 
-  defp unicode_emoji_react(object, data, emoji) do
+  defp unicode_emoji_react(_object, data, emoji) do
     data
     |> Map.put("content", emoji)
     |> Map.put("type", "EmojiReact")
   end
 
-  defp custom_emoji_react(object, data, emoji) do
-    if String.contains?("@") do
-      # Attempt to resolve remote emoji
-      [emoji_code, instance] = String.split(emoji, "@")
-    else
-      with %{} = emojo <- Emoji.get(emoji) do
-        path = emojo |> Map.get(:file)
-        url = "#{Endpoint.url()}#{path}"
+  defp add_emoji_content(data, emoji, url) do
+    data
+    |> Map.put("content", Emoji.maybe_quote(emoji))
+    |> Map.put("type", "EmojiReact")
+    |> Map.put("tag", [
+      %{}
+      |> Map.put("id", url)
+      |> Map.put("type", "Emoji")
+      |> Map.put("name", Emoji.maybe_quote(emoji))
+      |> Map.put(
+        "icon",
+        %{}
+        |> Map.put("type", "Image")
+        |> Map.put("url", url)
+      )
+    ])
+  end
 
-        data
-        |> Map.put("content", emoji)
-        |> Map.put("type", "EmojiReact")
-        |> Map.put("tag", [
-          %{}
-          |> Map.put("id", url)
-          |> Map.put("type", "Emoji")
-          |> Map.put("name", emojo.code)
-          |> Map.put(
-               "icon",
-               %{}
-               |> Map.put("type", "Image")
-               |> Map.put("url", url)
-             )
-        ])
-      else
-        _ -> {:error, "Emoji does not exist"}
-      end
+  defp remote_custom_emoji_react(object, data, emoji) do
+    [emoji_code, instance] = String.split(Emoji.stripped_name(emoji), "@")
+    %{data: %{"reactions" => existing_reactions}} = object
+
+    matching_reaction =
+      Enum.find(
+        existing_reactions,
+        fn [name, _, url] ->
+          url = URI.parse(url)
+          url.host == instance && name == emoji_code
+        end
+      )
+
+    if matching_reaction do
+      [name, _, url] = matching_reaction
+      add_emoji_content(data, name, url)
+    else
+      {:error, "Could not react"}
+    end
+  end
+
+  defp local_custom_emoji_react(data, emoji) do
+    with %{} = emojo <- Emoji.get(emoji) do
+      path = emojo |> Map.get(:file)
+      url = "#{Endpoint.url()}#{path}"
+      add_emoji_content(data, emojo.code, url)
+    else
+      _ -> {:error, "Emoji does not exist"}
+    end
+  end
+
+  defp custom_emoji_react(object, data, emoji) do
+    if String.contains?(emoji, "@") do
+      remote_custom_emoji_react(object, data, emoji)
+    else
+      local_custom_emoji_react(data, emoji)
     end
   end
 
