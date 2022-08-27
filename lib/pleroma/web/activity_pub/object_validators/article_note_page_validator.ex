@@ -69,6 +69,9 @@ defmodule Pleroma.Web.ActivityPub.ObjectValidators.ArticleNotePageValidator do
     end
   end
 
+  defp fix_replies(%{"replies" => %{"items" => replies}} = data) when is_list(replies),
+       do: Map.put(data, "replies", replies)
+
   defp fix_replies(data), do: Map.delete(data, "replies")
 
   defp remote_mention_resolver(
