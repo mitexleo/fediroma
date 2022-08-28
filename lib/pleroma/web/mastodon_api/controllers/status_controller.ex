@@ -422,13 +422,13 @@ defmodule Pleroma.Web.MastodonAPI.StatusController do
 
   @doc "GET /api/v1/statuses/:id/translations/:language"
   def translate(%{assigns: %{user: user}} = conn, %{id: id, language: language}) do
-    with {:enabled, true} <- {:enabled, Config.get([:deepl, :enabled])},
-         %Activity{} = activity <- IO.inspect(Activity.get_by_id_with_object(id)),
+    with {:enabled, true} <- {:enabled, Config.get([:translator, :enabled])},
+         %Activity{} = activity <- Activity.get_by_id_with_object(id),
          {:visible, true} <- {:visible, Visibility.visible_for_user?(activity, user)},
-         api_key <- Config.get([:deepl, :api_key]),
-         tier <- Config.get([:deepl, :tier]),
-         {:ok, translation} <- DeepLex.translate(api_key, tier, activity.object.data["content"], language) do
-      json(conn, translation)
+         translation_module <- Config.get([:translator, :module]),
+         {:ok, detected, translation} <-
+           translation_module.translate(activity.object.data["content"], language) do
+      json(conn, %{detected_lanugage: detected, text: translation})
     else
       {:enabled, false} ->
         conn
@@ -437,6 +437,9 @@ defmodule Pleroma.Web.MastodonAPI.StatusController do
 
       {:visible, false} ->
         {:error, :not_found}
+
+      _e ->
+        {:error, :internal_server_error}
     end
   end
 

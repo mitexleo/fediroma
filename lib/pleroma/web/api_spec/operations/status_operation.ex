@@ -593,28 +593,6 @@ defmodule Pleroma.Web.ApiSpec.StatusOperation do
       }
     }
   end
-
-  defp translation_result do
-    %Schema{
-      title: "StatusTranslation",
-      description: "The translation of a status.",
-      type: :object,
-      required: [:detected_source_language, :text],
-      properties: %{
-        detected_source_language: %Schema{
-          type: :string,
-          description: "The detected source language of the status."
-        },
-        text: %Schema{
-          type: :string,
-          description: "The translated text of the status."
-        }
-      },
-      example: %{
-        "detected_source_language" => "en",
-        "text" => "Hear, Feel, Think"
-      }
-    }
   end
 
   defp translation do
@@ -622,9 +600,10 @@ defmodule Pleroma.Web.ApiSpec.StatusOperation do
       title: "StatusTranslation",
       description: "The translation of a status.",
       type: :object,
-      required: [:translations],
+      required: [:detected_language, :text],
       properties: %{
-        translations: %Schema{type: :array, items: translation_result()}
+        detected_language: %Schema{type: :string, description: "The detected language of the text"},
+        text: %Schema{type: :string, description: "The translated text"}
       }
     }
   end

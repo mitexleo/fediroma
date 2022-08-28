@@ -2071,4 +2071,32 @@ defmodule Pleroma.Web.MastodonAPI.StatusControllerTest do
                |> json_response_and_validate_schema(422)
     end
   end
+
+  describe "translating statuses" do
+    setup do: oauth_access(["read:statuses"])
+
+    test "translating a status with deepl", %{conn: conn} do
+      Tesla.Mock.mock(fn
+        %{method: :post, url: "http://api-free.deepl.com/translate"} ->
+          {:ok,
+           %{
+             status: 200,
+             body:
+               ~s({"data": {"translations": [{"translatedText": "Tell me, for whom do you fight?"}]}})
+           }}
+      end)
+
+      user = insert(:user)
+      {:ok, quoted_status} = CommonAPI.post(user, %{status: "何のために闘う?"})
+
+      conn =
+        conn
+        |> put_req_header("content-type", "application/json")
+        |> get("/api/v1/statuses/#{quoted_status.id}/translations/en")
+
+      response = json_response_and_validate_schema(conn, 200)
+
+      assert response["text"] == "Tell me, for whom do you fight?"
+    end
+  end
 end
