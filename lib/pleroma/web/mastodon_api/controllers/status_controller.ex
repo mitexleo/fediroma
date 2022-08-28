@@ -14,6 +14,7 @@ defmodule Pleroma.Web.MastodonAPI.StatusController do
   alias Pleroma.Bookmark
   alias Pleroma.Object
   alias Pleroma.Repo
+  alias Pleroma.Config
   alias Pleroma.ScheduledActivity
   alias Pleroma.User
   alias Pleroma.Web.ActivityPub.ActivityPub
@@ -37,7 +38,8 @@ defmodule Pleroma.Web.MastodonAPI.StatusController do
     when action in [
            :index,
            :show,
-           :context
+           :context,
+           :translate
          ]
   )
 
@@ -416,6 +418,26 @@ defmodule Pleroma.Web.MastodonAPI.StatusController do
       for: user,
       as: :activity
     )
+  end
+
+  @doc "GET /api/v1/statuses/:id/translations/:language"
+  def translate(%{assigns: %{user: user}} = conn, %{id: id, language: language}) do
+    with {:enabled, true} <- {:enabled, Config.get([:deepl, :enabled])},
+         %Activity{} = activity <- IO.inspect(Activity.get_by_id_with_object(id)),
+         {:visible, true} <- {:visible, Visibility.visible_for_user?(activity, user)},
+         api_key <- Config.get([:deepl, :api_key]),
+         tier <- Config.get([:deepl, :tier]),
+         {:ok, translation} <- DeepLex.translate(api_key, tier, activity.object.data["content"], language) do
+      json(conn, translation)
+    else
+      {:enabled, false} ->
+        conn
+        |> put_status(:bad_request)
+        |> json(%{"error" => "DeepL is not enabled"})
+
+      {:visible, false} ->
+        {:error, :not_found}
+    end
   end
 
   defp put_application(params, %{assigns: %{token: %Token{user: %User{} = user} = token}} = _conn) do

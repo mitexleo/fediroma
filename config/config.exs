@@ -844,6 +844,7 @@ config :pleroma, Pleroma.Search.Elasticsearch.Cluster,
   }
 
 config :pleroma, :deepl,
+  enabled: false,
   # either :free or :pro
   tier: :free,
   api_key: ""

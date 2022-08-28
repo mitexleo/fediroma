@@ -3357,6 +3357,12 @@ config :pleroma, :config_description, [
     description: "DeepL settings.",
     children: [
       %{
+        key: :enabled,
+        type: :boolean,
+        description: "Is translation enabled?",
+        suggestion: [true, false]
+      },
+      %{
         key: :tier,
         type: :atom,
         description: "API Tier",
