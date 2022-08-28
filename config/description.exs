@@ -3349,5 +3349,25 @@ config :pleroma, :config_description, [
         ]
       }
     ]
+  },
+  %{
+    group: :pleroma,
+    key: :deepl,
+    type: :group,
+    description: "DeepL settings.",
+    children: [
+      %{
+        key: :tier,
+        type: :atom,
+        description: "API Tier",
+        suggestion: [:free, :pro]
+      },
+      %{
+        key: :api_key,
+        type: :string,
+        description: "API key for DeepL",
+        suggestion: [nil]
+      }
+    ]
   }
 ]
