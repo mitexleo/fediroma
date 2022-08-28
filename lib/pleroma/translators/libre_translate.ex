@@ -17,7 +17,9 @@ defmodule Akkoma.Translators.LibreTranslate do
   @impl Akkoma.Translator
   def translate(string, to_language) do
     with {:ok, response} <- do_request(string, to_language) do
-      %{"translatedText" => translated, "detectedLanguage" => %{"language" => detected}} = response.body
+      %{"translatedText" => translated, "detectedLanguage" => %{"language" => detected}} =
+        response.body
+
       {:ok, detected, translated}
     else
       {:error, reason} -> {:error, reason}

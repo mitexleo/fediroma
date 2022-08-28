@@ -26,7 +26,9 @@ defmodule Akkoma.Translators.DeepL do
   @impl Akkoma.Translator
   def translate(string, to_language) do
     with {:ok, response} <- do_request(api_key(), tier(), string, to_language) do
-      %{"translations" => [%{"text" => translated, "detected_source_language" => detected}]} = response.body
+      %{"translations" => [%{"text" => translated, "detected_source_language" => detected}]} =
+        response.body
+
       {:ok, detected, translated}
     else
       {:error, reason} -> {:error, reason}

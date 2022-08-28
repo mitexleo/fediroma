@@ -593,7 +593,6 @@ defmodule Pleroma.Web.ApiSpec.StatusOperation do
       }
     }
   end
-  end
 
   defp translation do
     %Schema{
@@ -602,7 +601,10 @@ defmodule Pleroma.Web.ApiSpec.StatusOperation do
       type: :object,
       required: [:detected_language, :text],
       properties: %{
-        detected_language: %Schema{type: :string, description: "The detected language of the text"},
+        detected_language: %Schema{
+          type: :string,
+          description: "The detected language of the text"
+        },
         text: %Schema{type: :string, description: "The translated text"}
       }
     }
