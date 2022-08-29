@@ -31,6 +31,7 @@ defmodule Pleroma.Web.MastodonAPI.StatusController do
   plug(:skip_public_check when action in [:index, :show])
 
   @unauthenticated_access %{fallback: :proceed_unauthenticated, scopes: []}
+  @cachex Pleroma.Config.get([:cachex, :provider], Cachex)
 
   plug(
     OAuthScopesPlug,
@@ -427,7 +428,12 @@ defmodule Pleroma.Web.MastodonAPI.StatusController do
          {:visible, true} <- {:visible, Visibility.visible_for_user?(activity, user)},
          translation_module <- Config.get([:translator, :module]),
          {:ok, detected, translation} <-
-           translation_module.translate(activity.object.data["content"], language) do
+           fetch_or_translate(
+             activity.id,
+             activity.object.data["content"],
+             language,
+             translation_module
+           ) do
       json(conn, %{detected_language: detected, text: translation})
     else
       {:enabled, false} ->
@@ -441,6 +447,18 @@ defmodule Pleroma.Web.MastodonAPI.StatusController do
       e ->
         e
     end
+  end
+
+  defp fetch_or_translate(status_id, text, language, translation_module) do
+    @cachex.fetch!(:user_cache, "translations:#{status_id}:#{language}", fn _ ->
+      value = translation_module.translate(text, language)
+
+      with {:ok, _, _} <- value do
+        value
+      else
+        _ -> {:ignore, value}
+      end
+    end)
   end
 
   defp put_application(params, %{assigns: %{token: %Token{user: %User{} = user} = token}} = _conn) do

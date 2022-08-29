@@ -2083,7 +2083,7 @@ defmodule Pleroma.Web.MastodonAPI.StatusControllerTest do
     test "should return text and detected language", %{conn: conn} do
       clear_config([:deepl, :tier], :free)
 
-      Tesla.Mock.mock(fn
+      Tesla.Mock.mock_global(fn
         %{method: :post, url: "https://api-free.deepl.com/v2/translate"} ->
           %Tesla.Env{
             status: 200,
@@ -2116,7 +2116,7 @@ defmodule Pleroma.Web.MastodonAPI.StatusControllerTest do
     test "should not allow translating of statuses you cannot see", %{conn: conn} do
       clear_config([:deepl, :tier], :free)
 
-      Tesla.Mock.mock(fn
+      Tesla.Mock.mock_global(fn
         %{method: :post, url: "https://api-free.deepl.com/v2/translate"} ->
           %Tesla.Env{
             status: 200,
