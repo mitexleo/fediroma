@@ -69,7 +69,7 @@ defmodule Pleroma.Akkoma.Translators.DeepLTest do
           }
       end)
 
-      assert {:error, "DeepL request failed"} = DeepL.translate("ギュギュ握りつぶしちゃうぞ", "en")
+      assert {:error, "DeepL request failed (code 403)"} = DeepL.translate("ギュギュ握りつぶしちゃうぞ", "en")
     end
   end
 end

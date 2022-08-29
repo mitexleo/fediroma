@@ -21,9 +21,9 @@ defmodule Pleroma.Akkoma.Translators.LibreTranslate do
 
       {:ok, detected, translated}
     else
-      {:ok, %{status: 403} = response} ->
-        Logger.warning("DeepL: Request rejected, please check your API key: #{inspect(response)}")
-        {:error, "libre_translate: request failed"}
+      {:ok, %{status: status} = response} ->
+        Logger.warning("libre_translate: request failed, #{inspect(response)}")
+        {:error, "libre_translate: request failed (code #{status})"}
 
       {:error, reason} ->
         {:error, reason}

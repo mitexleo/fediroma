@@ -30,9 +30,9 @@ defmodule Pleroma.Akkoma.Translators.DeepL do
 
       {:ok, detected, translated}
     else
-      {:ok, %{status: 403} = response} ->
-        Logger.warning("DeepL: Request rejected, please check your API key: #{inspect(response)}")
-        {:error, "DeepL request failed"}
+      {:ok, %{status: status} = response} ->
+        Logger.warning("DeepL: Request rejected: #{inspect(response)}")
+        {:error, "DeepL request failed (code #{status})"}
 
       {:error, reason} ->
         {:error, reason}

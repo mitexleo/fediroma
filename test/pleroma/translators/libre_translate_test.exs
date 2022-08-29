@@ -66,8 +66,26 @@ defmodule Pleroma.Akkoma.Translators.LibreTranslateTest do
           }
       end)
 
-      assert {:error, "libre_translate: request failed"} =
+      assert {:error, "libre_translate: request failed (code 403)"} =
                LibreTranslate.translate("ギュギュ握りつぶしちゃうぞ", "en")
+    end
+
+    test "should gracefully handle an unsupported language" do
+      clear_config([:libre_translate, :api_key], "")
+
+      Tesla.Mock.mock(fn
+        %{method: :post, url: "http://libre.translate/translate"} ->
+          %Tesla.Env{
+            status: 400,
+            body:
+              Jason.encode!(%{
+                error: "zoop is not supported"
+              })
+          }
+      end)
+
+      assert {:error, "libre_translate: request failed (code 400)"} =
+               LibreTranslate.translate("ギュギュ握りつぶしちゃうぞ", "zoop")
     end
   end
 end
