@@ -3352,9 +3352,9 @@ config :pleroma, :config_description, [
   },
   %{
     group: :pleroma,
-    key: :deepl,
+    key: :translator,
     type: :group,
-    description: "DeepL settings.",
+    description: "Translation Settings",
     children: [
       %{
         key: :enabled,
@@ -3363,15 +3363,50 @@ config :pleroma, :config_description, [
         suggestion: [true, false]
       },
       %{
+        key: :module,
+        type: :module,
+        description: "Translation module.",
+        suggestions: {:list_behaviour_implementations, Pleroma.Akkoma.Translator}
+      }
+    ]
+  },
+  %{
+    group: :pleroma,
+    key: :deepl,
+    label: "DeepL",
+    type: :group,
+    description: "DeepL Settings.",
+    children: [
+      %{
         key: :tier,
-        type: :atom,
+        type: {:dropdown, :atom},
         description: "API Tier",
-        suggestion: [:free, :pro]
+        suggestions: [:free, :pro]
       },
       %{
         key: :api_key,
         type: :string,
         description: "API key for DeepL",
+        suggestions: [nil]
+      }
+    ]
+  },
+  %{
+    group: :pleroma,
+    key: :libre_translate,
+    type: :group,
+    description: "LibreTranslate Settings.",
+    children: [
+      %{
+        key: :url,
+        type: :string,
+        description: "URL for libretranslate",
+        suggestion: [nil]
+      },
+      %{
+        key: :api_key,
+        type: :string,
+        description: "API key for libretranslate",
         suggestion: [nil]
       }
     ]

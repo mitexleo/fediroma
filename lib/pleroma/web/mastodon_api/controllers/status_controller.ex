@@ -428,18 +428,18 @@ defmodule Pleroma.Web.MastodonAPI.StatusController do
          translation_module <- Config.get([:translator, :module]),
          {:ok, detected, translation} <-
            translation_module.translate(activity.object.data["content"], language) do
-      json(conn, %{detected_lanugage: detected, text: translation})
+      json(conn, %{detected_language: detected, text: translation})
     else
       {:enabled, false} ->
         conn
         |> put_status(:bad_request)
-        |> json(%{"error" => "DeepL is not enabled"})
+        |> json(%{"error" => "Translation is not enabled"})
 
       {:visible, false} ->
         {:error, :not_found}
 
-      _e ->
-        {:error, :internal_server_error}
+      e ->
+        e
     end
   end
 
