@@ -3226,13 +3226,14 @@ config :pleroma, :config_description, [
     group: :pleroma,
     key: Pleroma.Search,
     type: :group,
+    label: "Search",
     description: "General search settings.",
     children: [
       %{
         key: :module,
-        type: :keyword,
+        type: :module,
         description: "Selected search module.",
-        suggestion: [Pleroma.Search.DatabaseSearch, Pleroma.Search.Meilisearch]
+        suggestions: {:list_behaviour_implementations, Pleroma.Search.SearchBackend}
       }
     ]
   },
@@ -3257,7 +3258,7 @@ config :pleroma, :config_description, [
       },
       %{
         key: :initial_indexing_chunk_size,
-        type: :int,
+        type: :integer,
         description:
           "Amount of posts in a batch when running the initial indexing operation. Should probably not be more than 100000" <>
             " since there's a limit on maximum insert size",
@@ -3268,6 +3269,7 @@ config :pleroma, :config_description, [
   %{
     group: :pleroma,
     key: Pleroma.Search.Elasticsearch.Cluster,
+    label: "Elasticsearch",
     type: :group,
     description: "Elasticsearch settings.",
     children: [
@@ -3334,13 +3336,13 @@ config :pleroma, :config_description, [
               },
               %{
                 key: :bulk_page_size,
-                type: :int,
+                type: :integer,
                 description: "Size for bulk put requests, mostly used on building the index",
                 suggestion: [5000]
               },
               %{
                 key: :bulk_wait_interval,
-                type: :int,
+                type: :integer,
                 description: "Time to wait between bulk put requests (in ms)",
                 suggestion: [15_000]
               }
