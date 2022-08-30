@@ -22,6 +22,24 @@ defmodule Pleroma.Akkoma.Translators.DeepL do
   end
 
   @impl Pleroma.Akkoma.Translator
+  def languages do
+    with {:ok, %{status: 200} = response} <- do_languages(),
+         {:ok, body} <- Jason.decode(response.body) do
+      resp =
+        Enum.map(body, fn %{"language" => code, "name" => name} -> %{code: code, name: name} end)
+
+      {:ok, resp}
+    else
+      {:ok, %{status: status} = response} ->
+        Logger.warning("DeepL: Request rejected: #{inspect(response)}")
+        {:error, "DeepL request failed (code #{status})"}
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  @impl Pleroma.Akkoma.Translator
   def translate(string, to_language) do
     with {:ok, %{status: 200} = response} <- do_request(api_key(), tier(), string, to_language),
          {:ok, body} <- Jason.decode(response.body) do
@@ -45,13 +63,23 @@ defmodule Pleroma.Akkoma.Translators.DeepL do
       URI.encode_query(
         %{
           text: string,
-          target_lang: to_language
+          target_lang: to_language,
+          tag_handling: "html"
         },
         :rfc3986
       ),
       [
         {"authorization", "DeepL-Auth-Key #{api_key}"},
         {"content-type", "application/x-www-form-urlencoded"}
+      ]
+    )
+  end
+
+  defp do_languages() do
+    HTTP.get(
+      base_url(tier()) <> "languages?type=target",
+      [
+        {"authorization", "DeepL-Auth-Key #{api_key()}"}
       ]
     )
   end

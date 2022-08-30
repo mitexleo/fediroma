@@ -8,6 +8,36 @@ defmodule Pleroma.Akkoma.Translators.DeepLTest do
       clear_config([:deepl, :api_key], "deepl_api_key")
     end
 
+    test "should list supported languages" do
+      clear_config([:deepl, :tier], :free)
+
+      Tesla.Mock.mock(fn
+        %{method: :get, url: "https://api-free.deepl.com/v2/languages?type=target"} = env ->
+          auth_header = Enum.find(env.headers, fn {k, _v} -> k == "authorization" end)
+          assert {"authorization", "DeepL-Auth-Key deepl_api_key"} = auth_header
+
+          %Tesla.Env{
+            status: 200,
+            body:
+              Jason.encode!([
+                %{
+                  "language" => "BG",
+                  "name" => "Bulgarian",
+                  "supports_formality" => false
+                },
+                %{
+                  "language" => "CS",
+                  "name" => "Czech",
+                  "supports_formality" => false
+                }
+              ])
+          }
+      end)
+
+      assert {:ok, [%{code: "BG", name: "Bulgarian"}, %{code: "CS", name: "Czech"}]} =
+               DeepL.languages()
+    end
+
     test "should work with the free tier" do
       clear_config([:deepl, :tier], :free)
 

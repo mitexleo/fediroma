@@ -8,6 +8,31 @@ defmodule Pleroma.Akkoma.Translators.LibreTranslateTest do
       clear_config([:libre_translate, :url], "http://libre.translate/translate")
     end
 
+    test "should list supported languages" do
+      clear_config([:deepl, :tier], :free)
+
+      Tesla.Mock.mock(fn
+        %{method: :get, url: "http://libre.translate/languages"} = _ ->
+          %Tesla.Env{
+            status: 200,
+            body:
+              Jason.encode!([
+                %{
+                  "code" => "en",
+                  "name" => "English"
+                },
+                %{
+                  "code" => "ar",
+                  "name" => "Arabic"
+                }
+              ])
+          }
+      end)
+
+      assert {:ok, [%{code: "en", name: "English"}, %{code: "ar", name: "Arabic"}]} =
+               LibreTranslate.languages()
+    end
+
     test "should work without an API key" do
       Tesla.Mock.mock(fn
         %{method: :post, url: "http://libre.translate/translate"} = env ->

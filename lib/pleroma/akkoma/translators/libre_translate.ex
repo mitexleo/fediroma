@@ -14,6 +14,22 @@ defmodule Pleroma.Akkoma.Translators.LibreTranslate do
   end
 
   @impl Pleroma.Akkoma.Translator
+  def languages do
+    with {:ok, %{status: 200} = response} <- do_languages(),
+         {:ok, body} <- Jason.decode(response.body) do
+      resp = Enum.map(body, fn %{"code" => code, "name" => name} -> %{code: code, name: name} end)
+      {:ok, resp}
+    else
+      {:ok, %{status: status} = response} ->
+        Logger.warning("LibreTranslate: Request rejected: #{inspect(response)}")
+        {:error, "LibreTranslate request failed (code #{status})"}
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  @impl Pleroma.Akkoma.Translator
   def translate(string, to_language) do
     with {:ok, %{status: 200} = response} <- do_request(string, to_language),
          {:ok, body} <- Jason.decode(response.body) do
@@ -47,5 +63,12 @@ defmodule Pleroma.Akkoma.Translators.LibreTranslate do
         {"content-type", "application/json"}
       ]
     )
+  end
+
+  defp do_languages() do
+    url = URI.parse(url())
+    url = %{url | path: "/languages"}
+
+    HTTP.get(to_string(url))
   end
 end

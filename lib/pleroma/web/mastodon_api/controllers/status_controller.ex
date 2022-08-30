@@ -450,7 +450,7 @@ defmodule Pleroma.Web.MastodonAPI.StatusController do
   end
 
   defp fetch_or_translate(status_id, text, language, translation_module) do
-    @cachex.fetch!(:user_cache, "translations:#{status_id}:#{language}", fn _ ->
+    @cachex.fetch!(:translations_cache, "translations:#{status_id}:#{language}", fn _ ->
       value = translation_module.translate(text, language)
 
       with {:ok, _, _} <- value do
