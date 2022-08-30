@@ -60,7 +60,7 @@ defmodule Pleroma.Akkoma.Translators.DeepLTest do
           }
       end)
 
-      assert {:ok, "ja", "I will crush you"} = DeepL.translate("ギュギュ握りつぶしちゃうぞ", "en")
+      assert {:ok, "ja", "I will crush you"} = DeepL.translate("ギュギュ握りつぶしちゃうぞ", nil, "en")
     end
 
     test "should work with the pro tier" do
@@ -85,7 +85,33 @@ defmodule Pleroma.Akkoma.Translators.DeepLTest do
           }
       end)
 
-      assert {:ok, "ja", "I will crush you"} = DeepL.translate("ギュギュ握りつぶしちゃうぞ", "en")
+      assert {:ok, "ja", "I will crush you"} = DeepL.translate("ギュギュ握りつぶしちゃうぞ", nil, "en")
+    end
+
+    test "should assign source language if set" do
+      clear_config([:deepl, :tier], :pro)
+
+      Tesla.Mock.mock(fn
+        %{method: :post, url: "https://api.deepl.com/v2/translate"} = env ->
+          auth_header = Enum.find(env.headers, fn {k, _v} -> k == "authorization" end)
+          assert {"authorization", "DeepL-Auth-Key deepl_api_key"} = auth_header
+          assert String.contains?(env.body, "source_lang=ja")
+
+          %Tesla.Env{
+            status: 200,
+            body:
+              Jason.encode!(%{
+                translations: [
+                  %{
+                    "text" => "I will crush you",
+                    "detected_source_language" => "ja"
+                  }
+                ]
+              })
+          }
+      end)
+
+      assert {:ok, "ja", "I will crush you"} = DeepL.translate("ギュギュ握りつぶしちゃうぞ", "ja", "en")
     end
 
     test "should gracefully fail if the API errors" do
@@ -99,7 +125,8 @@ defmodule Pleroma.Akkoma.Translators.DeepLTest do
           }
       end)
 
-      assert {:error, "DeepL request failed (code 403)"} = DeepL.translate("ギュギュ握りつぶしちゃうぞ", "en")
+      assert {:error, "DeepL request failed (code 403)"} =
+               DeepL.translate("ギュギュ握りつぶしちゃうぞ", nil, "en")
     end
   end
 end

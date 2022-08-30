@@ -40,8 +40,9 @@ defmodule Pleroma.Akkoma.Translators.DeepL do
   end
 
   @impl Pleroma.Akkoma.Translator
-  def translate(string, to_language) do
-    with {:ok, %{status: 200} = response} <- do_request(api_key(), tier(), string, to_language),
+  def translate(string, from_language, to_language) do
+    with {:ok, %{status: 200} = response} <-
+           do_request(api_key(), tier(), string, from_language, to_language),
          {:ok, body} <- Jason.decode(response.body) do
       %{"translations" => [%{"text" => translated, "detected_source_language" => detected}]} =
         body
@@ -57,7 +58,7 @@ defmodule Pleroma.Akkoma.Translators.DeepL do
     end
   end
 
-  defp do_request(api_key, tier, string, to_language) do
+  defp do_request(api_key, tier, string, from_language, to_language) do
     HTTP.post(
       base_url(tier) <> "translate",
       URI.encode_query(
@@ -65,7 +66,8 @@ defmodule Pleroma.Akkoma.Translators.DeepL do
           text: string,
           target_lang: to_language,
           tag_handling: "html"
-        },
+        }
+        |> maybe_add_source(from_language),
         :rfc3986
       ),
       [
@@ -74,6 +76,9 @@ defmodule Pleroma.Akkoma.Translators.DeepL do
       ]
     )
   end
+
+  defp maybe_add_source(opts, nil), do: opts
+  defp maybe_add_source(opts, lang), do: Map.put(opts, :source_lang, lang)
 
   defp do_languages() do
     HTTP.get(
