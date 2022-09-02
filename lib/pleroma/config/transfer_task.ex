@@ -85,7 +85,7 @@ defmodule Pleroma.Config.TransferTask do
   end
 
   defp merge_with_default(%{group: group, key: key, value: value} = setting) do
-    default = Config.Holder.default_config(group, key)
+    default = Config.get([key], Config.Holder.default_config(group, key))
 
     merged =
       cond do
