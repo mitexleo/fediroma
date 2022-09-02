@@ -43,21 +43,28 @@ defmodule Pleroma.Config.TransferTaskTest do
       Application.delete_env(:quack, :test_key)
       Application.delete_env(:postgrex, :test_key)
       Application.put_env(:logger, :level, initial)
-      Application.delete_env(:pleroma, :instance)
       System.delete_env("RELEASE_NAME")
     end)
   end
 
   test "transfer task falls back to env before default" do
+    instance = Application.get_env(:pleroma, :instance)
+
     insert(:config, key: :instance, value: [name: "wow"])
     clear_config([:instance, :static_dir], "static_dir_from_env")
     TransferTask.start_link([])
 
     assert Application.get_env(:pleroma, :instance)[:name] == "wow"
     assert Application.get_env(:pleroma, :instance)[:static_dir] == "static_dir_from_env"
+
+    on_exit(fn ->
+      Application.put_env(:pleroma, :instance, instance)
+    end)
   end
 
   test "transfer task falls back to release defaults if no other values found" do
+    instance = Application.get_env(:pleroma, :instance)
+
     System.put_env("RELEASE_NAME", "akkoma")
     Pleroma.Config.Holder.save_default()
     insert(:config, key: :instance, value: [name: "wow"])
@@ -69,8 +76,9 @@ defmodule Pleroma.Config.TransferTaskTest do
     assert Application.get_env(:pleroma, :instance)[:static_dir] == "/var/lib/akkoma/static"
 
     on_exit(fn ->
-      Application.delete_env(:pleroma, :instance)
       System.delete_env("RELEASE_NAME")
+      Pleroma.Config.Holder.save_default()
+      Application.put_env(:pleroma, :instance, instance)
     end)
   end
 
