@@ -79,9 +79,12 @@ defmodule Pleroma.Web.ActivityPub.Builder do
     ])
   end
 
-  defp remote_custom_emoji_react(object, data, emoji) do
+  defp remote_custom_emoji_react(
+         %{data: %{"reactions" => existing_reactions}} = object,
+         data,
+         emoji
+       ) do
     [emoji_code, instance] = String.split(Emoji.stripped_name(emoji), "@")
-    %{data: %{"reactions" => existing_reactions}} = object
 
     matching_reaction =
       Enum.find(
@@ -98,6 +101,10 @@ defmodule Pleroma.Web.ActivityPub.Builder do
     else
       {:error, "Could not react"}
     end
+  end
+
+  defp remote_custom_emoji_react(_object, data, emoji) do
+    {:error, "Could not react"}
   end
 
   defp local_custom_emoji_react(data, emoji) do
