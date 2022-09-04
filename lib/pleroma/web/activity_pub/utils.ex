@@ -507,17 +507,35 @@ defmodule Pleroma.Web.ActivityPub.Utils do
 
   def get_latest_reaction(internal_activity_id, %{ap_id: ap_id}, emoji) do
     %{data: %{"object" => object_ap_id}} = Activity.get_by_id(internal_activity_id)
-
     emoji = Pleroma.Emoji.maybe_quote(emoji)
 
     "EmojiReact"
     |> Activity.Queries.by_type()
     |> where(actor: ^ap_id)
-    |> where([activity], fragment("?->>'content' = ?", activity.data, ^emoji))
+    |> custom_emoji_discriminator(emoji)
     |> Activity.Queries.by_object_id(object_ap_id)
     |> order_by([activity], fragment("? desc nulls last", activity.id))
     |> limit(1)
     |> Repo.one()
+  end
+
+  defp custom_emoji_discriminator(query, emoji) do
+    if String.contains?(emoji, "@") do
+      stripped = Pleroma.Emoji.stripped_name(emoji)
+      [name, domain] = String.split(stripped, "@")
+      domain_pattern = "%" <> domain <> "%"
+      emoji_pattern = Pleroma.Emoji.maybe_quote(name)
+
+      query
+      |> where([activity], fragment("?->>'content' = ?
+        AND EXISTS (
+          SELECT FROM jsonb_array_elements(?->'tag') elem
+          WHERE elem->>'id' ILIKE ?
+        )", activity.data, ^emoji_pattern, activity.data, ^domain_pattern))
+    else
+      query
+      |> where([activity], fragment("?->>'content' = ?", activity.data, ^emoji))
+    end
   end
 
   #### Announce-related helpers

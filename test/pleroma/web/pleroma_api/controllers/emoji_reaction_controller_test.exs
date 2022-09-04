@@ -98,6 +98,20 @@ defmodule Pleroma.Web.PleromaAPI.EmojiReactionControllerTest do
              }
            ]
 
+    # Reacting with a remote custom emoji that hasn't been reacted with yet
+    note =
+      insert(:note,
+        user: user
+      )
+
+    activity = insert(:note_activity, note: note, user: user)
+
+    assert conn
+           |> assign(:user, user)
+           |> assign(:token, insert(:oauth_token, user: user, scopes: ["write:statuses"]))
+           |> put("/api/v1/pleroma/statuses/#{activity.id}/reactions/:wow@remote:")
+           |> json_response(400)
+
     # Reacting with a non-emoji
     assert conn
            |> assign(:user, other_user)
@@ -110,9 +124,21 @@ defmodule Pleroma.Web.PleromaAPI.EmojiReactionControllerTest do
     user = insert(:user)
     other_user = insert(:user)
 
-    {:ok, activity} = CommonAPI.post(user, %{status: "#cofe"})
+    note =
+      insert(:note,
+        user: user,
+        data: %{"reactions" => [["wow", [user.ap_id], "https://remote/emoji/wow"]]}
+      )
+
+    activity = insert(:note_activity, note: note, user: user)
+
+    ObanHelpers.perform_all()
+
     {:ok, _reaction_activity} = CommonAPI.react_with_emoji(activity.id, other_user, "☕")
     {:ok, _reaction_activity} = CommonAPI.react_with_emoji(activity.id, other_user, ":dinosaur:")
+
+    {:ok, _reaction_activity} =
+      CommonAPI.react_with_emoji(activity.id, other_user, ":wow@remote:")
 
     ObanHelpers.perform_all()
 
@@ -140,7 +166,32 @@ defmodule Pleroma.Web.PleromaAPI.EmojiReactionControllerTest do
 
     object = Object.get_by_ap_id(activity.data["object"])
 
-    assert object.data["reaction_count"] == 0
+    assert object.data["reaction_count"] == 2
+
+    # Remove custom remote emoji
+    result =
+      conn
+      |> assign(:user, other_user)
+      |> assign(:token, insert(:oauth_token, user: other_user, scopes: ["write:statuses"]))
+      |> delete("/api/v1/pleroma/statuses/#{activity.id}/reactions/:wow@remote:")
+      |> json_response(200)
+
+    assert result["pleroma"]["emoji_reactions"] == [
+             %{
+               "name" => "wow@remote",
+               "count" => 1,
+               "me" => false,
+               "url" => "https://remote/emoji/wow",
+               "account_ids" => [user.id]
+             }
+           ]
+
+    # Remove custom remote emoji that hasn't been reacted with yet
+    assert conn
+           |> assign(:user, other_user)
+           |> assign(:token, insert(:oauth_token, user: other_user, scopes: ["write:statuses"]))
+           |> delete("/api/v1/pleroma/statuses/#{activity.id}/reactions/:zoop@remote:")
+           |> json_response(400)
   end
 
   test "GET /api/v1/pleroma/statuses/:id/reactions", %{conn: conn} do
