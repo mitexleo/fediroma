@@ -5,7 +5,7 @@ defmodule Pleroma.Mixfile do
     [
       app: :pleroma,
       version: version("3.1.0"),
-      elixir: "~> 1.9",
+      elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       elixirc_options: [warnings_as_errors: warnings_as_errors()],
@@ -206,7 +206,7 @@ defmodule Pleroma.Mixfile do
       # temporary downgrade for excoveralls, hackney until hackney max_connections bug will be fixed
       {:excoveralls, "0.12.3", only: :test},
       {:mox, "~> 1.0", only: :test},
-      {:websocket_client, git: "https://github.com/jeremyong/websocket_client.git", only: :test}
+      {:websockex, "~> 0.4.3", only: :test}
     ] ++ oauth_deps()
   end
 
