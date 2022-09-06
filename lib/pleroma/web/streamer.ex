@@ -292,12 +292,15 @@ defmodule Pleroma.Web.Streamer do
       Pleroma.Activity.get_create_by_object_ap_id(item.object.data["id"])
       |> Map.put(:object, item.object)
 
-    anon_render = StreamerView.render("status_update.json", create_activity)
+    anon_render = StreamerView.render("status_update.json", create_activity, topic)
 
     Registry.dispatch(@registry, topic, fn list ->
       Enum.each(list, fn {pid, auth?} ->
         if auth? do
-          send(pid, {:render_with_user, StreamerView, "status_update.json", create_activity})
+          send(
+            pid,
+            {:render_with_user, StreamerView, "status_update.json", create_activity, topic}
+          )
         else
           send(pid, {:text, anon_render})
         end

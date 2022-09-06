@@ -394,7 +394,8 @@ defmodule Pleroma.Web.StreamerTest do
       {:ok, edited} = CommonAPI.update(sender, activity, %{status: "mew mew"})
       create = Pleroma.Activity.get_create_by_object_ap_id_with_object(activity.object.data["id"])
 
-      assert_receive {:render_with_user, _, "status_update.json", ^create}
+      stream = "user:#{user.id}"
+      assert_receive {:render_with_user, _, "status_update.json", ^create, ^stream}
       refute Streamer.filtered_by_user?(user, edited)
     end
 
@@ -405,7 +406,8 @@ defmodule Pleroma.Web.StreamerTest do
       {:ok, edited} = CommonAPI.update(user, activity, %{status: "mew mew"})
       create = Pleroma.Activity.get_create_by_object_ap_id_with_object(activity.object.data["id"])
 
-      assert_receive {:render_with_user, _, "status_update.json", ^create}
+      stream = "user:#{user.id}"
+      assert_receive {:render_with_user, _, "status_update.json", ^create, ^stream}
       refute Streamer.filtered_by_user?(user, edited)
     end
   end
