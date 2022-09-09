@@ -100,8 +100,10 @@ pipeline:
       - echo "import Config" > config/prod.secret.exs
       - *setup-hex
       - *tag-build
-      - mix deps.get --only prod
-      - mix release --path release
+      #- mix deps.get --only prod
+      #- mix release --path release
+      - mkdir release
+      - echo "test" >> release/test
       - zip akkoma-ubuntu-jammy.zip -r release
 
   release-ubuntu22:
