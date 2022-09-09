@@ -3,6 +3,7 @@ variables:
     - SCW_ACCESS_KEY
     - SCW_SECRET_KEY
     - SCW_DEFAULT_ORGANIZATION_ID
+    - SIGNIFY_PRIV_KEY
   - &setup-hex "mix local.hex --force && mix local.rebar --force"
   - &on-release
     when:
@@ -21,6 +22,7 @@ variables:
       branch:
         - develop
         - stable
+        - 202209-stable-release
   - &on-pr-open
     when:
       event:
