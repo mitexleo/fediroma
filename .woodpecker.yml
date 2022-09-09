@@ -14,7 +14,6 @@ variables:
         - stable
         - refs/tags/v*
         - refs/tags/stable-*
-        - 202209-stable-release
   - &on-point-release
     when:
       event:
