@@ -1,6 +1,6 @@
 # Verifying OTP release integrity
 
-All OTP releases are cryptographically signed, to allow
+All stable OTP releases are cryptographically signed, to allow
 you to verify the integrity if you choose to.
 
 Releases are signed with [Signify](https://man.openbsd.org/signify.1),
@@ -41,7 +41,7 @@ export FLAVOUR=amd64
 export BRANCH=stable
 
 # Fetch signing key
-wget https://akkoma.dev/AkkomaGang/akkoma/src/branch/develop/SIGNING_KEY.pub -o AKKOMA_SIGNING_KEY.pub
+curl https://akkoma.dev/AkkomaGang/akkoma/raw/branch/develop/SIGNING_KEY.pub -o AKKOMA_SIGNING_KEY.pub
 
 # Download zip file and sig files
 wget https://akkoma-updates.s3-website.fr-par.scw.cloud/$BRANCH/akkoma-$FLAVOUR{.zip,.zip.sha256,.zip.sha256.sig}
@@ -50,8 +50,17 @@ wget https://akkoma-updates.s3-website.fr-par.scw.cloud/$BRANCH/akkoma-$FLAVOUR{
 sha256sum --check akkoma-$FLAVOUR.zip.sha256
 
 # Verify hash file's integrity
-signify -V -p AKKOMA_SIGNING_KEY.pub -m akkoma-$FLAVOUR.zip.sha256.sig
+# Signify might be under the `signify` command, depending on your distribution
+signify-openbsd -V -p AKKOMA_SIGNING_KEY.pub -m akkoma-$FLAVOUR.zip.sha256
 
 # We're good, use that URL
-./bin/pleroma_ctl update --zip-url https://akkoma-updates.s3-website.fr-par.scw.cloud/$BRANCH/akkoma-$FLAVOUR.zip
+echo "Update URL contents verified"
+echo "use"
+echo "./bin/pleroma_ctl update --zip-url https://akkoma-updates.s3-website.fr-par.scw.cloud/$BRANCH/akkoma-$FLAVOUR"
+echo "to update your instance"
+
+# Clean up
+rm akkoma-$FLAVOUR.zip
+rm akkoma-$FLAVOUR.zip.sha256
+rm akkoma-$FLAVOUR.zip.sha256.sig
 ```
