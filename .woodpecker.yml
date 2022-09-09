@@ -3,7 +3,6 @@ variables:
     - SCW_ACCESS_KEY
     - SCW_SECRET_KEY
     - SCW_DEFAULT_ORGANIZATION_ID
-    - SIGNIFY_PRIV_KEY
   - &setup-hex "mix local.hex --force && mix local.rebar --force"
   - &on-release
     when:
@@ -100,10 +99,8 @@ pipeline:
       - echo "import Config" > config/prod.secret.exs
       - *setup-hex
       - *tag-build
-      #- mix deps.get --only prod
-      #- mix release --path release
-      - mkdir release
-      - echo "test" >> release/test
+      - mix deps.get --only prod
+      - mix release --path release
       - zip akkoma-ubuntu-jammy.zip -r release
 
   release-ubuntu22:
