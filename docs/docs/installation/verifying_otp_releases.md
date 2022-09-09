@@ -34,17 +34,17 @@ https://akkoma-updates.s3-website.fr-par.scw.cloud/{branch}/akkoma-{flavour}.zip
 Thus, to upgrade manually, with integrity checking, consider the following script:
 
 ```bash
-#!/bin/sh
+#!/bin/bash
 set -eo pipefail
 
 export FLAVOUR=amd64
 export BRANCH=stable
 
 # Fetch signing key
-curl https://akkoma.dev/AkkomaGang/akkoma/raw/branch/develop/SIGNING_KEY.pub -o AKKOMA_SIGNING_KEY.pub
+curl --silent https://akkoma.dev/AkkomaGang/akkoma/raw/branch/$BRANCH/SIGNING_KEY.pub -o AKKOMA_SIGNING_KEY.pub
 
 # Download zip file and sig files
-wget https://akkoma-updates.s3-website.fr-par.scw.cloud/$BRANCH/akkoma-$FLAVOUR{.zip,.zip.sha256,.zip.sha256.sig}
+wget -q https://akkoma-updates.s3-website.fr-par.scw.cloud/$BRANCH/akkoma-$FLAVOUR{.zip,.zip.sha256,.zip.sha256.sig}
 
 # Verify zip file's sha256 integrity
 sha256sum --check akkoma-$FLAVOUR.zip.sha256
