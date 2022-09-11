@@ -663,4 +663,14 @@ defmodule Pleroma.Factory do
     |> Map.merge(params)
     |> Pleroma.Announcement.add_rendered_properties()
   end
+
+  def frontend_setting_profile_factory(params \\ %{}) do
+    %Pleroma.Akkoma.FrontendSettingProfile{
+      user: build(:user),
+      frontend_name: "akkoma-fe",
+      profile_name: "default",
+      settings: %{"test" => "test"}
+    }
+    |> Map.merge(params)
+  end
 end
