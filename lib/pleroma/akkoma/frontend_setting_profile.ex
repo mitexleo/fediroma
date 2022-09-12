@@ -27,7 +27,7 @@ defmodule Pleroma.Akkoma.FrontendSettingProfile do
 
   def create_or_update(%User{} = user, frontend_name, profile_name, settings) do
     struct =
-      case get_by_user_and_frontend_name_and_profile_name(user.id, frontend_name, profile_name) do
+      case get_by_user_and_frontend_name_and_profile_name(user, frontend_name, profile_name) do
         nil ->
           %__MODULE__{}
 
@@ -45,13 +45,17 @@ defmodule Pleroma.Akkoma.FrontendSettingProfile do
     |> Repo.insert_or_update()
   end
 
-  def get_all_by_user_and_frontend_name(user_id, frontend_name) do
+  def get_all_by_user_and_frontend_name(%User{id: user_id}, frontend_name) do
     Repo.all(
       from(p in __MODULE__, where: p.user_id == ^user_id and p.frontend_name == ^frontend_name)
     )
   end
 
-  def get_by_user_and_frontend_name_and_profile_name(user_id, frontend_name, profile_name) do
+  def get_by_user_and_frontend_name_and_profile_name(
+        %User{id: user_id},
+        frontend_name,
+        profile_name
+      ) do
     Repo.one(
       from(p in __MODULE__,
         where:

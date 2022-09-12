@@ -87,7 +87,12 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
       settings = %{"test" => "test"}
 
       assert {:ok, %FrontendSettingProfile{}} =
-               FrontendSettingProfile.create_or_update(user, frontend_name, profile_name, settings)
+               FrontendSettingProfile.create_or_update(
+                 user,
+                 frontend_name,
+                 profile_name,
+                 settings
+               )
     end
 
     test "it should update a record" do
@@ -105,7 +110,58 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
       settings = %{"test" => "test2"}
 
       assert {:ok, %FrontendSettingProfile{settings: ^settings}} =
-               FrontendSettingProfile.create_or_update(user, frontend_name, profile_name, settings)
+               FrontendSettingProfile.create_or_update(
+                 user,
+                 frontend_name,
+                 profile_name,
+                 settings
+               )
+    end
+  end
+
+  describe "get_all_by_user_and_frontend_name/2" do
+    test "it should return all records" do
+      user = insert(:user)
+      frontend_name = "test"
+
+      insert(:frontend_setting_profile,
+        user: user,
+        frontend_name: frontend_name,
+        profile_name: "profileA",
+        settings: %{"test" => "test"}
+      )
+
+      insert(:frontend_setting_profile,
+        user: user,
+        frontend_name: frontend_name,
+        profile_name: "profileB",
+        settings: %{"test" => "test"}
+      )
+
+      assert [%FrontendSettingProfile{profile_name: "profileA"}, %{profile_name: "profileB"}] =
+               FrontendSettingProfile.get_all_by_user_and_frontend_name(user, frontend_name)
+    end
+  end
+
+  describe "get_by_user_and_frontend_name_and_profile_name/3" do
+    test "it should return a record" do
+      user = insert(:user)
+      frontend_name = "test"
+      profile_name = "profileA"
+
+      insert(:frontend_setting_profile,
+        user: user,
+        frontend_name: frontend_name,
+        profile_name: profile_name,
+        settings: %{"test" => "test"}
+      )
+
+      assert %FrontendSettingProfile{profile_name: "profileA"} =
+               FrontendSettingProfile.get_by_user_and_frontend_name_and_profile_name(
+                 user,
+                 frontend_name,
+                 profile_name
+               )
     end
   end
 end

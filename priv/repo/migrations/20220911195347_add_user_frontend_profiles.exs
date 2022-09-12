@@ -10,9 +10,7 @@ defmodule Pleroma.Repo.Migrations.AddUserFrontendProfiles do
       timestamps()
     end
 
-    create_if_not_exists(
-      unique_index(:user_frontend_setting_profiles, [:user_id, :frontend_name])
-    )
+    create_if_not_exists(index(:user_frontend_setting_profiles, [:user_id, :frontend_name]))
 
     create_if_not_exists(
       unique_index(:user_frontend_setting_profiles, [:user_id, :frontend_name, :profile_name])
@@ -21,7 +19,7 @@ defmodule Pleroma.Repo.Migrations.AddUserFrontendProfiles do
 
   def down do
     drop_if_exists(table("user_frontend_setting_profiles"))
-    drop_if_exists(unique_index(:user_frontend_setting_profiles, [:user_id, :frontend_name]))
+    drop_if_exists(index(:user_frontend_setting_profiles, [:user_id, :frontend_name]))
 
     drop_if_exists(
       unique_index(:user_frontend_setting_profiles, [:user_id, :frontend_name, :profile_name])
