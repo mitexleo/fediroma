@@ -669,7 +669,8 @@ defmodule Pleroma.Factory do
       user: build(:user),
       frontend_name: "akkoma-fe",
       profile_name: "default",
-      settings: %{"test" => "test"}
+      settings: %{"test" => "test"},
+      version: 1
     }
     |> Map.merge(params)
   end

@@ -7,19 +7,26 @@ defmodule Pleroma.Web.AkkomaAPI.FrontendSettingsController do
   @unauthenticated_access %{fallback: :proceed_unauthenticated, scopes: []}
   plug(
     OAuthScopesPlug,
-    %{@unauthenticated_access | scopes: ["read:account"]}
+    %{@unauthenticated_access | scopes: ["read:accounts"]}
     when action in [
-      :list, :get, :update
+      :list_profiles, :get_profile
+    ]
+  )
+  plug(
+    OAuthScopesPlug,
+    %{@unauthenticated_access | scopes: ["write:accounts"]}
+    when action in [
+      :update_profile
     ]
   )
 
-  #plug(Pleroma.Web.ApiSpec.CastAndValidate)
-  #defdelegate open_api_operation(action), to: Pleroma.Web.ApiSpec.TranslationOperation
+  plug(Pleroma.Web.ApiSpec.CastAndValidate)
+  defdelegate open_api_operation(action), to: Pleroma.Web.ApiSpec.FrontendSettingsOperation
 
   action_fallback(Pleroma.Web.MastodonAPI.FallbackController)
 
   @doc "GET /api/v1/akkoma/frontend_settings/:frontend_name/:profile_name"
-  def get(conn, %{"frontend_name" => frontend_name, "profile_name" => profile_name}) do
+  def get_profile(conn, %{frontend_name: frontend_name, profile_name: profile_name}) do
     with %FrontendSettingProfile{} = profile <- FrontendSettingProfile.get_by_user_and_frontend_name_and_profile_name(conn.assigns.user, frontend_name, profile_name) do
       conn
       |> json(profile.settings)
@@ -29,17 +36,16 @@ defmodule Pleroma.Web.AkkomaAPI.FrontendSettingsController do
   end
 
   @doc "GET /api/v1/akkoma/frontend_settings/:frontend_name"
-  def list(conn, %{"frontend_name" => frontend_name}) do
-    with profiles <- FrontendSettingProfile.get_by_user_and_frontend_name(conn.assigns.user, frontend_name) do
-      conn
-      |> json(profiles)
+  def list_profiles(conn, %{frontend_name: frontend_name}) do
+    with profiles <- FrontendSettingProfile.get_all_by_user_and_frontend_name(conn.assigns.user, frontend_name),
+     data <- Enum.map(profiles, fn profile -> profile.profile_name end) do
+      json(conn, data)
     end
   end
 
   @doc "PUT /api/v1/akkoma/frontend_settings/:frontend_name/:profile_name"
-  def update(conn, %{"frontend_name" => frontend_name, "profile_name" => profile_name, "settings" => settings}) do
-    with %FrontendSettingProfile{} = profile <- FrontendSettingProfile.get_by_user_and_frontend_name_and_profile_name(conn.assigns.user, frontend_name, profile_name),
-          {:ok, profile} <- FrontendSettingProfile.create_or_update(conn.assigns.user, frontend_name, profile_name, settings) do
+  def update_profile(conn, %{frontend_name: frontend_name, profile_name: profile_name, settings: settings}) do
+    with {:ok, profile} <- FrontendSettingProfile.create_or_update(conn.assigns.user, frontend_name, profile_name, settings) do
       conn
       |> json(profile.settings)
     end

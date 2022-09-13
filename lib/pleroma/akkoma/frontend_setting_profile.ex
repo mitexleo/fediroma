@@ -13,6 +13,7 @@ defmodule Pleroma.Akkoma.FrontendSettingProfile do
     field(:frontend_name, :string, primary_key: true)
     field(:profile_name, :string, primary_key: true)
     field(:settings, :map)
+    field(:version, :integer, default: 1)
     timestamps()
   end
 
@@ -22,6 +23,7 @@ defmodule Pleroma.Akkoma.FrontendSettingProfile do
     |> validate_required([:user_id, :frontend_name, :profile_name, :settings])
     |> validate_length(:frontend_name, min: 1, max: 255)
     |> validate_length(:profile_name, min: 1, max: 255)
+    |> validate_version()
     |> validate_settings_length(Config.get([:instance, :max_frontend_settings_json_chars]))
   end
 
@@ -73,6 +75,15 @@ defmodule Pleroma.Akkoma.FrontendSettingProfile do
 
     if String.length(settings_json) > max_length do
       add_error(changeset, :settings, "is too long")
+    else
+      changeset
+    end
+  end
+
+  defp validate_version(%Ecto.Changeset{changes: %{version: version}} = changeset) do
+    IO.inspect(changeset)
+    if version < 1 do
+      add_error(changeset, :version, "must be greater than 0")
     else
       changeset
     end
