@@ -17,7 +17,8 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
         user_id: user.id,
         frontend_name: frontend_name,
         profile_name: profile_name,
-        settings: settings
+        settings: settings,
+        version: 1
       }
 
       assert %{valid?: true} = FrontendSettingProfile.changeset(struct, attrs)
@@ -35,7 +36,8 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
         user_id: user.id,
         frontend_name: frontend_name,
         profile_name: profile_name,
-        settings: settings
+        settings: settings,
+        version: 1
       }
 
       assert %{valid?: false, errors: [settings: {"is too long", _}]} =
@@ -53,7 +55,8 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
         user_id: user.id,
         frontend_name: frontend_name,
         profile_name: profile_name,
-        settings: settings
+        settings: settings,
+        version: 1
       }
 
       assert %{valid?: false, errors: [frontend_name: {"can't be blank", _}]} =
@@ -71,10 +74,30 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
         user_id: user.id,
         frontend_name: frontend_name,
         profile_name: profile_name,
-        settings: settings
+        settings: settings,
+        version: 1
       }
 
       assert %{valid?: false, errors: [profile_name: {"can't be blank", _}]} =
+               FrontendSettingProfile.changeset(struct, attrs)
+    end
+
+    test "when version is negative" do
+      user = insert(:user)
+      frontend_name = "test"
+      profile_name = "test"
+      settings = %{"test" => "test"}
+      struct = %FrontendSettingProfile{}
+
+      attrs = %{
+        user_id: user.id,
+        frontend_name: frontend_name,
+        profile_name: profile_name,
+        settings: settings,
+        version: -1
+      }
+
+      assert %{valid?: false, errors: [version: {"must be greater than %{number}", _}]} =
                FrontendSettingProfile.changeset(struct, attrs)
     end
   end
@@ -91,7 +114,8 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
                  user,
                  frontend_name,
                  profile_name,
-                 settings
+                 settings,
+                 1
                )
     end
 
@@ -104,7 +128,8 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
         user: user,
         frontend_name: frontend_name,
         profile_name: profile_name,
-        settings: %{"test" => "test"}
+        settings: %{"test" => "test"},
+        version: 1
       )
 
       settings = %{"test" => "test2"}
@@ -114,7 +139,8 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
                  user,
                  frontend_name,
                  profile_name,
-                 settings
+                 settings,
+                 2
                )
     end
   end
@@ -128,14 +154,16 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
         user: user,
         frontend_name: frontend_name,
         profile_name: "profileA",
-        settings: %{"test" => "test"}
+        settings: %{"test" => "test"},
+        version: 1
       )
 
       insert(:frontend_setting_profile,
         user: user,
         frontend_name: frontend_name,
         profile_name: "profileB",
-        settings: %{"test" => "test"}
+        settings: %{"test" => "test"},
+        version: 1
       )
 
       assert [%FrontendSettingProfile{profile_name: "profileA"}, %{profile_name: "profileB"}] =
@@ -153,7 +181,8 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
         user: user,
         frontend_name: frontend_name,
         profile_name: profile_name,
-        settings: %{"test" => "test"}
+        settings: %{"test" => "test"},
+        version: 1
       )
 
       assert %FrontendSettingProfile{profile_name: "profileA"} =

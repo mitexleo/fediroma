@@ -1,6 +1,7 @@
 defmodule Pleroma.Web.ApiSpec.FrontendSettingsOperation do
   alias OpenApiSpex.Operation
   alias OpenApiSpex.Schema
+  import Pleroma.Web.ApiSpec.Helpers
 
   @spec open_api_operation(atom) :: Operation.t()
   def open_api_operation(action) do
@@ -51,10 +52,12 @@ defmodule Pleroma.Web.ApiSpec.FrontendSettingsOperation do
       operationId: "AkkomaAPI.FrontendSettingsController.update_profile_operation",
       security: [%{"oAuth" => ["write:accounts"]}],
       parameters: [frontend_name_param(), profile_name_param()],
-                                                            requestBody: request_body_param,
+      requestBody: profile_body_param(),
       responses: %{
         200 =>
-          Operation.response("Translation", "application/json", %Schema{type: :object})
+          Operation.response("Settings", "application/json", %Schema{type: :object}),
+        422 =>
+          Operation.response("Invalid", "application/json", %Schema{type: :object})
       }
     }
   end
@@ -74,6 +77,27 @@ defmodule Pleroma.Web.ApiSpec.FrontendSettingsOperation do
   end
 
   def profile_body_param do
-    request_body("Settings", %Schema{type: :object}, required: true),
+    request_body("Settings",
+      %Schema{
+        title: "Frontend Setting Profile",
+        type: :object,
+        required: [:version, :settings],
+        properties: %{
+          version: %Schema{
+            type: :integer,
+            description: "Version of the profile, must increment by 1 each time",
+            example: 1
+          },
+          settings: %Schema{
+            type: :object,
+            description: "Settings of the profile",
+            example: %{
+              theme: "dark",
+              locale: "en"
+            }
+          }
+        }
+      },
+      required: true)
   end
 end

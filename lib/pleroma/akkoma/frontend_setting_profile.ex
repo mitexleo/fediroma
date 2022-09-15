@@ -13,21 +13,22 @@ defmodule Pleroma.Akkoma.FrontendSettingProfile do
     field(:frontend_name, :string, primary_key: true)
     field(:profile_name, :string, primary_key: true)
     field(:settings, :map)
-    field(:version, :integer, default: 1)
+    field(:version, :integer)
     timestamps()
   end
 
   def changeset(%__MODULE__{} = struct, attrs) do
     struct
-    |> cast(attrs, [:user_id, :frontend_name, :profile_name, :settings])
-    |> validate_required([:user_id, :frontend_name, :profile_name, :settings])
+    |> cast(attrs, [:user_id, :frontend_name, :profile_name, :settings, :version])
+    |> validate_required([:user_id, :frontend_name, :profile_name, :settings, :version])
     |> validate_length(:frontend_name, min: 1, max: 255)
     |> validate_length(:profile_name, min: 1, max: 255)
-    |> validate_version()
+    |> validate_version(struct)
+    |> validate_number(:version, greater_than: 0)
     |> validate_settings_length(Config.get([:instance, :max_frontend_settings_json_chars]))
   end
 
-  def create_or_update(%User{} = user, frontend_name, profile_name, settings) do
+  def create_or_update(%User{} = user, frontend_name, profile_name, settings, version) do
     struct =
       case get_by_user_and_frontend_name_and_profile_name(user, frontend_name, profile_name) do
         nil ->
@@ -42,7 +43,8 @@ defmodule Pleroma.Akkoma.FrontendSettingProfile do
       user_id: user.id,
       frontend_name: frontend_name,
       profile_name: profile_name,
-      settings: settings
+      settings: settings,
+      version: version
     })
     |> Repo.insert_or_update()
   end
@@ -80,12 +82,14 @@ defmodule Pleroma.Akkoma.FrontendSettingProfile do
     end
   end
 
-  defp validate_version(%Ecto.Changeset{changes: %{version: version}} = changeset) do
-    IO.inspect(changeset)
-    if version < 1 do
-      add_error(changeset, :version, "must be greater than 0")
+  defp validate_version(changeset, %{version: nil}), do: changeset
+
+  defp validate_version(%Ecto.Changeset{changes: %{version: version}} = changeset, %{version: prev_version}) do
+    if version != prev_version + 1 do
+      add_error(changeset, :version, "must be incremented by 1")
     else
       changeset
     end
   end
+
 end

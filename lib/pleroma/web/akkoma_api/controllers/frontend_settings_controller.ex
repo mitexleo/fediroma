@@ -44,8 +44,8 @@ defmodule Pleroma.Web.AkkomaAPI.FrontendSettingsController do
   end
 
   @doc "PUT /api/v1/akkoma/frontend_settings/:frontend_name/:profile_name"
-  def update_profile(conn, %{frontend_name: frontend_name, profile_name: profile_name, settings: settings}) do
-    with {:ok, profile} <- FrontendSettingProfile.create_or_update(conn.assigns.user, frontend_name, profile_name, settings) do
+  def update_profile(%{body_params: %{settings: settings, version: version}} = conn, %{frontend_name: frontend_name, profile_name: profile_name}) do
+    with {:ok, profile} <- FrontendSettingProfile.create_or_update(conn.assigns.user, frontend_name, profile_name, settings, version) do
       conn
       |> json(profile.settings)
     end
