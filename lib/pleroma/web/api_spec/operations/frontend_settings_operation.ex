@@ -20,7 +20,10 @@ defmodule Pleroma.Web.ApiSpec.FrontendSettingsOperation do
       security: [%{"oAuth" => ["read:accounts"]}],
       responses: %{
         200 =>
-          Operation.response("Profiles", "application/json", %Schema{type: :array, items: %Schema{type: :string}})
+          Operation.response("Profiles", "application/json", %Schema{
+            type: :array,
+            items: %Schema{type: :string}
+          })
       }
     }
   end
@@ -35,10 +38,8 @@ defmodule Pleroma.Web.ApiSpec.FrontendSettingsOperation do
       security: [%{"oAuth" => ["read:accounts"]}],
       parameters: [frontend_name_param(), profile_name_param()],
       responses: %{
-        200 =>
-          Operation.response("Translation", "application/json", %Schema{type: :object}),
-        404 =>
-          Operation.response("Not Found", "application/json", %Schema{type: :object})
+        200 => Operation.response("Translation", "application/json", %Schema{type: :object}),
+        404 => Operation.response("Not Found", "application/json", %Schema{type: :object})
       }
     }
   end
@@ -54,10 +55,8 @@ defmodule Pleroma.Web.ApiSpec.FrontendSettingsOperation do
       parameters: [frontend_name_param(), profile_name_param()],
       requestBody: profile_body_param(),
       responses: %{
-        200 =>
-          Operation.response("Settings", "application/json", %Schema{type: :object}),
-        422 =>
-          Operation.response("Invalid", "application/json", %Schema{type: :object})
+        200 => Operation.response("Settings", "application/json", %Schema{type: :object}),
+        422 => Operation.response("Invalid", "application/json", %Schema{type: :object})
       }
     }
   end
@@ -77,7 +76,8 @@ defmodule Pleroma.Web.ApiSpec.FrontendSettingsOperation do
   end
 
   def profile_body_param do
-    request_body("Settings",
+    request_body(
+      "Settings",
       %Schema{
         title: "Frontend Setting Profile",
         type: :object,
@@ -98,6 +98,7 @@ defmodule Pleroma.Web.ApiSpec.FrontendSettingsOperation do
           }
         }
       },
-      required: true)
+      required: true
+    )
   end
 end

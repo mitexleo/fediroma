@@ -1,7 +1,7 @@
-defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
+defmodule Pleroma.Akkoma.FrontendSettingsProfileTest do
   use Pleroma.DataCase, async: true
   use Oban.Testing, repo: Pleroma.Repo
-  alias Pleroma.Akkoma.FrontendSettingProfile
+  alias Pleroma.Akkoma.FrontendSettingsProfile
 
   import Pleroma.Factory
 
@@ -11,7 +11,7 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
       frontend_name = "test"
       profile_name = "test"
       settings = %{"test" => "test"}
-      struct = %FrontendSettingProfile{}
+      struct = %FrontendSettingsProfile{}
 
       attrs = %{
         user_id: user.id,
@@ -21,7 +21,7 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
         version: 1
       }
 
-      assert %{valid?: true} = FrontendSettingProfile.changeset(struct, attrs)
+      assert %{valid?: true} = FrontendSettingsProfile.changeset(struct, attrs)
     end
 
     test "when settings is too long" do
@@ -30,7 +30,7 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
       frontend_name = "test"
       profile_name = "test"
       settings = %{"verylong" => "verylongoops"}
-      struct = %FrontendSettingProfile{}
+      struct = %FrontendSettingsProfile{}
 
       attrs = %{
         user_id: user.id,
@@ -41,7 +41,7 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
       }
 
       assert %{valid?: false, errors: [settings: {"is too long", _}]} =
-               FrontendSettingProfile.changeset(struct, attrs)
+               FrontendSettingsProfile.changeset(struct, attrs)
     end
 
     test "when frontend name is too short" do
@@ -49,7 +49,7 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
       frontend_name = ""
       profile_name = "test"
       settings = %{"test" => "test"}
-      struct = %FrontendSettingProfile{}
+      struct = %FrontendSettingsProfile{}
 
       attrs = %{
         user_id: user.id,
@@ -60,7 +60,7 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
       }
 
       assert %{valid?: false, errors: [frontend_name: {"can't be blank", _}]} =
-               FrontendSettingProfile.changeset(struct, attrs)
+               FrontendSettingsProfile.changeset(struct, attrs)
     end
 
     test "when profile name is too short" do
@@ -68,7 +68,7 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
       frontend_name = "test"
       profile_name = ""
       settings = %{"test" => "test"}
-      struct = %FrontendSettingProfile{}
+      struct = %FrontendSettingsProfile{}
 
       attrs = %{
         user_id: user.id,
@@ -79,7 +79,7 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
       }
 
       assert %{valid?: false, errors: [profile_name: {"can't be blank", _}]} =
-               FrontendSettingProfile.changeset(struct, attrs)
+               FrontendSettingsProfile.changeset(struct, attrs)
     end
 
     test "when version is negative" do
@@ -87,7 +87,7 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
       frontend_name = "test"
       profile_name = "test"
       settings = %{"test" => "test"}
-      struct = %FrontendSettingProfile{}
+      struct = %FrontendSettingsProfile{}
 
       attrs = %{
         user_id: user.id,
@@ -98,7 +98,7 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
       }
 
       assert %{valid?: false, errors: [version: {"must be greater than %{number}", _}]} =
-               FrontendSettingProfile.changeset(struct, attrs)
+               FrontendSettingsProfile.changeset(struct, attrs)
     end
   end
 
@@ -109,8 +109,8 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
       profile_name = "test"
       settings = %{"test" => "test"}
 
-      assert {:ok, %FrontendSettingProfile{}} =
-               FrontendSettingProfile.create_or_update(
+      assert {:ok, %FrontendSettingsProfile{}} =
+               FrontendSettingsProfile.create_or_update(
                  user,
                  frontend_name,
                  profile_name,
@@ -134,8 +134,8 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
 
       settings = %{"test" => "test2"}
 
-      assert {:ok, %FrontendSettingProfile{settings: ^settings}} =
-               FrontendSettingProfile.create_or_update(
+      assert {:ok, %FrontendSettingsProfile{settings: ^settings}} =
+               FrontendSettingsProfile.create_or_update(
                  user,
                  frontend_name,
                  profile_name,
@@ -166,8 +166,8 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
         version: 1
       )
 
-      assert [%FrontendSettingProfile{profile_name: "profileA"}, %{profile_name: "profileB"}] =
-               FrontendSettingProfile.get_all_by_user_and_frontend_name(user, frontend_name)
+      assert [%FrontendSettingsProfile{profile_name: "profileA"}, %{profile_name: "profileB"}] =
+               FrontendSettingsProfile.get_all_by_user_and_frontend_name(user, frontend_name)
     end
   end
 
@@ -185,8 +185,8 @@ defmodule Pleroma.Akkoma.FrontendSettingProfileTest do
         version: 1
       )
 
-      assert %FrontendSettingProfile{profile_name: "profileA"} =
-               FrontendSettingProfile.get_by_user_and_frontend_name_and_profile_name(
+      assert %FrontendSettingsProfile{profile_name: "profileA"} =
+               FrontendSettingsProfile.get_by_user_and_frontend_name_and_profile_name(
                  user,
                  frontend_name,
                  profile_name

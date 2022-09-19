@@ -165,7 +165,7 @@ defmodule Pleroma.User do
     has_many(:outgoing_relationships, UserRelationship, foreign_key: :source_id)
     has_many(:incoming_relationships, UserRelationship, foreign_key: :target_id)
 
-    has_many(:frontend_profiles, Pleroma.Akkoma.FrontendSettingProfile)
+    has_many(:frontend_profiles, Pleroma.Akkoma.FrontendSettingsProfile)
 
     for {relationship_type,
          [

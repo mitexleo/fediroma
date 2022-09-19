@@ -1,4 +1,4 @@
-defmodule Pleroma.Akkoma.FrontendSettingProfile do
+defmodule Pleroma.Akkoma.FrontendSettingsProfile do
   use Ecto.Schema
 
   import Ecto.Changeset
@@ -84,12 +84,13 @@ defmodule Pleroma.Akkoma.FrontendSettingProfile do
 
   defp validate_version(changeset, %{version: nil}), do: changeset
 
-  defp validate_version(%Ecto.Changeset{changes: %{version: version}} = changeset, %{version: prev_version}) do
+  defp validate_version(%Ecto.Changeset{changes: %{version: version}} = changeset, %{
+         version: prev_version
+       }) do
     if version != prev_version + 1 do
       add_error(changeset, :version, "must be incremented by 1")
     else
       changeset
     end
   end
-
 end

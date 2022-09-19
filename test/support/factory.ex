@@ -665,7 +665,7 @@ defmodule Pleroma.Factory do
   end
 
   def frontend_setting_profile_factory(params \\ %{}) do
-    %Pleroma.Akkoma.FrontendSettingProfile{
+    %Pleroma.Akkoma.FrontendSettingsProfile{
       user: build(:user),
       frontend_name: "akkoma-fe",
       profile_name: "default",

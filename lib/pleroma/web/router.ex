@@ -468,8 +468,18 @@ defmodule Pleroma.Web.Router do
     get("/translation/languages", TranslationController, :languages)
 
     get("/frontend_settings/:frontend_name", FrontendSettingsController, :list_profiles)
-    get("/frontend_settings/:frontend_name/:profile_name", FrontendSettingsController, :get_profile)
-    put("/frontend_settings/:frontend_name/:profile_name", FrontendSettingsController, :update_profile)
+
+    get(
+      "/frontend_settings/:frontend_name/:profile_name",
+      FrontendSettingsController,
+      :get_profile
+    )
+
+    put(
+      "/frontend_settings/:frontend_name/:profile_name",
+      FrontendSettingsController,
+      :update_profile
+    )
   end
 
   scope "/api/v1", Pleroma.Web.MastodonAPI do
