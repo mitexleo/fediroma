@@ -480,6 +480,12 @@ defmodule Pleroma.Web.Router do
       FrontendSettingsController,
       :update_profile
     )
+
+    delete(
+      "/frontend_settings/:frontend_name/:profile_name",
+      FrontendSettingsController,
+      :delete_profile
+    )
   end
 
   scope "/api/v1", Pleroma.Web.MastodonAPI do

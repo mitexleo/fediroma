@@ -69,6 +69,10 @@ defmodule Pleroma.Akkoma.FrontendSettingsProfile do
     )
   end
 
+  def delete_profile(profile) do
+    Repo.delete(profile)
+  end
+
   defp validate_settings_length(
          %Ecto.Changeset{changes: %{settings: settings}} = changeset,
          max_length

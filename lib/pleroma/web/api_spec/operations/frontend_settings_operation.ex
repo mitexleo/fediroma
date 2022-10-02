@@ -22,7 +22,10 @@ defmodule Pleroma.Web.ApiSpec.FrontendSettingsOperation do
         200 =>
           Operation.response("Profiles", "application/json", %Schema{
             type: :array,
-            items: %Schema{type: :string}
+            items: %Schema{type: :object, properties: %{
+              name: %Schema{type: :string},
+              version: %Schema{type: :integer}
+            }}
           })
       }
     }
@@ -38,7 +41,26 @@ defmodule Pleroma.Web.ApiSpec.FrontendSettingsOperation do
       security: [%{"oAuth" => ["read:accounts"]}],
       parameters: [frontend_name_param(), profile_name_param()],
       responses: %{
-        200 => Operation.response("Translation", "application/json", %Schema{type: :object}),
+        200 => Operation.response("Profile", "application/json", %Schema{type: :object, properties: %{
+          "version" => %Schema{type: :integer},
+          "settings" => %Schema{type: :object, additionalProperties: true}
+        }}),
+        404 => Operation.response("Not Found", "application/json", %Schema{type: :object})
+      }
+    }
+  end
+
+  @spec delete_profile_operation() :: Operation.t()
+  def delete_profile_operation() do
+    %Operation{
+      tags: ["Delete frontend setting profile"],
+      summary: "Delete frontend Settings Profile",
+      description: "Delete  frontend setting profile",
+      operationId: "AkkomaAPI.FrontendSettingsController.delete_profile",
+      security: [%{"oAuth" => ["write:accounts"]}],
+      parameters: [frontend_name_param(), profile_name_param()],
+      responses: %{
+        200 => Operation.response("Empty", "application/json", %Schema{type: :string}),
         404 => Operation.response("Not Found", "application/json", %Schema{type: :object})
       }
     }
