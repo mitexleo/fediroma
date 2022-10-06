@@ -17,8 +17,8 @@ defmodule Pleroma.Web.AkkomaAPI.FrontendSettingsControllerTest do
         |> json_response_and_validate_schema(200)
 
       assert response == [
-               "test1",
-               "test2"
+               %{"name" => "test1", "version" => 1},
+               %{"name" => "test2", "version" => 1}
              ]
     end
   end
@@ -47,7 +47,7 @@ defmodule Pleroma.Web.AkkomaAPI.FrontendSettingsControllerTest do
         |> get("/api/v1/akkoma/frontend_settings/test/test1")
         |> json_response_and_validate_schema(200)
 
-      assert response == %{"test" => "test"}
+      assert response == %{"settings" => %{"test" => "test"}, "version" => 1}
     end
   end
 
@@ -93,6 +93,30 @@ defmodule Pleroma.Web.AkkomaAPI.FrontendSettingsControllerTest do
         "version" => 1
       })
       |> json_response_and_validate_schema(422)
+    end
+  end
+
+  describe "DELETE /api/v1/akkoma/frontend_settings/:frontend_name/:profile_name" do
+    test "deletes a config" do
+      %{conn: conn, user: user} = oauth_access(["write"])
+
+      insert(:frontend_setting_profile,
+        user: user,
+        frontend_name: "test",
+        profile_name: "test1",
+        settings: %{"test" => "test"},
+        version: 2
+      )
+
+      conn
+      |> delete("/api/v1/akkoma/frontend_settings/test/test1")
+      |> json_response_and_validate_schema(200)
+
+      assert FrontendSettingsProfile.get_by_user_and_frontend_name_and_profile_name(
+               user,
+               "test",
+               "test1"
+             ) == nil
     end
   end
 end

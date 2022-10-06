@@ -18,7 +18,8 @@ defmodule Pleroma.Web.AkkomaAPI.FrontendSettingsController do
     OAuthScopesPlug,
     %{@unauthenticated_access | scopes: ["write:accounts"]}
     when action in [
-           :update_profile, :delete_profile
+           :update_profile,
+           :delete_profile
          ]
   )
 
@@ -69,7 +70,7 @@ defmodule Pleroma.Web.AkkomaAPI.FrontendSettingsController do
              profile_name
            ),
          {:ok, _} <- FrontendSettingsProfile.delete_profile(profile) do
-      json(conn, %{})
+      json(conn, %{deleted: "ok"})
     else
       nil -> {:error, :not_found}
     end
