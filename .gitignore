@@ -21,6 +21,8 @@ vm.args
 .hex/
 .mix/
 .psql_history
+docker-resources/Dockerfile
+pgdata
 
 # Prevent committing custom emojis
 /priv/static/emoji/custom/*

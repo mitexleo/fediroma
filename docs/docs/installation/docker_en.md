@@ -49,7 +49,9 @@ in our compose environment.
 ```
 
 This will ask you a few questions - the defaults are fine for most things,
-the database hostname is `db`. 
+the database hostname is `db`, and you will want to set the ip to `0.0.0.0`
+if you want to access the instance from outside the container (i.e you're using
+a reverse proxy on the host)
 
 Now we'll want to copy over the config it just created
 
@@ -62,7 +64,7 @@ cp config/generated_config.exs config/prod.secret.exs
 We need to run a few commands on the database container, this isn't too bad
 
 ```bash
-docker-compose run --rm -d db 
+docker-compose run --rm --user akkoma -d db 
 # Note down the name it gives here, it will be something like akkoma_db_run
 docker-compose run --rm akkoma psql -h db -U akkoma -f config/setup_db.psql
 docker stop akkoma_db_run # Replace with the name you noted down
@@ -83,14 +85,47 @@ everything start up.
 ```bash
 docker-compose up
 ```
-#### Create your first user
+
+If everything went well, you should be able to access your instance at http://localhost:4000
+
+You can `ctrl-c` out of the docker-compose now to shutdown the server.
+
+### Running in the background
+
+```bash
+docker-compose up -d
+```
+
+### Create your first user
 
 If your instance is up and running, you can create your first user with administrative rights with the following task:
 
 ```shell
-doas -u akkoma env MIX_ENV=prod mix pleroma.user new <username> <your@emailaddress> --admin
+./docker-resources/manage.sh mix pleroma.user new MY_USERNAME MY_EMAIL@SOMEWHERE --admin
 ```
 
+And follow the prompts 
+
+### Reverse proxies
+
+This is a tad more complex in docker than on the host itself. It
+
+You've got two options. 
+
+#### Running caddy in a container
+
+This is by far the easiest option. It'll handle HTTPS and all that for you. 
+
+```bash
+cp docker-resources/Caddyfile.example docker-resources/Caddyfile
+```
+
+Then edit the TLD in your caddyfile to the domain you're serving on.
+
+Uncomment the `caddy` section in the docker-compose file,
+then run `docker-compose up -d` again.
+
+```bash
 {! installation/frontends.include !}
 
 #### Further reading
