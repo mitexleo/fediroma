@@ -1,0 +1,43 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres:14
+    restart: unless-stopped
+    user: ${DOCKER_USER}
+    environment: {
+      # This might seem insecure but is usually not a problem.
+      # You should leave this at the "akkoma" default.
+      # The DB is only reachable by containers in the same docker network,
+      # and is not exposed to the open internet.
+      #
+      # If you do change this, remember to update "config.exs".
+      POSTGRES_DB: akkoma,
+      POSTGRES_USER: akkoma,
+      POSTGRES_PASSWORD: akkoma,
+    }
+    env_file:
+      - .env 
+    volumes:
+      - ./docker-db:/var/lib/postgresql/data
+
+  akkoma:
+    image: akkoma:latest
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    links:
+      - db
+    ports: [
+      # Uncomment/Change port mappings below as needed.
+      # The left side is your host machine, the right one is the akkoma container.
+      # You can prefix the left side with an ip.
+
+      # Webserver (for reverse-proxies outside of docker)
+      # If you use a dockerized proxy (see README), you can leave this commented
+      # and use a container link instead.
+      "127.0.0.1:4000:4000",
+    ]
+    volumes:
+      - .:/opt/akkoma

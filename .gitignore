@@ -17,6 +17,10 @@ secret
 /instance
 /priv/ssh_keys
 vm.args
+.cache/
+.hex/
+.mix/
+.psql_history
 
 # Prevent committing custom emojis
 /priv/static/emoji/custom/*
@@ -65,3 +69,6 @@ pleroma.iml
 
 # Generated documentation
 docs/site
+
+# docker stuff
+docker-db
