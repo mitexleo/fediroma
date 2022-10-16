@@ -22,6 +22,7 @@ vm.args
 .mix/
 .psql_history
 docker-resources/Dockerfile
+docker-resources/Caddyfile
 pgdata
 
 # Prevent committing custom emojis
