@@ -38,7 +38,7 @@ services:
       # You can prefix the left side with an ip.
 
       # Webserver (for reverse-proxies outside of docker)
-      # If you use a dockerized proxy (see README), you can leave this commented
+      # If you use a dockerized proxy, you can leave this commented
       # and use a container link instead.
       "127.0.0.1:4000:4000",
     ]
@@ -46,14 +46,16 @@ services:
       - .:/opt/akkoma
 
   # Uncomment the following if you want to use a reverse proxy
-  proxy:
-    image: caddy:2-alpine
-    restart: unless-stopped
-    links:
-      - akkoma
-    ports: [
-       "443:443",
-       "80:80"
-    ]
-    volumes:
-      - ./docker-resources/Caddyfile:/etc/caddy/Caddyfile
+  #proxy:
+  #  image: caddy:2-alpine
+  #  restart: unless-stopped
+  #  links:
+  #    - akkoma
+  #  ports: [
+  #     "443:443",
+  #     "80:80"
+  #  ]
+  #  volumes:
+  #    - ./docker-resources/Caddyfile:/etc/caddy/Caddyfile
+  #    - ./caddy-data:/data
+  #    - ./caddy-config:/config

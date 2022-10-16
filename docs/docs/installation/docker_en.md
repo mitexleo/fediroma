@@ -1,6 +1,4 @@
-# Installing in docker
-
-{! installation/otp_vs_from_source_source.include !}
+# Installing in Docker
 
 ## Installation
 
@@ -22,6 +20,7 @@ releases.
 
 ```bash
 cp docker-resources/env.example .env
+echo "DOCKER_USER=$(id -u):$(id -g)" >> .env
 ```
 
 This probably won't need to be changed, it's only there to set basic environment
@@ -43,15 +42,17 @@ in our compose environment.
 ### Generating your instance
 
 ```bash
+mkdir pgdata
+# if you want to use caddy
+mkdir caddy-data
+mkdir caddy-config
 ./docker-resources/manage.sh mix deps.get
 ./docker-resources/manage.sh mix compile
 ./docker-resources/manage.sh mix pleroma.instance gen
 ```
 
 This will ask you a few questions - the defaults are fine for most things,
-the database hostname is `db`, and you will want to set the ip to `0.0.0.0`
-if you want to access the instance from outside the container (i.e you're using
-a reverse proxy on the host)
+the database hostname is `db`, and you will want to set the ip to `0.0.0.0`.
 
 Now we'll want to copy over the config it just created
 
@@ -125,8 +126,32 @@ Then edit the TLD in your caddyfile to the domain you're serving on.
 Uncomment the `caddy` section in the docker-compose file,
 then run `docker-compose up -d` again.
 
-```bash
+#### Running a reverse proxy on the host
+
+If you want, you can also run the reverse proxy on the host. This is a bit more complex, but it's also more flexible.
+
+Follow the guides for source install for your distribution of choice, or adapt
+as needed. Your standard setup can be found in the [Debian Guide](../debian_based_en/#nginx)
+
+### You're done!
+
+All that's left is to set up your frontends. 
+
+The standard from-source commands will apply to you, just make sure you
+prefix them with `./docker-resources/manage.sh`!
+
 {! installation/frontends.include !}
+
+### Updating Docker Installs
+
+```bash
+git pull
+./docker-resources/build.sh
+./docker-resources/manage.sh mix deps.get
+./docker-resources/manage.sh mix compile
+./docker-resources/manage.sh mix ecto.migrate
+docker-compose restart akkoma
+```
 
 #### Further reading
 
