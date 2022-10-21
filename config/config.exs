@@ -567,7 +567,8 @@ config :pleroma, Oban,
     attachments_cleanup: 1,
     new_users_digest: 1,
     mute_expire: 5,
-    search_indexing: 10
+    search_indexing: 10,
+    nodeinfo_fetcher: 1
   ],
   plugins: [
     Oban.Plugins.Pruner,

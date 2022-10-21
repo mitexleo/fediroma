@@ -22,7 +22,8 @@ defmodule Pleroma.Instances.Instance do
     field(:host, :string)
     field(:unreachable_since, :naive_datetime_usec)
     field(:favicon, :string)
-    field(:favicon_updated_at, :naive_datetime)
+    field(:metadata_updated_at, :naive_datetime)
+    field(:nodeinfo, :map, default: %{})
 
     timestamps()
   end
@@ -138,62 +139,92 @@ defmodule Pleroma.Instances.Instance do
 
   defp parse_datetime(datetime), do: datetime
 
-  def get_or_update_favicon(%URI{host: host} = instance_uri) do
-    existing_record = Repo.get_by(Instance, %{host: host})
-    now = NaiveDateTime.utc_now()
+  def needs_update(nil), do: true
 
-    if existing_record && existing_record.favicon_updated_at &&
-         NaiveDateTime.diff(now, existing_record.favicon_updated_at) < 86_400 do
+  def needs_update(%Instance{metadata_updated_at: metadata_updated_at}) do
+    now = NaiveDateTime.utc_now()
+    NaiveDateTime.diff(now, metadata_updated_at) > 86_400
+  end
+
+  def update_metadata(%URI{host: host} = uri) do
+    existing_record = Repo.get_by(Instance, %{host: host})
+
+    if existing_record do
+      if needs_update(existing_record) do
+        favicon = scrape_favicon(uri)
+        nodeinfo = scrape_nodeinfo(uri)
+
+        %Instance{}
+        |> changeset(%{host: host, favicon: favicon, nodeinfo: nodeinfo})
+        |> Repo.update()
+      end
+    else
+      favicon = scrape_favicon(uri)
+      nodeinfo = scrape_nodeinfo(uri)
+
+      %Instance{}
+      |> changeset(%{host: host, favicon: favicon, nodeinfo: nodeinfo})
+      |> Repo.insert()
+    end
+  end
+
+  def get_favicon(%URI{host: host} = instance_uri) do
+    existing_record = Repo.get_by(Instance, %{host: host})
+
+    if existing_record do
       existing_record.favicon
     else
-      favicon = scrape_favicon(instance_uri)
-
-      if existing_record do
-        existing_record
-        |> changeset(%{favicon: favicon, favicon_updated_at: now})
-        |> Repo.update()
-      else
-        %Instance{}
-        |> changeset(%{host: host, favicon: favicon, favicon_updated_at: now})
-        |> Repo.insert()
-      end
-
-      favicon
-    end
-  rescue
-    e ->
-      Logger.warn("Instance.get_or_update_favicon(\"#{host}\") error: #{inspect(e)}")
       nil
+    end
+  end
+
+  defp scrape_nodeinfo(%URI{} = instance_uri) do
+    with {_, true} <- {:reachable, reachable?(instance_uri.host)},
+         {:ok, %Tesla.Env{status: 200, body: body}} <-
+           Tesla.get(
+             "https://#{instance_uri.host}/.well-known/nodeinfo",
+             headers: [{"Accept", "application/json"}]
+           ),
+         {:ok, json} <- Jason.decode(body),
+         {:ok, %{"links" => links}} <- {:ok, json},
+         {:ok, %{"href" => href}} <-
+           {:ok,
+            Enum.find(links, &(&1["rel"] == "http://nodeinfo.diaspora.software/ns/schema/2.0"))},
+         {:ok, %Tesla.Env{body: data}} <-
+           Pleroma.HTTP.get(ref, [{"accept", "application/json"}], []),
+         {:ok, nodeinfo} <- Jason.decode(data) do
+      nodeinfo
+    else
+      {:reachable, false} ->
+        Logger.debug(
+          "Instance.scrape_favicon(\"#{to_string(instance_uri)}\") ignored unreachable host"
+        )
+
+        nil
+
+      _ ->
+        nil
+    end
   end
 
   defp scrape_favicon(%URI{} = instance_uri) do
-    try do
-      with {_, true} <- {:reachable, reachable?(instance_uri.host)},
-           {:ok, %Tesla.Env{body: html}} <-
-             Pleroma.HTTP.get(to_string(instance_uri), [{"accept", "text/html"}], []),
-           {_, [favicon_rel | _]} when is_binary(favicon_rel) <-
-             {:parse,
-              html |> Floki.parse_document!() |> Floki.attribute("link[rel=icon]", "href")},
-           {_, favicon} when is_binary(favicon) <-
-             {:merge, URI.merge(instance_uri, favicon_rel) |> to_string()} do
-        favicon
-      else
-        {:reachable, false} ->
-          Logger.debug(
-            "Instance.scrape_favicon(\"#{to_string(instance_uri)}\") ignored unreachable host"
-          )
-
-          nil
-
-        _ ->
-          nil
-      end
-    rescue
-      e ->
-        Logger.warn(
-          "Instance.scrape_favicon(\"#{to_string(instance_uri)}\") error: #{inspect(e)}"
+    with {_, true} <- {:reachable, reachable?(instance_uri.host)},
+         {:ok, %Tesla.Env{body: html}} <-
+           Pleroma.HTTP.get(to_string(instance_uri), [{"accept", "text/html"}], []),
+         {_, [favicon_rel | _]} when is_binary(favicon_rel) <-
+           {:parse, html |> Floki.parse_document!() |> Floki.attribute("link[rel=icon]", "href")},
+         {_, favicon} when is_binary(favicon) <-
+           {:merge, URI.merge(instance_uri, favicon_rel) |> to_string()} do
+      favicon
+    else
+      {:reachable, false} ->
+        Logger.debug(
+          "Instance.scrape_favicon(\"#{to_string(instance_uri)}\") ignored unreachable host"
         )
 
+        nil
+
+      _ ->
         nil
     end
   end
