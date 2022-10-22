@@ -27,7 +27,7 @@ defmodule Pleroma.Web.StaticFE.StaticFEView do
     Strftime.strftime!(date, "%Y/%m/%d %l:%M:%S %p UTC")
   end
 
-  def instance_name, do: Pleroma.Config.get([:instance, :name], "Pleroma")
+  def instance_name, do: Pleroma.Config.get([:instance, :name], "Akkoma")
 
   def open_content? do
     Pleroma.Config.get(
