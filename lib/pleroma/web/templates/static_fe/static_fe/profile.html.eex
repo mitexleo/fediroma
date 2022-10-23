@@ -64,20 +64,17 @@
     </div>
     <% end %>
   </div>
+  <%= if @prev_page_id do %>
+  <%= link "Show newer", to: "?min_id=" <> @prev_page_id, class: "load-posts" %>
+  <% end %>
   <div class="activity-stream">
     <%= for activity <- @timeline do %>
     <%= render("_notice.html", Map.put(activity, :selected, false)) %>
     <% end %>
-    <p id="pagination">
-      <%= if @prev_page_id do %>
-        <%= link "«", to: "?min_id=" <> @prev_page_id %>
-      <% end %>
-      <%= if @prev_page_id && @next_page_id, do: " | " %>
-      <%= if @next_page_id do %>
-        <%= link "»", to: "?max_id=" <> @next_page_id %>
-      <% end %>
-    </p>
   </div>
+  <%= if @next_page_id do %>
+  <%= link gettext("Show older"), to: "?max_id=" <> @next_page_id, class: "load-posts" %>
+  <% end %>
 </div>
 
 <style>

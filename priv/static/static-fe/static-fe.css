@@ -4,7 +4,8 @@
 	--wallpaper: rgba(11, 16, 23, 1);
     --alertNeutralText: rgba(255, 255, 255, 1);
     --avatarShadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.7);
-
+	--loadPostsSelected: rgba(23, 34, 46, 1);
+    --loadPostsSelectedText: rgba(185, 185, 186, 1);
     --profileBg: rgba(7, 12, 17, 1);
     --profileTint: rgba(15, 22, 30, 0.5);
     --btnText: rgba(185, 185, 186, 1);
@@ -301,6 +302,7 @@ status-body {
 
 .button-default:hover {
     box-shadow: var(--btnHoverShadow);
+	cursor: pointer;
 }
 
 .user-bio {
@@ -401,4 +403,19 @@ status-body {
 
 .bottom-line {
 	display: flex;
+}
+
+.load-posts {
+	display: block;
+    box-sizing: border-box;
+    height: 3.5em;
+    line-height: 3.5em;
+    padding: 0 1em;
+    width: 100%;
+    text-align: center;
+}
+
+.load-posts:hover {
+	background-color: var(--loadPostsSelected);
+    color: var(--loadPostsSelectedText);
 }
