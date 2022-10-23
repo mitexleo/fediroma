@@ -1,41 +1,66 @@
-<div class="activity h-entry" <%= if @selected do %> id="selected" <% end %>>
-  <p class="pull-right">
-    <a class="activity-link u-url u-uid" href="<%= @link %>">
-      <time class="dt-published" datetime="<%= @published %>">
-        <%= format_date(@published) %>
-      </time>
+<div class="status-container" <%= if @selected do %> id="selected" <% end %>>
+  <div class="left-side">
+    <a href="<%= (@user.uri || @user.ap_id) %>" rel="author noopener">
+      <div class="avatar">
+        <img
+          class="u-photo" width="48" height="48"
+          src="<%= User.avatar_url(@user) |> MediaProxy.url %>"
+          title="<%= @user.nickname %>" alt="<%= @user.nickname %>"
+        />
+      </div>
     </a>
-  </p>
-  <%= render("_user_card.html", %{user: @user}) %>
-  <div class="activity-content">
-    <%= if @title != "" do %>
-      <details <%= if open_content?() do %>open<% end %>>
-        <summary class="p-name"><%= raw @title %></summary>
-        <div class="e-content"><%= raw @content %></div>
-      </details>
-    <% else %>
-      <div class="e-content"><%= raw @content %></div>
-    <% end %>
-    <%= for %{"name" => name, "url" => [url | _]} <- @attachment do %>
-      <%= if @sensitive do %>
-        <details class="nsfw">
-          <summary><%= Gettext.gettext("sensitive media") %></summary>
-          <div>
-            <%= render("_attachment.html", %{name: name, url: url["href"],
-                                             mediaType: fetch_media_type(url)}) %>
-          </div>
-        </details>
-      <% else %>
-        <%= render("_attachment.html", %{name: name, url: url["href"],
-                                         mediaType: fetch_media_type(url)}) %>
-      <% end %>
-    <% end %>
   </div>
-  <%= if @selected do %>
-    <dl class="counts">
-      <dt><%= Gettext.gettext("replies") %></dt><dd><%= @counts.replies %></dd>
-      <dt><%= Gettext.gettext("announces") %></dt><dd><%= @counts.announces %></dd>
-      <dt><%= Gettext.gettext("likes") %></dt><dd><%= @counts.likes %></dd>
-    </dl>
-  <% end %>
+  <div class="right-side">
+    <div class="status-heading">
+      <div class="heading-left">
+        <h4 class="username">
+		  <%= raw Formatter.emojify(@user.name, @user.emoji) %>
+        </h4>
+        <a href="<%= (@user.uri || @user.ap_id) %>" class="account-name">
+          <%= @user.nickname %>
+        </a>
+      </div>
+      <div class="heading-right">
+        <a class="timeago" href="<%= @link %>">
+          <time
+            class="dt-published" datetime="<%= @published %>"
+            title="<%= format_date(@published) %>"
+          >
+            <%= time_ago(@published) %>
+          </time>
+        </a>
+      </div>
+    </div>
+    <div class="status-content">
+      <%= if @title != "" do %>
+      <span class="status-summary"><%= raw @title %></span>
+      <details <%= if open_content?() do %>open<% end %>>
+        <summary><%= gettext("Show content") %></summary>
+        <div class="status-body"><%= raw @content %></div>
+      </details>
+      <% else %>
+      <div class="status-body"><%= raw @content %></div>
+      <% end %>
+      <%= for %{"name" => name, "url" => [url | _]} <- @attachment do %>
+      <%= if @sensitive do %>
+      <details class="nsfw">
+        <summary><%= Gettext.gettext("sensitive media") %></summary>
+        <div>
+          <%= render("_attachment.html", %{name: name, url: url["href"],
+			                              mediaType: fetch_media_type(url)}) %>
+        </div>
+      </details>
+      <% else %>
+      <%= render("_attachment.html", %{name: name, url: url["href"],
+                                      mediaType: fetch_media_type(url)}) %>
+      <% end %>
+      <% end %>
+    </div>
+    <!-- <div class="emoji-reactions"></div> -->
+    <div class="status-actions">
+      <div><%= @counts.replies %></div>
+      <div><%= @counts.announces %></div>
+      <div><%= @counts.likes %></div>
+    </div>
+  </div>
 </div>

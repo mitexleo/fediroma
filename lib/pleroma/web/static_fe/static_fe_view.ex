@@ -22,6 +22,13 @@ defmodule Pleroma.Web.StaticFE.StaticFEView do
     Utils.fetch_media_type(@media_types, mediaType)
   end
 
+  def time_ago(date) do
+    {:ok, date, _} = DateTime.from_iso8601(date)
+    now = DateTime.utc_now()
+
+    Timex.from_now(date, now)
+  end
+
   def format_date(date) do
     {:ok, date, _} = DateTime.from_iso8601(date)
     Strftime.strftime!(date, "%Y/%m/%d %l:%M:%S %p UTC")
@@ -32,7 +39,7 @@ defmodule Pleroma.Web.StaticFE.StaticFEView do
   def open_content? do
     Pleroma.Config.get(
       [:frontend_configurations, :collapse_message_with_subjects],
-      true
+      false
     )
   end
 end

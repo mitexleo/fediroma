@@ -42,8 +42,8 @@ defmodule Pleroma.Web.StaticFE.StaticFEControllerTest do
 
       html = html_response(conn, 200)
 
-      assert html =~ ">public<"
-      refute html =~ ">private<"
+      assert html =~ "\npublic\n"
+      refute html =~ "\nprivate\n"
     end
 
     test "pagination", %{conn: conn, user: user} do
@@ -53,10 +53,10 @@ defmodule Pleroma.Web.StaticFE.StaticFEControllerTest do
 
       html = html_response(conn, 200)
 
-      assert html =~ ">test30<"
-      assert html =~ ">test11<"
-      refute html =~ ">test10<"
-      refute html =~ ">test1<"
+      assert html =~ "\ntest30\n"
+      assert html =~ "\ntest11\n"
+      refute html =~ "\ntest10\n"
+      refute html =~ "\ntest1\n"
     end
 
     test "pagination, page 2", %{conn: conn, user: user} do
@@ -67,10 +67,10 @@ defmodule Pleroma.Web.StaticFE.StaticFEControllerTest do
 
       html = html_response(conn, 200)
 
-      assert html =~ ">test1<"
-      assert html =~ ">test10<"
-      refute html =~ ">test20<"
-      refute html =~ ">test29<"
+      assert html =~ "\ntest1\n"
+      assert html =~ "\ntest10\n"
+      refute html =~ "\ntest20\n"
+      refute html =~ "\ntest29\n"
     end
 
     test "does not require authentication on non-federating instances", %{
@@ -104,7 +104,7 @@ defmodule Pleroma.Web.StaticFE.StaticFEControllerTest do
       conn = get(conn, "/notice/#{activity.id}")
 
       html = html_response(conn, 200)
-      assert html =~ "<header>"
+      assert html =~ "<div class=\"panel conversation\">"
       assert html =~ user.nickname
       assert html =~ "testing a thing!"
     end
