@@ -1,6 +1,7 @@
 /* pleroma-light and pleroma-dark themes from pleroma-fe */
 :root {
     --alertNeutral: rgba(185, 185, 186, 0.5);
+	--wallpaper: rgba(11, 16, 23, 1);
     --alertNeutralText: rgba(255, 255, 255, 1);
     --avatarShadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.7);
 
@@ -30,15 +31,30 @@
 }
 
 html {
-    height: 100%
+    height: 100%;
+	overflow-y: auto;
 }
 
 body {
+	overflow: auto;
     margin: 0;
     height: 100%;
-    background-image: var(--background-image);
     font-family: sans-serif;
     color: var(--text);
+}
+
+.background-image {
+	position: fixed;
+    height: 100%;
+    top: 3.5em;
+    z-index: -1000;
+    left: 0;
+    right: -20px;
+    background-size: cover;
+    background-repeat: no-repeat;
+	background-color: var(--wallpaper);
+    background-image: var(--background-image);
+    background-position: 50%;
 }
 
 a {
@@ -47,10 +63,13 @@ a {
 }
 
 nav {
+	position: sticky;
+	top: 0;
     width: 100%;
     height: 3.5em;
     background-color: var(--topBar);
     box-shadow: var(--topBarShadow);
+	z-index: 2000;
 }
 
 .inner-nav {

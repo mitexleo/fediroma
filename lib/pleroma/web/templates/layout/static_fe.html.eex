@@ -9,6 +9,7 @@
     <link rel="icon" type="image/png" href="/favicon.png">
   </head>
   <body>
+	<div class="background-image"></div>
     <nav>
       <div class="inner-nav">
         <a class="site-brand" href="/">
