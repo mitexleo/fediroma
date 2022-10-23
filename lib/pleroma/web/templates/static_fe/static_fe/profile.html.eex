@@ -20,6 +20,15 @@
             </div>
           <div class="bottom-line">
             <%= link "@#{@user.nickname}", to: (@user.uri || @user.ap_id), class: "account-name" %>
+            <%= if @user.is_admin && @user.show_role do %>
+            <span class="user-role"><%= gettext("Admin") %></span>
+            <% end %>
+            <%= if @user.is_moderator && @user.show_role do %>
+            <span class="user-role"><%= gettext("Moderator") %></span>
+            <% end %>
+            <%= if @user.actor_type == "Service" do %>
+            <span class="user-role"><%= gettext("Bot") %></span>
+            <% end %>
           </div>
         </div>
       </div>

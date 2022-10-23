@@ -1,5 +1,7 @@
 /* pleroma-light and pleroma-dark themes from pleroma-fe */
 :root {
+    --alertNeutral: rgba(185, 185, 186, 0.5);
+    --alertNeutralText: rgba(255, 255, 255, 1);
     --avatarShadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.7);
 
     --profileBg: rgba(7, 12, 17, 1);
@@ -148,7 +150,7 @@ body > .container {
     display: flex;
 }
 
-.account-name {
+.status-container .account-name {
     min-width: 1.6em;
     margin-right: 0.4em;
     white-space: nowrap;
@@ -368,4 +370,16 @@ status-body {
 
 .profile .status-container {
     border-bottom: 1px solid var(--border);
+}
+
+.user-role {
+	color: var(--alertNeutralText);
+	background-color: var(--alertNeutral);
+	margin: 0 0.35em;
+	padding: 0 0.25em;
+	border-radius: 2px;
+}
+
+.bottom-line {
+	display: flex;
 }
