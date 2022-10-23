@@ -1,5 +1,14 @@
 /* pleroma-light and pleroma-dark themes from pleroma-fe */
 :root {
+    --avatarShadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.7);
+
+    --profileBg: rgba(7, 12, 17, 1);
+    --profileTint: rgba(15, 22, 30, 0.5);
+    --btnText: rgba(185, 185, 186, 1);
+    --btn: rgba(21, 30, 43, 1);
+    --btnShadow: 0px 0px 2px 0px rgba(0, 0, 0, 1) , 0px 1px 0px 0px rgba(255, 255, 255, 0.2) inset, 0px -1px 0px 0px rgba(0, 0, 0, 0.2) inset;
+    --btnHoverShadow: 0px 0px 1px 2px rgba(185, 185, 186, 0.4) inset, 0px 1px 0px 0px rgba(255, 255, 255, 0.2) inset, 0px -1px 0px 0px rgba(0, 0, 0, 0.2) inset;
+    --lightText: rgba(236, 236, 236, 1);
     --panelShadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.5) , 0px 4px 6px 3px rgba(0, 0, 0, 0.3);
     --panelHeaderShadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.4) , 0px 1px 0px 0px rgba(255, 255, 255, 0.2) inset;
     --topBar: rgba(21, 30, 43, 1);
@@ -60,7 +69,7 @@ nav {
     padding-right: 5px
 }
 
-.container {
+body > .container {
     display: grid;
     grid-template-columns: minmax(25em, 45em) 25em;
     grid-template-areas: "content sidebar";
@@ -148,7 +157,7 @@ nav {
     flex: 1 1 0;
 }
 
-.username {
+.status-container .username {
     white-space: nowrap;
     overflow: hidden;
     max-width: 85%;
@@ -219,4 +228,144 @@ status-body {
     word-wrap: break-word;
     word-break: break-word;
     line-height: 1.4;
+}
+
+.user-info {
+    padding: 0.5em 26px;
+}
+
+.user-info .container {
+    padding: 18px 0 6px 0;
+    display: flex;
+    align-items: flex-start;
+    max-height: 56px;
+}
+
+.user-info a {
+    color: var(--lightText);
+}
+
+.user-info .avatar img {
+    height: 56px;
+    width: 56px;
+}
+
+.avatar img {
+    border-radius: 3px;
+    box-shadow: var(--avatarShadow);
+}
+
+.user-summary {
+    display: block;
+    margin-left: 0.6em;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1 1 0;
+    z-index: 1;
+    line-height: 2em;
+    color: var(--lightText);
+}
+
+.button-default {
+    user-select: none;
+    color: var(--btnText);
+    background-color: var(--btn);
+    border: none;
+    border-radius: 4px;
+    box-shadow: var(--btnShadow);
+    font-size: 1em;
+    min-height: 2em;
+}
+
+.button-default:hover {
+    box-shadow: var(--btnHoverShadow);
+}
+
+.user-bio {
+    text-align: center;
+    display: block;
+    line-height: 1.3;
+    padding: 1em;
+    margin: 0;
+}
+
+.user-banner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: linear-gradient(to bottom, var(--profileTint), var(--profileTint)),
+    				  var(--user-banner);
+    background-size: cover;
+    background-color: var(--profileBg);
+    -webkit-mask: linear-gradient(to top, white, transparent) bottom no-repeat,
+    			  linear-gradient(to top, white, white);
+    -webkit-mask-composite: xor;
+    -webkit-mask-size: 100% 60%;
+    z-index: -2;
+}
+
+.user-card {
+    position: relative;
+    z-index: 1;
+}
+
+.user-profile-fields {
+    margin: 0 0.5em;
+}
+
+.user-profile-field {
+    display: flex;
+    margin: 0.25em;
+    border: 1px solid var(--border, #222);
+    border-radius: 3px;
+    line-height: 1.3;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.user-profile-field dt {
+    padding: 0.5em 1.5em;
+    box-sizing: border-box;
+    flex: 0 1 30%;
+    font-weight: 500;
+    color: var(--lightText);
+    border-right: 1px solid var(--border);
+    text-align: right;
+}
+
+.user-profile-field dd {
+    padding: 0.5em 1.5em;
+    box-sizing: border-box;
+    flex: 1 1 30%;
+    margin: 0 0 0 0.25em;
+}
+
+.user-counts {
+    display: flex;
+    line-height: 1em;
+    padding: 0.5em 1.5em 0 1.5em;
+    text-align: center;
+    justify-content: space-between;
+    color: var(--lightText);
+    flex-wrap: wrap;
+}
+
+.user-count {
+    flex: 1 0 auto;
+    padding: 0.5em 0;
+    margin: 0 0.5em;
+}
+
+.user-count h5 {
+    font-size: 1em;
+    font-weight: bolder;
+    margin: 0 0 0.25em;
+}
+
+.profile .status-container {
+    border-bottom: 1px solid var(--border);
 }

@@ -19,7 +19,9 @@
     </nav>
     <div class="container">
       <div class="underlay"></div>
-      <%= @inner_content %>
+	  <div class="column main">
+        <%= @inner_content %>
+      </div>
       <div class="column sidebar">
         <div class="about panel">
           <div class="panel-heading">
