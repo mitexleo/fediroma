@@ -160,7 +160,8 @@ defmodule Pleroma.Web.StaticFE.StaticFEController do
       sensitive: data["sensitive"],
       selected: selected,
       counts: get_counts(activity),
-      id: activity.id
+      id: activity.id,
+	  visibility: Visibility.get_visibility(activity.object)
     }
   end
 

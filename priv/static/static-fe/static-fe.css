@@ -1,5 +1,6 @@
 /* pleroma-light and pleroma-dark themes from pleroma-fe */
 :root {
+	--icon: rgba(100, 103, 108, 1);
     --alertNeutral: rgba(185, 185, 186, 0.5);
 	--wallpaper: rgba(11, 16, 23, 1);
     --alertNeutralText: rgba(255, 255, 255, 1);
@@ -171,6 +172,11 @@ body > .container {
     display: flex;
 }
 
+.heading-right {
+	display: flex;
+    align-items: center;
+}
+
 .status-container .account-name {
     min-width: 1.6em;
     margin-right: 0.4em;
@@ -228,7 +234,8 @@ header a:hover, .h-card a:hover {
 }
 .status-actions > * {
     max-width: 4em;
-    flex: 1
+    flex: 1;
+	display: flex;
 }
 
 .status-summary {
@@ -445,4 +452,15 @@ status-body {
 
 .attachment:not(:last-child) {
 	margin-right: 0.5em;
+}
+
+.fa-icon {
+	height: 0.875em;
+	margin-left: 0.5em;
+	margin-right: 0.3em;
+	fill: var(--icon);
+}
+
+.status-actions .fa-icon {
+	height: 1.1em;
 }
