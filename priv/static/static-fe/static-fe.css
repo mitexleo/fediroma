@@ -152,6 +152,7 @@ body > .container {
 
 .right-side {
     flex: 1;
+	min-width: 0;
 }
 
 .status-heading {
@@ -418,4 +419,30 @@ status-body {
 .load-posts:hover {
 	background-color: var(--loadPostsSelected);
     color: var(--loadPostsSelectedText);
+}
+
+.attachments {
+	margin-top: 0.5em;
+	flex-direction: row;
+	display: flex;
+	flex-wrap: nowrap;
+	align-content: stretch;
+}
+
+.attachment {
+	border: 1px solid var(--border);
+	border-radius: 3px;
+	display: flex;
+	flex-grow: 1;
+	justify-content: center;
+	min-width: 0;
+}
+
+.attachment > * {
+	width: 100%;
+	object-fit: contain;
+}
+
+.attachment:not(:last-child) {
+	margin-right: 0.5em;
 }

@@ -36,24 +36,20 @@
       <span class="status-summary"><%= raw @title %></span>
       <details <%= if open_content?() do %>open<% end %>>
         <summary><%= gettext("Show content") %></summary>
-        <div class="status-body"><%= raw @content %></div>
-      </details>
-      <% else %>
-      <div class="status-body"><%= raw @content %></div>
       <% end %>
+        <div class="status-body">
+		  <%= raw @content %>
+	      <%= if length(@attachment) > 0 do %>
+		  <div class="attachments">
       <%= for %{"name" => name, "url" => [url | _]} <- @attachment do %>
-      <%= if @sensitive do %>
-      <details class="nsfw">
-        <summary><%= Gettext.gettext("sensitive media") %></summary>
-        <div>
-          <%= render("_attachment.html", %{name: name, url: url["href"],
-			                              mediaType: fetch_media_type(url)}) %>
-        </div>
-      </details>
-      <% else %>
-      <%= render("_attachment.html", %{name: name, url: url["href"],
-                                      mediaType: fetch_media_type(url)}) %>
+			<%= render("_attachment.html", %{name: name, url: url["href"],
+                                             mediaType: fetch_media_type(url)}) %>
       <% end %>
+		  </div>
+		  <% end %>
+		</div>
+      <%= if @title != "" do %>
+      </details>
       <% end %>
     </div>
     <!-- <div class="emoji-reactions"></div> -->
