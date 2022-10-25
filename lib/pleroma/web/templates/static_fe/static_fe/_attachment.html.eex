@@ -1,4 +1,9 @@
 <a class="attachment" href="<%= @url %>">
+  <%= if @nsfw do %>
+  <div class="nsfw-banner" alt="<%= @name %>" title="<%= @name %>">
+    <div><%= gettext("Hover to show content") %></div>
+  </div>
+  <% end %>
   <%= case @mediaType do %>
   <% "audio" -> %>
   <audio class="u-audio" src="<%= @url %>" controls="controls"></audio>

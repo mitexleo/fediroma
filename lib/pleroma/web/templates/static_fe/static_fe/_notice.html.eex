@@ -54,7 +54,7 @@
           <div class="attachments">
             <%= for %{"name" => name, "url" => [url | _]} <- @attachment do %>
               <%= render("_attachment.html", %{name: name, url: url["href"],
-                                               mediaType: fetch_media_type(url)}) %>
+                  mediaType: fetch_media_type(url), nsfw: @sensitive}) %>
             <% end %>
           </div>
           <% end %>

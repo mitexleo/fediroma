@@ -442,6 +442,7 @@ status-body {
     display: flex;
     flex-grow: 1;
     justify-content: center;
+    position: relative;
     min-width: 0;
 }
 
@@ -463,4 +464,22 @@ status-body {
 
 .status-actions .fa-icon {
     height: 1.1em;
+}
+
+.nsfw-banner {
+    position: absolute;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+.nsfw-banner div {
+    width: 100%;
+    text-align: center;
+}
+
+.nsfw-banner:not(:hover) {
+    background-color: var(--background);
+}
+.nsfw-banner:hover div {
+    display: none;
 }
