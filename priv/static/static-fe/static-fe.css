@@ -2,10 +2,10 @@
 :root {
 	--icon: rgba(100, 103, 108, 1);
     --alertNeutral: rgba(185, 185, 186, 0.5);
-	--wallpaper: rgba(11, 16, 23, 1);
+    --wallpaper: rgba(11, 16, 23, 1);
     --alertNeutralText: rgba(255, 255, 255, 1);
     --avatarShadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.7);
-	--loadPostsSelected: rgba(23, 34, 46, 1);
+    --loadPostsSelected: rgba(23, 34, 46, 1);
     --loadPostsSelectedText: rgba(185, 185, 186, 1);
     --profileBg: rgba(7, 12, 17, 1);
     --profileTint: rgba(15, 22, 30, 0.5);
@@ -34,7 +34,7 @@
 
 html {
     height: 100%;
-	overflow-y: auto;
+    overflow-y: auto;
 }
 
 body {
@@ -46,7 +46,7 @@ body {
 }
 
 .background-image {
-	position: fixed;
+    position: fixed;
     height: 100%;
     top: 3.5em;
     z-index: -1000;
@@ -54,7 +54,7 @@ body {
     right: -20px;
     background-size: cover;
     background-repeat: no-repeat;
-	background-color: var(--wallpaper);
+    background-color: var(--wallpaper);
     background-image: var(--background-image);
     background-position: 50%;
 }
@@ -65,13 +65,13 @@ a {
 }
 
 nav {
-	position: sticky;
+    position: sticky;
 	top: 0;
     width: 100%;
     height: 3.5em;
     background-color: var(--topBar);
     box-shadow: var(--topBarShadow);
-	z-index: 2000;
+    z-index: 2000;
 }
 
 .inner-nav {
@@ -153,7 +153,7 @@ body > .container {
 
 .right-side {
     flex: 1;
-	min-width: 0;
+    min-width: 0;
 }
 
 .status-heading {
@@ -173,7 +173,7 @@ body > .container {
 }
 
 .heading-right {
-	display: flex;
+    display: flex;
     align-items: center;
 }
 
@@ -235,7 +235,7 @@ header a:hover, .h-card a:hover {
 .status-actions > * {
     max-width: 4em;
     flex: 1;
-	display: flex;
+    display: flex;
 }
 
 .status-summary {
@@ -310,7 +310,7 @@ status-body {
 
 .button-default:hover {
     box-shadow: var(--btnHoverShadow);
-	cursor: pointer;
+    cursor: pointer;
 }
 
 .user-bio {
@@ -402,19 +402,19 @@ status-body {
 }
 
 .user-role {
-	color: var(--alertNeutralText);
-	background-color: var(--alertNeutral);
-	margin: 0 0.35em;
-	padding: 0 0.25em;
-	border-radius: 2px;
+    color: var(--alertNeutralText);
+    background-color: var(--alertNeutral);
+    margin: 0 0.35em;
+    padding: 0 0.25em;
+    border-radius: 2px;
 }
 
 .bottom-line {
-	display: flex;
+    display: flex;
 }
 
 .load-posts {
-	display: block;
+    display: block;
     box-sizing: border-box;
     height: 3.5em;
     line-height: 3.5em;
@@ -424,43 +424,43 @@ status-body {
 }
 
 .load-posts:hover {
-	background-color: var(--loadPostsSelected);
+    background-color: var(--loadPostsSelected);
     color: var(--loadPostsSelectedText);
 }
 
 .attachments {
-	margin-top: 0.5em;
-	flex-direction: row;
-	display: flex;
-	flex-wrap: nowrap;
-	align-content: stretch;
+    margin-top: 0.5em;
+    flex-direction: row;
+    display: flex;
+    flex-wrap: nowrap;
+    align-content: stretch;
 }
 
 .attachment {
-	border: 1px solid var(--border);
-	border-radius: 3px;
-	display: flex;
-	flex-grow: 1;
-	justify-content: center;
-	min-width: 0;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    min-width: 0;
 }
 
 .attachment > * {
-	width: 100%;
-	object-fit: contain;
+    width: 100%;
+    object-fit: contain;
 }
 
 .attachment:not(:last-child) {
-	margin-right: 0.5em;
+    margin-right: 0.5em;
 }
 
 .fa-icon {
-	height: 0.875em;
-	margin-left: 0.5em;
-	margin-right: 0.3em;
-	fill: var(--icon);
+    height: 0.875em;
+    margin-left: 0.5em;
+    margin-right: 0.3em;
+    fill: var(--icon);
 }
 
 .status-actions .fa-icon {
-	height: 1.1em;
+    height: 1.1em;
 }
