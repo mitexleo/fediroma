@@ -42,6 +42,7 @@ defmodule Pleroma.Workers.WorkerHelper do
         unquote(caller_module)
         |> apply(:new, [params, worker_args])
         |> Oban.insert()
+        |> IO.inspect()
       end
     end
   end

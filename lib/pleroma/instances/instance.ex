@@ -32,7 +32,7 @@ defmodule Pleroma.Instances.Instance do
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:host, :unreachable_since, :favicon, :favicon_updated_at])
+    |> cast(params, [:host, :unreachable_since, :favicon, :nodeinfo, :metadata_updated_at])
     |> validate_required([:host])
     |> unique_constraint(:host)
   end
@@ -141,34 +141,41 @@ defmodule Pleroma.Instances.Instance do
 
   def needs_update(nil), do: true
 
+  def needs_update(%Instance{metadata_updated_at: nil}), do: true
+
   def needs_update(%Instance{metadata_updated_at: metadata_updated_at}) do
     now = NaiveDateTime.utc_now()
     NaiveDateTime.diff(now, metadata_updated_at) > 86_400
   end
 
   def update_metadata(%URI{host: host} = uri) do
+    Logger.info("Checking metadata for #{host}")
     existing_record = Repo.get_by(Instance, %{host: host})
 
     if existing_record do
       if needs_update(existing_record) do
+        Logger.info("Updating metadata for #{host}")
         favicon = scrape_favicon(uri)
         nodeinfo = scrape_nodeinfo(uri)
 
-        %Instance{}
-        |> changeset(%{host: host, favicon: favicon, nodeinfo: nodeinfo})
+        existing_record
+        |> changeset(%{host: host, favicon: favicon, nodeinfo: nodeinfo, metadata_updated_at: NaiveDateTime.utc_now()})
         |> Repo.update()
+      else
+        {:discard, "Does not require update"}
       end
     else
       favicon = scrape_favicon(uri)
       nodeinfo = scrape_nodeinfo(uri)
 
+      Logger.info("Creating metadata for #{host}")
       %Instance{}
-      |> changeset(%{host: host, favicon: favicon, nodeinfo: nodeinfo})
+      |> changeset(%{host: host, favicon: favicon, nodeinfo: nodeinfo, metadata_updated_at: NaiveDateTime.utc_now()})
       |> Repo.insert()
     end
   end
 
-  def get_favicon(%URI{host: host} = instance_uri) do
+  def get_favicon(%URI{host: host}) do
     existing_record = Repo.get_by(Instance, %{host: host})
 
     if existing_record do
@@ -191,7 +198,7 @@ defmodule Pleroma.Instances.Instance do
            {:ok,
             Enum.find(links, &(&1["rel"] == "http://nodeinfo.diaspora.software/ns/schema/2.0"))},
          {:ok, %Tesla.Env{body: data}} <-
-           Pleroma.HTTP.get(ref, [{"accept", "application/json"}], []),
+           Pleroma.HTTP.get(href, [{"accept", "application/json"}], []),
          {:ok, nodeinfo} <- Jason.decode(data) do
       nodeinfo
     else
