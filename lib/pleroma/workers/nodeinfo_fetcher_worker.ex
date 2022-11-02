@@ -8,9 +8,10 @@ defmodule Pleroma.Workers.NodeInfoFetcherWorker do
   def perform(%Job{
         args: %{"op" => "process", "domain" => domain}
       }) do
-    uri = domain
-    |> URI.parse()
-    |> URI.merge("/")
+    uri =
+      domain
+      |> URI.parse()
+      |> URI.merge("/")
 
     Instance.update_metadata(uri)
   end

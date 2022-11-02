@@ -210,7 +210,11 @@ defmodule Pleroma.Web.ActivityPub.SideEffects do
       reply_depth = (meta[:depth] || 0) + 1
 
       IO.puts("QUEUE!")
-      Pleroma.Workers.NodeInfoFetcherWorker.enqueue("process", %{"domain" => activity.data["actor"]})
+
+      Pleroma.Workers.NodeInfoFetcherWorker.enqueue("process", %{
+        "domain" => activity.data["actor"]
+      })
+
       # FIXME: Force inReplyTo to replies
       if Pleroma.Web.Federator.allowed_thread_distance?(reply_depth) and
            object.data["replies"] != nil do

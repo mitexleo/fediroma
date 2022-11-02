@@ -5,6 +5,8 @@
 defmodule Pleroma.Instances.Instance do
   @moduledoc "Instance."
 
+  @cachex Pleroma.Config.get([:cachex, :provider], Cachex)
+
   alias Pleroma.Instances
   alias Pleroma.Instances.Instance
   alias Pleroma.Repo
@@ -158,9 +160,17 @@ defmodule Pleroma.Instances.Instance do
         favicon = scrape_favicon(uri)
         nodeinfo = scrape_nodeinfo(uri)
 
-        existing_record
-        |> changeset(%{host: host, favicon: favicon, nodeinfo: nodeinfo, metadata_updated_at: NaiveDateTime.utc_now()})
-        |> Repo.update()
+        {:ok, instance} =
+          existing_record
+          |> changeset(%{
+            host: host,
+            favicon: favicon,
+            nodeinfo: nodeinfo,
+            metadata_updated_at: NaiveDateTime.utc_now()
+          })
+          |> Repo.update()
+
+        @cachex.put(:instances_cache, "instances:#{host}", instance)
       else
         {:discard, "Does not require update"}
       end
@@ -169,9 +179,18 @@ defmodule Pleroma.Instances.Instance do
       nodeinfo = scrape_nodeinfo(uri)
 
       Logger.info("Creating metadata for #{host}")
-      %Instance{}
-      |> changeset(%{host: host, favicon: favicon, nodeinfo: nodeinfo, metadata_updated_at: NaiveDateTime.utc_now()})
-      |> Repo.insert()
+
+      {:ok, instance} =
+        %Instance{}
+        |> changeset(%{
+          host: host,
+          favicon: favicon,
+          nodeinfo: nodeinfo,
+          metadata_updated_at: NaiveDateTime.utc_now()
+        })
+        |> Repo.insert()
+
+      @cachex.put(:instances_cache, "instances:#{host}", instance)
     end
   end
 
@@ -254,5 +273,22 @@ defmodule Pleroma.Instances.Instance do
       end)
     end)
     |> Stream.run()
+  end
+
+  def get_by_url(url_or_host) do
+    url = host(url_or_host)
+    Repo.get_by(Instance, host: url)
+  end
+
+  def get_cached_by_url(url_or_host) do
+    url = host(url_or_host)
+
+    @cachex.fetch!(:instances_cache, "instances:#{url}", fn _ ->
+      with %Instance{} = instance <- get_by_url(url) do
+        {:ok, instance}
+      else
+        _ -> {:ignore, nil}
+      end
+    end)
   end
 end
