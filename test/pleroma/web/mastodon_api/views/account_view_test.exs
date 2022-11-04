@@ -121,6 +121,7 @@ defmodule Pleroma.Web.MastodonAPI.AccountViewTest do
 
     test "is parsed when :instance_favicons is enabled", %{user: user, instance: instance} do
       clear_config([:instances_favicons, :enabled], true)
+
       assert %{
                pleroma: %{
                  favicon: "https://example.com/favicon.ico"

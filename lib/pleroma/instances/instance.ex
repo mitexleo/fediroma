@@ -301,6 +301,7 @@ defmodule Pleroma.Instances.Instance do
 
   def get_cached_by_url(url_or_host) do
     url = host(url_or_host)
+
     @cachex.fetch!(:instances_cache, "instances:#{url}", fn _ ->
       with %Instance{} = instance <- get_by_url(url) do
         {:commit, {:ok, instance}}

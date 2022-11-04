@@ -237,13 +237,13 @@ defmodule Pleroma.Instances.InstanceTest do
         %{url: "https://bad-nodeinfo.example.org/.well-known/nodeinfo"} ->
           %Tesla.Env{
             status: 200,
-            body:
-              "oepsie woepsie de nodeinfo is kapotie uwu"
+            body: "oepsie woepsie de nodeinfo is kapotie uwu"
           }
       end)
 
       assert {:ok, true} ==
                Instance.update_metadata(URI.parse("https://bad-nodeinfo.example.org/"))
+
       {:ok, instance} = Instance.get_cached_by_url("https://bad-nodeinfo.example.org/")
       assert instance.nodeinfo == nil
     end
@@ -279,12 +279,14 @@ defmodule Pleroma.Instances.InstanceTest do
 
       assert {:ok, true} ==
                Instance.update_metadata(URI.parse("https://bad-nodeinfo.example.org/"))
+
       {:ok, instance} = Instance.get_cached_by_url("https://bad-nodeinfo.example.org/")
       assert instance.nodeinfo == nil
     end
 
     test "doesn't store incredibly long json nodeinfo" do
       too_long = String.duplicate("a", 50_000)
+
       Tesla.Mock.mock(fn
         %{url: "https://bad-nodeinfo.example.org/"} ->
           %Tesla.Env{
@@ -315,6 +317,7 @@ defmodule Pleroma.Instances.InstanceTest do
 
       assert {:ok, true} ==
                Instance.update_metadata(URI.parse("https://bad-nodeinfo.example.org/"))
+
       {:ok, instance} = Instance.get_cached_by_url("https://bad-nodeinfo.example.org/")
       assert instance.nodeinfo == nil
     end
