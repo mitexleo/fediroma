@@ -112,22 +112,25 @@ defmodule Pleroma.Web.MastodonAPI.AccountViewTest do
 
   describe "favicon" do
     setup do
-      [user: insert(:user), instance: insert(:instance, %{host: "localhost", favicon: "https://example.com/favicon.ico"})]
+      [
+        user: insert(:user),
+        instance:
+          insert(:instance, %{host: "localhost", favicon: "https://example.com/favicon.ico"})
+      ]
     end
 
-    test "is parsed when :instance_favicons is enabled", %{user: user} do
+    test "is parsed when :instance_favicons is enabled", %{user: user, instance: instance} do
       clear_config([:instances_favicons, :enabled], true)
-
       assert %{
                pleroma: %{
-                 favicon:
-                   "https://example.com/favicon.ico"
+                 favicon: "https://example.com/favicon.ico"
                }
              } = AccountView.render("show.json", %{user: user, skip_visibility_check: true})
     end
 
     test "is nil when we have no instance", %{user: user} do
       user = %{user | ap_id: "https://wowee.example.com/users/2"}
+
       assert %{pleroma: %{favicon: nil}} =
                AccountView.render("show.json", %{user: user, skip_visibility_check: true})
     end

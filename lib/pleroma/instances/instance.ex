@@ -154,6 +154,14 @@ defmodule Pleroma.Instances.Instance do
     Logger.info("Checking metadata for #{host}")
     existing_record = Repo.get_by(Instance, %{host: host})
 
+    if reachable?(host) do
+      do_update_metadata(uri, existing_record)
+    else
+      {:discard, :unreachable}
+    end
+  end
+
+  defp do_update_metadata(%URI{host: host} = uri, existing_record) do
     if existing_record do
       if needs_update(existing_record) do
         Logger.info("Updating metadata for #{host}")
@@ -205,7 +213,8 @@ defmodule Pleroma.Instances.Instance do
   end
 
   defp scrape_nodeinfo(%URI{} = instance_uri) do
-    with {_, true} <- {:reachable, reachable?(instance_uri.host)},
+    with true <- Pleroma.Config.get([:instances_nodeinfo, :enabled]),
+         {_, true} <- {:reachable, reachable?(instance_uri.host)},
          {:ok, %Tesla.Env{status: 200, body: body}} <-
            Tesla.get(
              "https://#{instance_uri.host}/.well-known/nodeinfo",
@@ -218,12 +227,20 @@ defmodule Pleroma.Instances.Instance do
             Enum.find(links, &(&1["rel"] == "http://nodeinfo.diaspora.software/ns/schema/2.0"))},
          {:ok, %Tesla.Env{body: data}} <-
            Pleroma.HTTP.get(href, [{"accept", "application/json"}], []),
+         {:length, true} <- {:length, String.length(data) < 50_000},
          {:ok, nodeinfo} <- Jason.decode(data) do
       nodeinfo
     else
       {:reachable, false} ->
         Logger.debug(
-          "Instance.scrape_favicon(\"#{to_string(instance_uri)}\") ignored unreachable host"
+          "Instance.scrape_nodeinfo(\"#{to_string(instance_uri)}\") ignored unreachable host"
+        )
+
+        nil
+
+      {:length, false} ->
+        Logger.debug(
+          "Instance.scrape_nodeinfo(\"#{to_string(instance_uri)}\") ignored too long body"
         )
 
         nil
@@ -234,13 +251,15 @@ defmodule Pleroma.Instances.Instance do
   end
 
   defp scrape_favicon(%URI{} = instance_uri) do
-    with {_, true} <- {:reachable, reachable?(instance_uri.host)},
+    with true <- Pleroma.Config.get([:instances_favicons, :enabled]),
+         {_, true} <- {:reachable, reachable?(instance_uri.host)},
          {:ok, %Tesla.Env{body: html}} <-
            Pleroma.HTTP.get(to_string(instance_uri), [{"accept", "text/html"}], []),
          {_, [favicon_rel | _]} when is_binary(favicon_rel) <-
            {:parse, html |> Floki.parse_document!() |> Floki.attribute("link[rel=icon]", "href")},
          {_, favicon} when is_binary(favicon) <-
-           {:merge, URI.merge(instance_uri, favicon_rel) |> to_string()} do
+           {:merge, URI.merge(instance_uri, favicon_rel) |> to_string()},
+         {:length, true} <- {:length, String.length(favicon) < 255} do
       favicon
     else
       {:reachable, false} ->
@@ -282,10 +301,9 @@ defmodule Pleroma.Instances.Instance do
 
   def get_cached_by_url(url_or_host) do
     url = host(url_or_host)
-
     @cachex.fetch!(:instances_cache, "instances:#{url}", fn _ ->
       with %Instance{} = instance <- get_by_url(url) do
-        {:ok, instance}
+        {:commit, {:ok, instance}}
       else
         _ -> {:ignore, nil}
       end
