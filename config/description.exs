@@ -1389,6 +1389,12 @@ config :pleroma, :config_description, [
             label: "Render misskey markdown",
             type: :boolean,
             description: "Whether to render Misskey-flavoured markdown"
+          },
+          %{
+            key: :stopGifs,
+            label: "Stop Gifs",
+            type: :boolean,
+            description: "Whether to pause animated images until they're hovered on"
           }
         ]
       },
