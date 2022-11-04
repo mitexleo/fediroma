@@ -6,7 +6,7 @@ defmodule Pleroma.Workers.NodeInfoFetcherWorker do
 
   @impl Oban.Worker
   def perform(%Job{
-        args: %{"op" => "process", "domain" => domain}
+        args: %{"op" => "process", "source_url" => domain}
       }) do
     uri =
       domain
