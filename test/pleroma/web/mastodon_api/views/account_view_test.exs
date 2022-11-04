@@ -25,6 +25,7 @@ defmodule Pleroma.Web.MastodonAPI.AccountViewTest do
 
     user =
       insert(:user, %{
+        ap_id: "https://example.com/users/chikichikibanban",
         follower_count: 3,
         note_count: 5,
         background: background_image,
@@ -38,6 +39,8 @@ defmodule Pleroma.Web.MastodonAPI.AccountViewTest do
         also_known_as: ["https://shitposter.zone/users/shp"]
       })
 
+    insert(:instance, %{host: "example.com", nodeinfo: %{version: "2.1"}})
+
     expected = %{
       id: to_string(user.id),
       username: "shp",
@@ -50,6 +53,15 @@ defmodule Pleroma.Web.MastodonAPI.AccountViewTest do
       statuses_count: 5,
       note: "<span>valid html</span>. a<br/>b<br/>c<br/>d<br/>f &#39;&amp;&lt;&gt;&quot;",
       url: user.ap_id,
+      akkoma: %{
+        instance: %{
+          name: "example.com",
+          nodeinfo: %{
+            "version" => "2.1"
+          },
+          favicon: nil
+        }
+      },
       avatar: "http://localhost:4001/images/avi.png",
       avatar_static: "http://localhost:4001/images/avi.png",
       header: "http://localhost:4001/images/banner.png",
@@ -597,5 +609,11 @@ defmodule Pleroma.Web.MastodonAPI.AccountViewTest do
       end)
       |> assert()
     end
+  end
+
+  test "returns nil in the instance field when no instance is held locally" do
+    user = insert(:user)
+    view = AccountView.render("show.json", %{user: user, skip_visibility_check: true})
+    assert view[:akkoma][:instance] == nil
   end
 end
