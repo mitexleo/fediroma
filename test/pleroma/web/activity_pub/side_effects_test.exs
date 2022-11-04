@@ -43,7 +43,10 @@ defmodule Pleroma.Web.ActivityPub.SideEffectsTest do
       {:ok, _create_activity, _meta} =
         SideEffects.handle(create_activity, local: false, object_data: note_data)
 
-      assert_enqueued(worker: Pleroma.Workers.NodeInfoFetcherWorker, args: %{"op" => "process", "source_url" => "https://wowee.example.com/users/1"})
+      assert_enqueued(
+        worker: Pleroma.Workers.NodeInfoFetcherWorker,
+        args: %{"op" => "process", "source_url" => "https://wowee.example.com/users/1"}
+      )
     end
   end
 

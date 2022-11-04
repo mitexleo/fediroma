@@ -421,7 +421,6 @@ defmodule Pleroma.Web.MastodonAPI.StatusView do
     nil
   end
 
-
   def render("history.json", %{activity: %{data: %{"object" => _object}} = activity} = opts) do
     object = Object.normalize(activity, fetch: false)
 

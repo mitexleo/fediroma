@@ -41,7 +41,7 @@ defmodule Pleroma.Workers.WorkerHelper do
 
         unquote(caller_module)
         |> apply(:new, [params, worker_args])
-        |> Oban.insert()\
+        |> Oban.insert()
       end
     end
   end

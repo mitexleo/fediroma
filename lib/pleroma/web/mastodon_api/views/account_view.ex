@@ -240,19 +240,21 @@ defmodule Pleroma.Web.MastodonAPI.AccountView do
         %{}
       end
 
-    instance = with {:ok, instance} <- Pleroma.Instances.Instance.get_cached_by_url(user.ap_id) do
-      instance
-    else
-       _ ->
+    instance =
+      with {:ok, instance} <- Pleroma.Instances.Instance.get_cached_by_url(user.ap_id) do
+        instance
+      else
+        _ ->
           nil
-    end
+      end
 
-    favicon = if is_nil(instance) do
-      nil
-    else
-      instance.favicon
-      |> MediaProxy.url()
-    end
+    favicon =
+      if is_nil(instance) do
+        nil
+      else
+        instance.favicon
+        |> MediaProxy.url()
+      end
 
     %{
       id: to_string(user.id),
