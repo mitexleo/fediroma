@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 defmodule Pleroma.Web.MastodonAPI.AccountViewTest do
-  use Pleroma.DataCase
+  use Pleroma.DataCase, async: false
 
   alias Pleroma.User
   alias Pleroma.UserRelationship
@@ -12,6 +12,7 @@ defmodule Pleroma.Web.MastodonAPI.AccountViewTest do
 
   import Pleroma.Factory
   import Tesla.Mock
+  import Mock
 
   setup do
     mock(fn env -> apply(HttpRequestMock, :request, [env]) end)
@@ -110,12 +111,56 @@ defmodule Pleroma.Web.MastodonAPI.AccountViewTest do
     assert expected == AccountView.render("show.json", %{user: user, skip_visibility_check: true})
   end
 
+  describe "nodeinfo" do
+    setup do
+      [
+        user: insert(:user, ap_id: "https://somewhere.example.com/users/chikichikibanban"),
+        instance:
+          insert(:instance, %{
+            host: "somewhere.example.com",
+            favicon: "https://example.com/favicon.ico"
+          })
+      ]
+    end
+
+    test "is embedded in the account view", %{user: user} do
+      assert %{
+               akkoma: %{
+                 instance: %{
+                   name: "somewhere.example.com",
+                   nodeinfo: %{
+                     "version" => "2.0"
+                   },
+                   favicon: "https://example.com/favicon.ico"
+                 }
+               }
+             } = AccountView.render("show.json", %{user: user, skip_visibility_check: true})
+    end
+
+    test "uses local nodeinfo for local users" do
+      user = insert(:user)
+
+      assert %{
+               akkoma: %{
+                 instance: %{
+                   name: "localhost",
+                   nodeinfo: %{
+                     software: %{
+                       name: "akkoma"
+                     }
+                   }
+                 }
+               }
+             } = AccountView.render("show.json", %{user: user, skip_visibility_check: true})
+    end
+  end
+
   describe "favicon" do
     setup do
       [
-        user: insert(:user),
+        user: insert(:user, ap_id: "https://example.com/users/chikichikibanban"),
         instance:
-          insert(:instance, %{host: "localhost", favicon: "https://example.com/favicon.ico"})
+          insert(:instance, %{host: "example.com", favicon: "https://example.com/favicon.ico"})
       ]
     end
 
@@ -193,12 +238,18 @@ defmodule Pleroma.Web.MastodonAPI.AccountViewTest do
       },
       fqn: "shp@shitposter.club",
       last_status_at: nil,
-      akkoma: %{instance: nil},
+      akkoma: %{
+        instance: %{
+          name: "localhost",
+          favicon: "http://localhost:4001/favicon.png",
+          nodeinfo: %{version: "2.0"}
+        }
+      },
       pleroma: %{
         ap_id: user.ap_id,
         also_known_as: [],
         background_image: nil,
-        favicon: nil,
+        favicon: "http://localhost:4001/favicon.png",
         is_confirmed: true,
         tags: [],
         is_admin: false,
@@ -214,7 +265,13 @@ defmodule Pleroma.Web.MastodonAPI.AccountViewTest do
       }
     }
 
-    assert expected == AccountView.render("show.json", %{user: user, skip_visibility_check: true})
+    with_mock(
+      Pleroma.Web.Nodeinfo.NodeinfoController,
+      raw_nodeinfo: fn -> %{version: "2.0"} end
+    ) do
+      assert expected ==
+               AccountView.render("show.json", %{user: user, skip_visibility_check: true})
+    end
   end
 
   test "Represent a Funkwhale channel" do
@@ -623,7 +680,7 @@ defmodule Pleroma.Web.MastodonAPI.AccountViewTest do
   end
 
   test "returns nil in the instance field when no instance is held locally" do
-    user = insert(:user)
+    user = insert(:user, ap_id: "https://example.com/users/1")
     view = AccountView.render("show.json", %{user: user, skip_visibility_check: true})
     assert view[:akkoma][:instance] == nil
   end

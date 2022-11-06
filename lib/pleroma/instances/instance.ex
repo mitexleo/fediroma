@@ -150,6 +150,14 @@ defmodule Pleroma.Instances.Instance do
     NaiveDateTime.diff(now, metadata_updated_at) > 86_400
   end
 
+  def local do
+    %Instance{
+      host: Pleroma.Web.Endpoint.host(),
+      favicon: Pleroma.Web.Endpoint.url() <> "/favicon.png",
+      nodeinfo: Pleroma.Web.Nodeinfo.NodeinfoController.raw_nodeinfo()
+    }
+  end
+
   def update_metadata(%URI{host: host} = uri) do
     Logger.info("Checking metadata for #{host}")
     existing_record = Repo.get_by(Instance, %{host: host})
@@ -302,12 +310,16 @@ defmodule Pleroma.Instances.Instance do
   def get_cached_by_url(url_or_host) do
     url = host(url_or_host)
 
-    @cachex.fetch!(:instances_cache, "instances:#{url}", fn _ ->
-      with %Instance{} = instance <- get_by_url(url) do
-        {:commit, {:ok, instance}}
-      else
-        _ -> {:ignore, nil}
-      end
-    end)
+    if url == Pleroma.Web.Endpoint.host() do
+      {:ok, local()}
+    else
+      @cachex.fetch!(:instances_cache, "instances:#{url}", fn _ ->
+        with %Instance{} = instance <- get_by_url(url) do
+          {:commit, {:ok, instance}}
+        else
+          _ -> {:ignore, nil}
+        end
+      end)
+    end
   end
 end
