@@ -37,4 +37,16 @@ defmodule Pleroma.Workers.PublisherWorkerTest do
       assert {:ok, %Oban.Job{priority: 0}} = Federator.publish(post)
     end
   end
+
+  describe "Oban job timeout" do
+    test "should have a timeout" do
+      clear_config([:workers, :timeout, :federator_outgoing], :timer.minutes(2))
+      assert Pleroma.Workers.PublisherWorker.timeout(nil) == :timer.minutes(2)
+    end
+
+    test "should use a default timeout if none specified" do
+      clear_config([:workers, :timeout, :federator_outgoing])
+      assert Pleroma.Workers.PublisherWorker.timeout(nil) == :timer.seconds(10)
+    end
+  end
 end
