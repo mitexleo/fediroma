@@ -30,7 +30,6 @@ defmodule Pleroma.Workers.PublisherWorkerTest do
     end
 
     test "Deletions are lower priority", %{delete: delete} do
-      IO.inspect(delete)
       assert {:ok, %Oban.Job{priority: 3}} = Federator.publish(delete)
     end
 
