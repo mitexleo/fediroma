@@ -208,4 +208,4 @@ pipeline:
       repo: akkoma/akkoma
       dockerfile: Dockerfile
       platforms: windows/amd64,darwin/amd64,darwin/arm64,freebsd/amd64,linux/amd64,linux/arm64/v8
-      tag: $CI_COMMIT_BRANCH
+      tag: ${CI_COMMIT_BRANCH}
