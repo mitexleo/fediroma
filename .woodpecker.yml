@@ -195,3 +195,17 @@ pipeline:
       - zip -r docs.zip site/*
       - cd site
       - rclone copy . scaleway:akkoma-docs/$CI_COMMIT_BRANCH/
+
+  docker-main-container:
+    when:
+      event:
+        - push
+      branch:
+        - buildx
+    image: woodpeckerci/plugin-docker-buildx
+    secrets: [ docker_username, docker_password ]
+    settings:
+      repo: akkoma/akkoma
+      dockerfile: Dockerfile
+      platforms: windows/amd64,darwin/amd64,darwin/arm64,freebsd/amd64,linux/amd64,linux/arm64/v8
+      tag: ${CI_COMMIT_TAG:-"$CI_COMMIT_BRANCH"}
