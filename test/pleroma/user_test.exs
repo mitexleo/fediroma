@@ -984,7 +984,8 @@ defmodule Pleroma.UserTest do
           %Tesla.Env{status: 404}
       end)
 
-      assert {:ok, %User{also_known_as: []}} = User.get_or_fetch_by_ap_id("https://mbp.example.com/")
+      assert {:ok, %User{also_known_as: []}} =
+               User.get_or_fetch_by_ap_id("https://mbp.example.com/")
     end
   end
 
