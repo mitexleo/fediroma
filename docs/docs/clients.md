@@ -3,13 +3,6 @@ Note: Additional clients may work, but these are known to work with Akkoma.
 Apps listed here might not support all of Akkoma's features.
 
 ## Desktop
-### Social
-- Source Code: <https://gitlab.gnome.org/World/Social>
-- Contact: [@brainblasted@social.libre.fi](https://social.libre.fi/users/brainblasted)
-- Platforms: Linux (GNOME)
-- Note(2019-01-28): Not at a pre-alpha stage yet
-- Features: MastoAPI
-
 ### Whalebird
 - Homepage: <https://whalebird.social/>
 - Source Code: <https://github.com/h3poteto/whalebird-desktop>
