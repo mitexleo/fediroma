@@ -1,8 +1,8 @@
 /* pleroma-light and pleroma-dark themes from pleroma-fe */
 :root {
     --icon: rgba(100, 103, 108, 1);
-    --alertNeutral: rgba(185, 185, 186, 0.5);
     --wallpaper: rgba(11, 16, 23, 1);
+    --alertNeutral: rgba(185, 185, 186, 0.5);
     --alertNeutralText: rgba(255, 255, 255, 1);
     --avatarShadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.7);
     --loadPostsSelected: rgba(23, 34, 46, 1);
@@ -21,14 +21,40 @@
     --topBarShadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.4) , 0px 2px 7px 0px rgba(0, 0, 0, 0.3);
     --underlay: rgba(9, 14, 20, 0.6);
     --background: rgba(15, 22, 30, 1);
-    --selectedFaint: rgba(185, 185, 186, 1);
     --faint: rgba(185, 185, 186, 0.5);
     --selectedPost: rgba(23, 34, 46, 1);
     --link: rgba(226, 177, 136, 1);
     --text: rgba(185, 185, 186, 1);
     --border: rgba(26, 37, 53, 1);
-    @media (prefers-color-scheme: light) {
-
+}
+@media (prefers-color-scheme: light) {
+    :root {
+        --icon: rgba(145, 155, 167, 1);
+        --wallpaper: rgba(248, 250, 252, 1);
+        --alertNeutral: rgba(48, 64, 85, 0.5);
+        --alertNeutralText: rgba(0, 0, 0, 1);
+        --avatarShadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.7);
+        --loadPostsSelected: rgba(224, 233, 240, 1);
+        --loadPostsSelectedText: rgba(48, 64, 85, 1);
+        --profileBg: rgba(128, 137, 146, 1);
+        --profileTint: rgba(242, 246, 249, 0.5);
+        --btnText: rgba(48, 64, 85, 1);
+        --btn: rgba(214, 223, 237, 1);
+        --btnShadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.2) , 0px 1px 0px 0px rgba(255, 255, 255, 0.5) inset, 0px -1px 0px 0px rgba(0, 0, 0, 0.2) inset;
+        --btnHoverShadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.2) , 0px 0px 1px 2px rgba(255, 195, 159, 1) inset, 0px -1px 0px 0px rgba(0, 0, 0, 0.2) inset;
+        --lightText: rgba(11, 14, 19, 1);
+        --panelShadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.5) , 0px 3px 6px 1px rgba(0, 0, 0, 0.2);
+        --panelHeaderShadow: 0px 1px 0px 0px rgba(255, 255, 255, 0.5) inset, 0px 1px 3px 0px rgba(0, 0, 0, 0.3);
+        --topBar: rgba(214, 223, 237, 1);
+        --topBarText: rgba(48, 64, 85, 1);
+        --topBarShadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.6);
+        --underlay: rgba(93, 96, 134, 0.4);
+        --background: rgba(242, 246, 249, 1);
+        --faint: rgba(48, 64, 85, 0.5);
+        --selectedPost: rgba(224, 233, 240, 1);
+        --link: rgba(245, 91, 27, 1);
+        --text: rgba(48, 64, 85, 1);
+        --border: rgba(216, 230, 249, 1);
     }
 }
 
@@ -142,7 +168,8 @@ body > .container {
     padding-left: 0.5em;
 }
 
-.status-container {
+.status-container,
+.user-card {
     display: flex;
     padding: 0.75em;
 }
@@ -159,17 +186,6 @@ body > .container {
 .status-heading {
     margin-bottom: 0.5em;
     line-height: 1.3;
-}
-
-.heading-name-row {
-    display: flex;
-    justify-content: space-between;
-}
-
-.heading-edited-row,
-.heading-reply-row {
-    font-size: 0.85em;
-    margin-top: 0.2em;
 }
 
 .status-heading a {
@@ -206,6 +222,24 @@ body > .container {
     text-overflow: ellipsis;
 }
 
+.heading-name-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.heading-edited-row,
+.heading-reply-row {
+    font-size: 0.85em;
+    margin-top: 0.2em;
+}
+
+.reply-to-link {
+    color: var(--faint);
+}
+.reply-to-link:hover {
+    text-decoration: underline;
+}
+
 #selected {
     background-color: var(--selectedPost);
 }
@@ -215,7 +249,7 @@ body > .container {
 }
 
 #selected .timeago {
-    color: var(--selectedFaint);
+    color: var(--text);
 }
 
 .timeago :hover {
@@ -233,6 +267,51 @@ header a, .h-card a {
 
 header a:hover, .h-card a:hover {
     text-decoration: underline;
+}
+
+.attachments {
+    margin-top: 0.5em;
+    flex-direction: row;
+    display: flex;
+    flex-wrap: nowrap;
+    align-content: stretch;
+}
+
+.attachment {
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    position: relative;
+    min-width: 0;
+}
+
+.attachment > * {
+    width: 100%;
+    object-fit: contain;
+}
+
+.attachment:not(:last-child) {
+    margin-right: 0.5em;
+}
+
+.nsfw-banner {
+    position: absolute;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+.nsfw-banner div {
+    width: 100%;
+    text-align: center;
+}
+
+.nsfw-banner:not(:hover) {
+    background-color: var(--background);
+}
+.nsfw-banner:hover div {
+    display: none;
 }
 
 .status-actions {
@@ -352,6 +431,14 @@ status-body {
     z-index: 1;
 }
 
+.user-role {
+    color: var(--alertNeutralText);
+    background-color: var(--alertNeutral);
+    margin: 0 0.35em;
+    padding: 0 0.25em;
+    border-radius: 2px;
+}
+
 .user-profile-fields {
     margin: 0 0.5em;
 }
@@ -406,112 +493,6 @@ status-body {
     margin: 0 0 0.25em;
 }
 
-.profile .status-container {
-    border-bottom: 1px solid var(--border);
-}
-
-.user-role {
-    color: var(--alertNeutralText);
-    background-color: var(--alertNeutral);
-    margin: 0 0.35em;
-    padding: 0 0.25em;
-    border-radius: 2px;
-}
-
-.bottom-line {
-    display: flex;
-}
-
-.load-posts {
-    display: block;
-    box-sizing: border-box;
-    height: 3.5em;
-    line-height: 3.5em;
-    padding: 0 1em;
-    width: 100%;
-    text-align: center;
-}
-
-.load-posts:hover {
-    background-color: var(--loadPostsSelected);
-    color: var(--loadPostsSelectedText);
-}
-
-.attachments {
-    margin-top: 0.5em;
-    flex-direction: row;
-    display: flex;
-    flex-wrap: nowrap;
-    align-content: stretch;
-}
-
-.attachment {
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    display: flex;
-    flex-grow: 1;
-    justify-content: center;
-    position: relative;
-    min-width: 0;
-}
-
-.attachment > * {
-    width: 100%;
-    object-fit: contain;
-}
-
-.attachment:not(:last-child) {
-    margin-right: 0.5em;
-}
-
-.fa-icon {
-    height: 0.875em;
-    margin: 0 0.3em;
-    fill: var(--icon);
-}
-
-.status-actions .fa-icon {
-    height: 1.1em;
-}
-
-.user-summary .fa-icon {
-    margin-left: 0.5em;
-}
-
-.reply-to-link .fa-icon {
-    transform: scale(-1, 1);
-}
-
-.nsfw-banner {
-    position: absolute;
-    height: 100%;
-    display: flex;
-    align-items: center;
-}
-.nsfw-banner div {
-    width: 100%;
-    text-align: center;
-}
-
-.nsfw-banner:not(:hover) {
-    background-color: var(--background);
-}
-.nsfw-banner:hover div {
-    display: none;
-}
-
-.reply-to-link {
-    color: var(--faint);
-}
-.reply-to-link:hover {
-    text-decoration: underline;
-}
-
-.user-card {
-    display: flex;
-    padding: 0.75em;
-}
-
 .tab-switcher {
     display: flex;
     padding-top: 5px;
@@ -536,3 +517,47 @@ status-body {
 .tab.active {
     background: transparent;
 }
+
+.profile .status-container {
+    border-bottom: 1px solid var(--border);
+}
+
+.bottom-line {
+    display: flex;
+}
+
+.load-posts {
+    display: block;
+    box-sizing: border-box;
+    height: 3.5em;
+    line-height: 3.5em;
+    padding: 0 1em;
+    width: 100%;
+    text-align: center;
+}
+
+.load-posts:hover {
+    background-color: var(--loadPostsSelected);
+    color: var(--loadPostsSelectedText);
+}
+
+
+.fa-icon {
+    height: 0.875em;
+    margin: 0 0.3em;
+    fill: var(--icon);
+}
+
+.status-actions .fa-icon {
+    height: 1.1em;
+}
+
+.user-summary .fa-icon {
+    margin-left: 0.5em;
+}
+
+.reply-to-link .fa-icon {
+    transform: scale(-1, 1);
+}
+
+
