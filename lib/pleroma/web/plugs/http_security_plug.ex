@@ -47,7 +47,6 @@ defmodule Pleroma.Web.Plugs.HTTPSecurityPlug do
       {"x-frame-options", "DENY"},
       {"x-content-type-options", "nosniff"},
       {"referrer-policy", referrer_policy},
-      {"x-download-options", "noopen"},
       {"content-security-policy", csp_string()},
       {"permissions-policy", "interest-cohort=()"}
     ]

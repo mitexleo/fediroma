@@ -17,7 +17,6 @@ defmodule Pleroma.Web.Plugs.HTTPSecurityPlugTest do
       refute Conn.get_resp_header(conn, "x-permitted-cross-domain-policies") == []
       refute Conn.get_resp_header(conn, "x-frame-options") == []
       refute Conn.get_resp_header(conn, "x-content-type-options") == []
-      refute Conn.get_resp_header(conn, "x-download-options") == []
       refute Conn.get_resp_header(conn, "referrer-policy") == []
       refute Conn.get_resp_header(conn, "content-security-policy") == []
     end
@@ -155,7 +154,6 @@ defmodule Pleroma.Web.Plugs.HTTPSecurityPlugTest do
     assert Conn.get_resp_header(conn, "x-permitted-cross-domain-policies") == []
     assert Conn.get_resp_header(conn, "x-frame-options") == []
     assert Conn.get_resp_header(conn, "x-content-type-options") == []
-    assert Conn.get_resp_header(conn, "x-download-options") == []
     assert Conn.get_resp_header(conn, "referrer-policy") == []
     assert Conn.get_resp_header(conn, "content-security-policy") == []
   end

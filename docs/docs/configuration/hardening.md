@@ -27,7 +27,6 @@ This will send additional HTTP security headers to the clients, including:
 * `X-Permitted-Cross-Domain-Policies: "none"`
 * `X-Frame-Options: "DENY"`
 * `X-Content-Type-Options: "nosniff"`
-* `X-Download-Options: "noopen"`
 
 A content security policy (CSP) will also be set:
 
