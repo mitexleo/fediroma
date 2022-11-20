@@ -1750,7 +1750,7 @@ config :pleroma, :config_description, [
         label: "STS max age",
         type: :integer,
         description: "The maximum age for the Strict-Transport-Security header if sent",
-        suggestions: [31_536_000]
+        suggestions: [63_072_000]
       },
       %{
         key: :ct_max_age,
