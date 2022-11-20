@@ -33,7 +33,7 @@ A content security policy (CSP) will also be set:
 ```csp
 content-security-policy:
   default-src 'none';
-  base-uri 'self';
+  base-uri 'none';
   frame-ancestors 'none';
   img-src 'self' data: blob: https:;
   media-src 'self' https:;

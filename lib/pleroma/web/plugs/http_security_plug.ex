@@ -75,7 +75,7 @@ defmodule Pleroma.Web.Plugs.HTTPSecurityPlug do
 
   static_csp_rules = [
     "default-src 'none'",
-    "base-uri 'self'",
+    "base-uri 'none'",
     "frame-ancestors 'none'",
     "style-src 'self' 'unsafe-inline'",
     "font-src 'self'",
