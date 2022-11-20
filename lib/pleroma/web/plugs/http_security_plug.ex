@@ -236,11 +236,9 @@ your instance and your users via malicious posts:
 
   defp maybe_send_sts_header(conn, true) do
     max_age_sts = Config.get([:http_security, :sts_max_age])
-    max_age_ct = Config.get([:http_security, :ct_max_age])
 
     merge_resp_headers(conn, [
-      {"strict-transport-security", "max-age=#{max_age_sts}; includeSubDomains"},
-      {"expect-ct", "enforce, max-age=#{max_age_ct}"}
+      {"strict-transport-security", "max-age=#{max_age_sts}; includeSubDomains"}
     ])
   end
 

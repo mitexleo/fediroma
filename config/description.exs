@@ -1753,13 +1753,6 @@ config :pleroma, :config_description, [
         suggestions: [63_072_000]
       },
       %{
-        key: :ct_max_age,
-        label: "CT max age",
-        type: :integer,
-        description: "The maximum age for the Expect-CT header if sent",
-        suggestions: [2_592_000]
-      },
-      %{
         key: :referrer_policy,
         type: :string,
         description: "The referrer policy to use, either \"same-origin\" or \"no-referrer\"",

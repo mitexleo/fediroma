@@ -488,7 +488,6 @@ config :pleroma, :http_security,
   enabled: true,
   sts: false,
   sts_max_age: 63_072_000,
-  ct_max_age: 2_592_000,
   referrer_policy: "same-origin"
 
 config :cors_plug,

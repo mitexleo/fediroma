@@ -27,7 +27,6 @@ defmodule Pleroma.Web.Plugs.HTTPSecurityPlugTest do
       conn = get(conn, "/api/v1/instance")
 
       refute Conn.get_resp_header(conn, "strict-transport-security") == []
-      refute Conn.get_resp_header(conn, "expect-ct") == []
     end
 
     test "it does not send STS headers when disabled", %{conn: conn} do
@@ -36,7 +35,6 @@ defmodule Pleroma.Web.Plugs.HTTPSecurityPlugTest do
       conn = get(conn, "/api/v1/instance")
 
       assert Conn.get_resp_header(conn, "strict-transport-security") == []
-      assert Conn.get_resp_header(conn, "expect-ct") == []
     end
 
     test "referrer-policy header reflects configured value", %{conn: conn} do

@@ -51,10 +51,6 @@ content-security-policy:
 
 An additional “Strict transport security” header will be sent with the configured `sts_max_age` parameter. This tells the browser, that the domain should only be accessed over a secure HTTPs connection.
 
-#### `ct_max_age`
-
-An additional “Expect-CT” header will be sent with the configured `ct_max_age` parameter. This enforces the use of TLS certificates that are published in the certificate transparency log. (see [Expect-CT](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Expect-CT))
-
 #### `referrer_policy`
 
 > Recommended value: `same-origin`
