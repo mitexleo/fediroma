@@ -2669,7 +2669,8 @@ config :pleroma, :config_description, [
         key: :receive_timeout,
         label: "HTTP Receive Timeout",
         type: :integer,
-        description: "Timeout for waiting on remote servers to respond to HTTP requests (in ms, default 15000)",
+        description:
+          "Timeout for waiting on remote servers to respond to HTTP requests (in ms, default 15000)",
         suggestions: [15000]
       },
       %{
