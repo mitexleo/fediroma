@@ -13,8 +13,8 @@ defmodule Pleroma.Web.MediaProxy.Invalidation.ScriptTest do
              assert Invalidation.Script.purge(
                       ["http://example.com/media/example.jpg"],
                       script_path: "./example"
-                    ) == {:error, "%ErlangError{original: :enoent}"}
-           end) =~ "Error while cache purge: %ErlangError{original: :enoent}"
+                    ) == {:error, "%ErlangError{original: :enoent, reason: nil}"}
+           end) =~ "Error while cache purge: %ErlangError{original: :enoent"
 
     capture_log(fn ->
       assert Invalidation.Script.purge(
