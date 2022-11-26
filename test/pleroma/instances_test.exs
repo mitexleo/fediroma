@@ -4,6 +4,7 @@
 
 defmodule Pleroma.InstancesTest do
   alias Pleroma.Instances
+  alias Pleroma.Instances.Instance
 
   use Pleroma.DataCase
 
@@ -128,6 +129,9 @@ defmodule Pleroma.InstancesTest do
 
       {:ok, instance} = Instances.set_request_signatures(host)
       assert instance.has_request_signatures
+
+      {:ok, cached_instance} = Instance.get_cached_by_url(host)
+      assert cached_instance.has_request_signatures
     end
 
     test "returns error status on non-binary input" do
