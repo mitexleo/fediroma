@@ -104,7 +104,9 @@ defmodule Pleroma.Web.Plugs.HTTPSignaturePlug do
           :noop
 
         any ->
-          Logger.warn("expected request signature cache to run, got #{any}")
+          Logger.warn(
+            "expected request signature cache to return a boolean, instead got #{inspect(any)}"
+          )
       end
     end
 
