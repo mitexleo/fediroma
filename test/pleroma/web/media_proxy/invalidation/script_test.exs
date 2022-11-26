@@ -10,10 +10,10 @@ defmodule Pleroma.Web.MediaProxy.Invalidation.ScriptTest do
 
   test "it logs error when script is not found" do
     assert capture_log(fn ->
-             assert Invalidation.Script.purge(
+             assert {:error, _} = Invalidation.Script.purge(
                       ["http://example.com/media/example.jpg"],
                       script_path: "./example"
-                    ) == {:error, "%ErlangError{original: :enoent, reason: nil}"}
+                    )
            end) =~ "Error while cache purge: %ErlangError{original: :enoent"
 
     capture_log(fn ->
