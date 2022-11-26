@@ -55,7 +55,7 @@ An additional “Strict transport security” header will be sent with the confi
 
 > Recommended value: `same-origin`
 
-If you click on a link, your browser’s request to the other site will include from where it is coming from. The “Referrer policy” header tells the browser how and if it should send this information. (see [Referrer policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy))
+If you click on a link, your browser’s request to the other site will include from where it is coming from. The “Referrer policy” header tells the browser how and if it should send this information. (see [Referrer policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy)). `no-referrer` can be used if a referrer is not needed for improved privacy.
 
 ## systemd
 
