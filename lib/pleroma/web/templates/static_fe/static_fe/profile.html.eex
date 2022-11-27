@@ -60,13 +60,13 @@
         <span><%= if @user.hide_followers_count do gettext("Hidden") else @user.follower_count end %></span>
       </div>
     </div>
-    <span class="user-bio"><%= raw @user.bio %></span>
+    <span class="user-bio"><%= raw Formatter.emojify(@user.bio, @user.emoji) %></span>
   </div>
   <div class="user-profile-fields">
     <%= for field <- @user.fields do %>
     <div class="user-profile-field">
-      <dt title="<%= field["name"] %>"><%= field["name"] %></dt>
-      <dd title="<%= field["value"] %>"><%= field["value"] %></dd>
+      <dt title="<%= field["name"] %>"><%= raw Formatter.emojify(field["name"], @user.emoji) %></dt>
+      <dd title="<%= field["value"] %>"><%= raw Formatter.emojify(field["value"], @user.emoji) %></dd>
     </div>
     <% end %>
   </div>
