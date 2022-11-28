@@ -1,6 +1,6 @@
-<a class="attachment" href="<%= @url %>">
+<a class="attachment" href="<%= @url %>" alt=<%= @name %>" title="<%= @name %>">
   <%= if @nsfw do %>
-  <div class="nsfw-banner" alt="<%= @name %>" title="<%= @name %>">
+  <div class="nsfw-banner">
     <div><%= gettext("Hover to show content") %></div>
   </div>
   <% end %>
@@ -10,6 +10,6 @@
   <% "video" -> %>
   <video class="u-video" src="<%= @url %>" controls="controls"></video>
   <% _ -> %>
-  <img class="u-photo" src="<%= @url %>" alt="<%= @name %>" title="<%= @name %>">
+  <img class="u-photo" src="<%= @url %>">
   <% end %>
 </a>

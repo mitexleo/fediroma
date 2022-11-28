@@ -41,4 +41,8 @@ defmodule Pleroma.Web.StaticFE.StaticFEView do
       false
     )
   end
+
+  def get_attachment_name(%{"name" => name}), do: name
+
+  def get_attachment_name(_), do: ""
 end
