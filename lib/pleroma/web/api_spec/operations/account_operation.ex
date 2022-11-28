@@ -704,7 +704,8 @@ defmodule Pleroma.Web.ApiSpec.AccountOperation do
         status_ttl_days: %Schema{
           type: :integer,
           nullable: true,
-          description: "Number of days after which statuses will be deleted. Set to -1 to disable."
+          description:
+            "Number of days after which statuses will be deleted. Set to -1 to disable."
         }
       },
       example: %{
