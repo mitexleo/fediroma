@@ -15,6 +15,12 @@ defmodule Pleroma.Workers.Cron.PruneDatabaseWorker do
     Logger.info("Pruning old deletes")
     ActivityPruner.prune_deletes()
 
+    Logger.info("Pruning old undos")
+    ActivityPruner.prune_undos()
+
+    Logger.info("Pruning old removes")
+    ActivityPruner.prune_removes()
+
     Logger.info("Pruning old tombstone delivery entries")
     ObjectPruner.prune_tombstoned_deliveries()
 
