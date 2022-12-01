@@ -494,6 +494,33 @@ defmodule Pleroma.Factory do
     }
   end
 
+  def question_activity_factory(attrs \\ %{}) do
+    user = attrs[:user] || insert(:user)
+    question = attrs[:question] || insert(:question, user: user)
+
+    data_attrs = attrs[:data_attrs] || %{}
+    attrs = Map.drop(attrs, [:user, :question, :data_attrs])
+
+    data =
+      %{
+        "id" => Pleroma.Web.ActivityPub.Utils.generate_activity_id(),
+        "type" => "Create",
+        "actor" => question.data["actor"],
+        "to" => question.data["to"],
+        "object" => question.data["id"],
+        "published" => DateTime.utc_now() |> DateTime.to_iso8601(),
+        "context" => question.data["context"]
+      }
+      |> Map.merge(data_attrs)
+
+    %Pleroma.Activity{
+      data: data,
+      actor: data["actor"],
+      recipients: data["to"]
+    }
+    |> Map.merge(attrs)
+  end
+
   def delete_activity_factory(attrs \\ %{}) do
     user = attrs[:user] || insert(:user)
     note_activity = attrs[:note_activity] || insert(:note_activity, user: user)
