@@ -704,4 +704,14 @@ defmodule Pleroma.Factory do
     }
     |> Map.merge(params)
   end
+
+  def delivery_factory(params \\ %{}) do
+    object = Map.get(params, :object, build(:note))
+    user = Map.get(params, :user, build(:user))
+
+    %Pleroma.Delivery{
+      object: object,
+      user: user
+    }
+  end
 end

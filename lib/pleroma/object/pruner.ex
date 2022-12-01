@@ -10,8 +10,6 @@ defmodule Pleroma.Object.Pruner do
   import Ecto.Query
 
   def prune_tombstoned_deliveries do
-    before_time = cutoff()
-
     from(d in Delivery)
     |> join(:inner, [d], o in Object, on: d.object_id == o.id)
     |> where([d, o], fragment("?->>'type' = ?", o.data, "Tombstone"))
