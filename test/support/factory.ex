@@ -233,7 +233,7 @@ defmodule Pleroma.Factory do
     %Pleroma.Object{data: Map.merge(data, %{"type" => "Article"})}
   end
 
-  def tombstone_factory do
+  def tombstone_factory(attrs) do
     data = %{
       "type" => "Tombstone",
       "id" => Pleroma.Web.ActivityPub.Utils.generate_object_id(),
@@ -244,6 +244,7 @@ defmodule Pleroma.Factory do
     %Pleroma.Object{
       data: data
     }
+    |> merge_attributes(attrs)
   end
 
   def question_factory(attrs \\ %{}) do
@@ -493,22 +494,22 @@ defmodule Pleroma.Factory do
     }
   end
 
-  def question_activity_factory(attrs \\ %{}) do
+  def delete_activity_factory(attrs \\ %{}) do
     user = attrs[:user] || insert(:user)
-    question = attrs[:question] || insert(:question, user: user)
+    note_activity = attrs[:note_activity] || insert(:note_activity, user: user)
 
     data_attrs = attrs[:data_attrs] || %{}
-    attrs = Map.drop(attrs, [:user, :question, :data_attrs])
+    attrs = Map.drop(attrs, [:user, :data_attrs])
 
     data =
       %{
         "id" => Pleroma.Web.ActivityPub.Utils.generate_activity_id(),
-        "type" => "Create",
-        "actor" => question.data["actor"],
-        "to" => question.data["to"],
-        "object" => question.data["id"],
+        "type" => "Delete",
+        "actor" => note_activity.data["actor"],
+        "to" => note_activity.data["to"],
+        "object" => note_activity.data["id"],
         "published" => DateTime.utc_now() |> DateTime.to_iso8601(),
-        "context" => question.data["context"]
+        "context" => note_activity.data["context"]
       }
       |> Map.merge(data_attrs)
 
