@@ -2,8 +2,6 @@ defmodule Pleroma.Activity.PrunerTest do
   use Pleroma.DataCase, async: true
 
   alias Pleroma.Activity
-  alias Pleroma.Object
-  alias Pleroma.Repo
   alias Pleroma.Activity.Pruner
 
   import Pleroma.Factory
