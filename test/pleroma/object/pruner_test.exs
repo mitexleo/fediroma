@@ -32,7 +32,6 @@ defmodule Pleroma.Object.PrunerTest do
       not_tombstoned = insert(:delivery, object: note, user: user)
 
       Pruner.prune_tombstoned_deliveries()
-      |> IO.inspect()
 
       refute Repo.get(Delivery, tombstoned.id)
       assert Repo.get(Delivery, not_tombstoned.id)
