@@ -10,7 +10,6 @@ defmodule Pleroma.Object do
 
   alias Pleroma.Activity
   alias Pleroma.Config
-  alias Pleroma.Delivery
   alias Pleroma.Hashtag
   alias Pleroma.Object
   alias Pleroma.Object.Fetcher
@@ -31,7 +30,6 @@ defmodule Pleroma.Object do
     field(:data, :map)
 
     many_to_many(:hashtags, Hashtag, join_through: "hashtags_objects", on_replace: :delete)
-    has_many(:deliveries, Delivery, on_delete: :delete_all)
 
     timestamps()
   end
