@@ -161,7 +161,10 @@ defmodule Pleroma.Web.StaticFE.StaticFEController do
       selected: selected,
       counts: get_counts(activity),
       id: activity.id,
-      visibility: Visibility.get_visibility(activity.object)
+      visibility: Visibility.get_visibility(activity.object),
+      reply_to: data["inReplyTo"],
+      reply_to_user: reply_to_user,
+      edited_at: data["updated"]
     }
   end
 

@@ -1,6 +1,6 @@
 /* pleroma-light and pleroma-dark themes from pleroma-fe */
 :root {
-	--icon: rgba(100, 103, 108, 1);
+    --icon: rgba(100, 103, 108, 1);
     --alertNeutral: rgba(185, 185, 186, 0.5);
     --wallpaper: rgba(11, 16, 23, 1);
     --alertNeutralText: rgba(255, 255, 255, 1);
@@ -38,7 +38,7 @@ html {
 }
 
 body {
-	overflow: auto;
+    overflow: auto;
     margin: 0;
     height: 100%;
     font-family: sans-serif;
@@ -66,7 +66,7 @@ a {
 
 nav {
     position: sticky;
-	top: 0;
+    top: 0;
     width: 100%;
     height: 3.5em;
     background-color: var(--topBar);
@@ -157,10 +157,19 @@ body > .container {
 }
 
 .status-heading {
-    display: flex;
     margin-bottom: 0.5em;
-    justify-content: space-between;
     line-height: 1.3;
+}
+
+.heading-name-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.heading-edited-row,
+.heading-reply-row {
+    font-size: 0.85em;
+    margin-top: 0.2em;
 }
 
 .status-heading a {
@@ -177,7 +186,7 @@ body > .container {
     align-items: center;
 }
 
-.status-container .account-name {
+.heading-name-row .account-name {
     min-width: 1.6em;
     margin-right: 0.4em;
     white-space: nowrap;
@@ -186,7 +195,7 @@ body > .container {
     flex: 1 1 0;
 }
 
-.status-container .username {
+.heading-name-row .username {
     white-space: nowrap;
     overflow: hidden;
     max-width: 85%;
@@ -328,11 +337,11 @@ status-body {
     right: 0;
     bottom: 0;
     background-image: linear-gradient(to bottom, var(--profileTint), var(--profileTint)),
-    				  var(--user-banner);
+                      var(--user-banner);
     background-size: cover;
     background-color: var(--profileBg);
     -webkit-mask: linear-gradient(to top, white, transparent) bottom no-repeat,
-    			  linear-gradient(to top, white, white);
+                  linear-gradient(to top, white, white);
     -webkit-mask-composite: xor;
     -webkit-mask-size: 100% 60%;
     z-index: -2;
@@ -457,13 +466,20 @@ status-body {
 
 .fa-icon {
     height: 0.875em;
-    margin-left: 0.5em;
-    margin-right: 0.3em;
+    margin: 0 0.3em;
     fill: var(--icon);
 }
 
 .status-actions .fa-icon {
     height: 1.1em;
+}
+
+.user-summary .fa-icon {
+    margin-left: 0.5em;
+}
+
+.reply-to-link .fa-icon {
+    transform: scale(-1, 1);
 }
 
 .nsfw-banner {
@@ -482,4 +498,11 @@ status-body {
 }
 .nsfw-banner:hover div {
     display: none;
+}
+
+.reply-to-link {
+    color: var(--faint);
+}
+.reply-to-link:hover {
+    text-decoration: underline;
 }
