@@ -292,6 +292,7 @@ header a:hover, .h-card a:hover {
     display: flex;
     flex-wrap: nowrap;
     align-content: stretch;
+    max-height: 24em;
 }
 
 .attachment {
@@ -359,7 +360,7 @@ summary {
     cursor: pointer;
 }
 
-status-body {
+.status-body {
     word-wrap: break-word;
     word-break: break-word;
     line-height: 1.4;
