@@ -371,7 +371,7 @@ defmodule Pleroma.Activity do
     Queries.by_type("Follow")
     |> where([a], a.actor == ^ap_id)
     |> where([a], fragment("?->>'object' = ?", a.data, ^followed_ap_id))
-    |> where([a], fragment("?->>'state'", a.data) in ["pending", "accepted"])
+    |> where([a], fragment("?->>'state'", a.data) in ["pending", "accept"])
     |> Repo.one()
   end
 
