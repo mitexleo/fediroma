@@ -1,5 +1,5 @@
 <div class="panel profile">
-  <div class="user-card">
+  <div class="user-header">
     <div class="user-banner"></div>
     <div class="user-info">
       <div class="container">
@@ -70,12 +70,49 @@
     </div>
     <% end %>
   </div>
+  <div class="tab-switcher">
+    <a href="<%= (@user.uri || @user.ap_id) %>">
+      <button class="button-default tab <%= if @tab == "posts" do %>active<% end %>">
+        <%= gettext("Posts") %>
+      </button>
+    </a>
+    <a href="<%= (@user.uri || @user.ap_id) %>/with_replies">
+      <button class="button-default tab <%= if @tab == "with_replies" do %>active<% end %>">
+        <%= gettext("With Replies") %>
+      </button>
+    </a>
+    <%= unless @user.hide_follows do %>
+    <a href="<%= (@user.uri || @user.ap_id) %>/following">
+      <button class="button-default tab <%= if @tab == "following" do %>active<% end %>">
+        <%= gettext("Following") %>
+      </button>
+    </a>
+    <% end %>
+    <%= unless @user.hide_followers do %>
+    <a href="<%= (@user.uri || @user.ap_id) %>/followers">
+      <button class="button-default tab <%= if @tab == "followers" do %>active<% end %>">
+        <%= gettext("Followers") %>
+      </button>
+    </a>
+    <% end %>
+    <a href="<%= (@user.uri || @user.ap_id) %>/media">
+      <button class="button-default tab <%= if @tab == "media" do %>active<% end %>">
+        <%= gettext("Media") %>
+      </button>
+    </a>
+  </div>
   <%= if @prev_page_id do %>
-  <%= link "Show newer", to: "?min_id=" <> @prev_page_id, class: "load-posts" %>
+  <%= link gettext("Show newer"), to: "?min_id=" <> @prev_page_id, class: "load-posts" %>
   <% end %>
   <div class="activity-stream">
+    <%= if @tab in ["posts", "with_replies", "media"] do %>
     <%= for activity <- @timeline do %>
     <%= render("_notice.html", Map.put(activity, :selected, false)) %>
+    <% end %>
+    <% else %>
+    <%= for user <- @timeline do %>
+    <%= render("_user_card.html", %{user: user}) %>
+    <% end %>
     <% end %>
   </div>
   <%= if @next_page_id do %>

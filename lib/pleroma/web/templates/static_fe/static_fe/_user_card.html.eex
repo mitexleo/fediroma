@@ -1,0 +1,21 @@
+<div class="user-card">
+  <div class="left-side">
+    <a href="<%= (@user.uri || @user.ap_id) %>" rel="author noopener">
+      <div class="avatar">
+        <img
+          class="u-photo" width="48" height="48"
+          src="<%= User.avatar_url(@user) |> MediaProxy.url %>"
+          title="<%= @user.nickname %>" alt="<%= @user.nickname %>"
+        />
+      </div>
+    </a>
+  </div>
+  <div class="right-side">
+    <div class="username">
+      <%= raw Formatter.emojify(@user.name, @user.emoji) %>
+    </div>
+    <a href="<%= (@user.uri || @user.ap_id) %>" class="account-name">
+      @<%= @user.nickname %>
+    </a>
+  </div>
+</div>

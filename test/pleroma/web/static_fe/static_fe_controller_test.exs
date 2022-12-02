@@ -6,6 +6,8 @@ defmodule Pleroma.Web.StaticFE.StaticFEControllerTest do
   use Pleroma.Web.ConnCase
 
   alias Pleroma.Activity
+  alias Pleroma.User
+  alias Pleroma.Web.ActivityPub.ActivityPub
   alias Pleroma.Web.ActivityPub.Transmogrifier
   alias Pleroma.Web.ActivityPub.Utils
   alias Pleroma.Web.CommonAPI
@@ -44,6 +46,65 @@ defmodule Pleroma.Web.StaticFE.StaticFEControllerTest do
 
       assert html =~ "\npublic\n"
       refute html =~ "\nprivate\n"
+    end
+
+    test "main page does not include replies", %{conn: conn, user: user} do
+      {:ok, op} = CommonAPI.post(user, %{status: "beep"})
+      CommonAPI.post(user, %{status: "boop", in_reply_to_id: op})
+
+      conn = get(conn, "/users/#{user.nickname}")
+
+      html = html_response(conn, 200)
+
+      assert html =~ "\nbeep\n"
+      refute html =~ "\nboop\n"
+    end
+
+    test "media page only includes posts with attachments", %{conn: conn, user: user} do
+      file = %Plug.Upload{
+        content_type: "image/jpeg",
+        path: Path.absname("test/fixtures/image.jpg"),
+        filename: "an_image.jpg"
+      }
+
+      {:ok, %{id: media_id}} = ActivityPub.upload(file, actor: user.ap_id)
+
+      CommonAPI.post(user, %{status: "virgin text post"})
+      CommonAPI.post(user, %{status: "chad post with attachment", media_ids: [media_id]})
+
+      conn = get(conn, "/users/#{user.nickname}/media")
+
+      html = html_response(conn, 200)
+
+      assert html =~ "\nchad post with attachment\n"
+      refute html =~ "\nvirgin text post\n"
+    end
+
+    test "show follower list", %{conn: conn, user: user} do
+      follower = insert(:user)
+      CommonAPI.follow(follower, user)
+
+      conn = get(conn, "/users/#{user.nickname}/followers")
+
+      html = html_response(conn, 200)
+
+      assert html =~ "user-card"
+    end
+
+    test "don't show followers if hidden", %{conn: conn, user: user} do
+      follower = insert(:user)
+      CommonAPI.follow(follower, user)
+
+      {:ok, user} =
+        user
+        |> User.update_changeset(%{hide_followers: true})
+        |> User.update_and_set_cache()
+
+      conn = get(conn, "/users/#{user.nickname}/followers")
+
+      html = html_response(conn, 200)
+
+      refute html =~ "user-card"
     end
 
     test "pagination", %{conn: conn, user: user} do

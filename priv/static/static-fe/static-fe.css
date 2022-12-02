@@ -347,7 +347,7 @@ status-body {
     z-index: -2;
 }
 
-.user-card {
+.user-header {
     position: relative;
     z-index: 1;
 }
@@ -505,4 +505,34 @@ status-body {
 }
 .reply-to-link:hover {
     text-decoration: underline;
+}
+
+.user-card {
+    display: flex;
+    padding: 0.75em;
+}
+
+.tab-switcher {
+    display: flex;
+    padding-top: 5px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-bottom: 1px solid var(--border);
+}
+
+.tab-switcher::before,
+.tab-switcher::after {
+    flex: 1 1 auto;
+    content: '';
+}
+
+.tab {
+    flex: 0 0 auto;
+    padding: 6px 1em;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.tab.active {
+    background: transparent;
 }
