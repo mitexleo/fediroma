@@ -58,6 +58,7 @@ defmodule Pleroma.Web.ActivityPub.Transmogrifier.RejectHandlingTest do
     test "it handles accept activities that do not contain an ID key" do
       follower = insert(:user)
       followed = insert(:user, is_locked: true)
+
       pending_follow =
         insert(:follow_activity, follower: follower, followed: followed, state: "pending")
 
