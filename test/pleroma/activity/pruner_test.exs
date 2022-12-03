@@ -34,14 +34,14 @@ defmodule Pleroma.Activity.PrunerTest do
         insert(
           :follow_activity,
           follower: follower,
-          followd: followee,
+          followed: followee,
           state: "reject"
         )
 
       old_not_rejected_request =
         insert(:follow_activity,
           follower: follower,
-          followd: followee,
+          followed: followee,
           state: "pending",
           inserted_at: DateTime.utc_now() |> DateTime.add(-31 * 24, :hour)
         )
@@ -49,7 +49,7 @@ defmodule Pleroma.Activity.PrunerTest do
       old_follow_request =
         insert(:follow_activity,
           follower: follower,
-          followd: followee,
+          followed: followee,
           inserted_at: DateTime.utc_now() |> DateTime.add(-31 * 24, :hour),
           state: "reject"
         )
