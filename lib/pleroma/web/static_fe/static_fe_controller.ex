@@ -190,6 +190,13 @@ defmodule Pleroma.Web.StaticFE.StaticFEController do
         nil
       end
 
+    total_votes =
+      if data["oneOf"] do
+        Enum.sum(for option <- data["oneOf"], do: option["replies"]["totalItems"])
+      else
+        0
+      end
+
     %{
       user: User.sanitize_html(user),
       title: get_title(activity.object),
@@ -204,7 +211,9 @@ defmodule Pleroma.Web.StaticFE.StaticFEController do
       visibility: Visibility.get_visibility(activity.object),
       reply_to: data["inReplyTo"],
       reply_to_user: reply_to_user,
-      edited_at: data["updated"]
+      edited_at: data["updated"],
+      poll: data["oneOf"],
+      total_votes: total_votes
     }
   end
 

@@ -31,10 +31,10 @@
             </time>
           </a>
           <%= if @visibility == "public" do %>
-		  <img class="fa-icon" src="/static-fe/svg/globe-solid.svg">
+          <img class="fa-icon" src="/static-fe/svg/globe-solid.svg">
           <% else %>
           <%= if @visibility == "unlisted" do %>
-		  <img class="fa-icon" src="/static-fe/svg/lock-open-solid.svg">
+          <img class="fa-icon" src="/static-fe/svg/lock-open-solid.svg">
           <% end %>
           <% end %>
         </div>
@@ -42,7 +42,7 @@
       <%= if @reply_to do %>
       <div class="heading-reply-row">
         <a class="reply-to-link" href="<%= @reply_to %>">
-		  <img class="fa-icon" src="/static-fe/svg/reply-solid.svg">
+          <img class="fa-icon" src="/static-fe/svg/reply-solid.svg">
           <%= gettext("Reply to") %>
         </a>
         <span class="h-card">
@@ -66,6 +66,17 @@
       <% end %>
         <div class="status-body">
           <%= raw @content %>
+          <%= if @poll && length(@poll) > 0 do %> 
+          <div class="poll">
+            <%= for %{"name" => option, "replies" => %{"totalItems" => count}} <- @poll do %>
+            <div class="poll-option" title="<%= count %>/<%= @total_votes %>">
+              <span class="percentage"><%= poll_percentage(count, @total_votes) %></span>
+              <span><%= raw option %></span>
+              <div class="fill" style="width: <%= poll_percentage(count, @total_votes) %>"></div>
+            </div>
+            <% end %>
+          </div>
+          <% end %>
           <%= if length(@attachment) > 0 do %>
           <div class="attachments">
             <%= for attachment = %{"url" => [url | _]} <- @attachment do %>
@@ -82,15 +93,15 @@
     <!-- <div class="emoji-reactions"></div> -->
     <div class="status-actions">
       <div>
-		<img class="fa-icon" src="/static-fe/svg/reply-solid.svg">
+        <img class="fa-icon" src="/static-fe/svg/reply-solid.svg">
         <span class="action-count"><%= @counts.replies %></span>
       </div>
       <div>
-		<img class="fa-icon" src="/static-fe/svg/retweet-solid.svg">
+        <img class="fa-icon" src="/static-fe/svg/retweet-solid.svg">
         <span class="action-count"><%= @counts.announces %></span>
       </div>
       <div>
-		<img class="fa-icon" src="/static-fe/svg/star-regular.svg">
+        <img class="fa-icon" src="/static-fe/svg/star-regular.svg">
         <span class="action-count"><%= @counts.likes %></span>
       </div>
     </div>

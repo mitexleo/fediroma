@@ -45,4 +45,14 @@ defmodule Pleroma.Web.StaticFE.StaticFEView do
   def get_attachment_name(%{"name" => name}), do: name
 
   def get_attachment_name(_), do: ""
+
+  def poll_percentage(count, total_votes) do
+    case count do
+      0 ->
+        "0%"
+
+      _ ->
+        Integer.to_string(trunc(count / total_votes * 100)) <> "%"
+    end
+  end
 end

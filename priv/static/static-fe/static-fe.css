@@ -26,6 +26,7 @@
     --link: rgba(226, 177, 136, 1);
     --text: rgba(185, 185, 186, 1);
     --border: rgba(26, 37, 53, 1);
+    --poll: rgba(99, 84, 72, 1);
 }
 @media (prefers-color-scheme: light) {
     :root {
@@ -55,6 +56,7 @@
         --link: rgba(245, 91, 27, 1);
         --text: rgba(48, 64, 85, 1);
         --border: rgba(216, 230, 249, 1);
+        --poll: rgba(243, 184, 160, 1);
     }
 }
 
@@ -332,6 +334,28 @@ header a:hover, .h-card a:hover {
     display: none;
 }
 
+.poll-option {
+    position: relative;
+    display: flex;
+    margin: 0.75em 0.5em;
+    padding: 0.1em 0.25em;
+    word-break: break-word;
+    z-index: 1;
+}
+.poll-option .percentage {
+    width: 3.5em;
+    flex-shrink: 0;
+}
+.poll-option .fill {
+    height: 100%;
+    position: absolute;
+    background-color: var(--poll);
+    border-radius: 3px;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
 .status-actions {
     position: relative;
     width: 100%;
@@ -564,7 +588,7 @@ summary {
     height: 0.875em;
     margin: 0 0.3em;
     filter: var(--icon-filter);
-	align-self: center;
+    align-self: center;
 }
 
 .status-actions .fa-icon {
