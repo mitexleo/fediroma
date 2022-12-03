@@ -100,6 +100,11 @@ defmodule Pleroma.Web.StaticFE.StaticFEController do
         meta: meta
       })
     else
+      {_, %User{} = user} ->
+        conn
+        |> put_status(:found)
+        |> redirect(external: user.uri || user.ap_id)
+
       _ ->
         not_found(conn, "User not found.")
     end
