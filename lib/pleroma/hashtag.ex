@@ -10,6 +10,7 @@ defmodule Pleroma.Hashtag do
 
   alias Ecto.Multi
   alias Pleroma.Hashtag
+  alias Pleroma.User.HashtagFollow
   alias Pleroma.Object
   alias Pleroma.Repo
 
@@ -110,5 +111,20 @@ defmodule Pleroma.Hashtag do
     with {:ok, %{num_rows: deleted_count}} <- Repo.query(@delete_unreferenced_query, [ids]) do
       {:ok, deleted_count}
     end
+  end
+
+  def get_followers(%Hashtag{id: hashtag_id}) do
+    from(hf in HashtagFollow)
+    |> where([hf], hf.hashtag_id == ^hashtag_id)
+    |> join(:inner, [hf], u in assoc(hf, :user))
+    |> select([hf, u], u.id)
+    |> Repo.all()
+  end
+
+  def get_recipients_for_activity(%Pleroma.Activity{object: %{hashtags: tags}}) do
+    tags
+    |> Enum.map(&get_followers/1)
+    |> List.flatten()
+    |> Enum.uniq()
   end
 end
