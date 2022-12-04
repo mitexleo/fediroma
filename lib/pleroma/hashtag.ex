@@ -121,10 +121,13 @@ defmodule Pleroma.Hashtag do
     |> Repo.all()
   end
 
-  def get_recipients_for_activity(%Pleroma.Activity{object: %{hashtags: tags}}) do
+  def get_recipients_for_activity(%Pleroma.Activity{object: %{hashtags: tags}})
+      when is_list(tags) do
     tags
     |> Enum.map(&get_followers/1)
     |> List.flatten()
     |> Enum.uniq()
   end
+
+  def get_recipients_for_activity(_activity), do: []
 end
