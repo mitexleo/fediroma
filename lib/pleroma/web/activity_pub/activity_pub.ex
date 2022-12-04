@@ -946,13 +946,15 @@ defmodule Pleroma.Web.ActivityPub.ActivityPub do
   end
 
   defp restrict_recipients_or_hashtags(query, recipients, _user, hashtag_ids) do
-    from(
-      [activity, object] in query,
-      join: hto in "hashtags_objects",
+    from([activity, object] in query)
+    |> join(:left, [activity, object], hto in "hashtags_objects",
       on: hto.object_id == object.id,
-      where:
-        (hto.hashtag_id in ^hashtag_ids and ^Constants.as_public() in activity.recipients) or
-          fragment("? && ?", ^recipients, activity.recipients)
+      as: :hto
+    )
+    |> where(
+      [activity, object, hto: hto],
+      (hto.hashtag_id in ^hashtag_ids and ^Constants.as_public() in activity.recipients) or
+        fragment("? && ?", ^recipients, activity.recipients)
     )
   end
 
