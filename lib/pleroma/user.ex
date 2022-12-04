@@ -2559,23 +2559,40 @@ defmodule Pleroma.User do
     end
   end
 
-  def hashtag_follows(%User{} = user) do
-    HashtagFollow
-    |> where(user_id: ^user.id)
-    |> Repo.all()
+  defp maybe_load_followed_hashtags(%User{followed_hashtags: follows} = user)
+       when is_list(follows),
+       do: user
+
+  defp maybe_load_followed_hashtags(%User{} = user) do
+    followed_hashtags = HashtagFollow.get_by_user(user)
+    %{user | followed_hashtags: followed_hashtags}
   end
 
   def follow_hashtag(%User{} = user, %Hashtag{} = hashtag) do
     Logger.debug("Follow hashtag #{hashtag.name} for user #{user.nickname}")
+    user = maybe_load_followed_hashtags(user)
 
-    HashtagFollow.new(user, hashtag)
+    with {:ok, _} <- HashtagFollow.new(user, hashtag),
+         follows <- HashtagFollow.get_by_user(user),
+         %User{} = user <- user |> Map.put(:followed_hashtags, follows) do
+      user
+      |> set_cache()
+    end
   end
 
   def unfollow_hashtag(%User{} = user, %Hashtag{} = hashtag) do
     Logger.debug("Unfollow hashtag #{hashtag.name} for user #{user.nickname}")
+    user = maybe_load_followed_hashtags(user)
 
-    from(hf in HashtagFollow)
-    |> where([hf], hf.user_id == ^user.id and hf.hashtag_id == ^hashtag.id)
-    |> Repo.delete_all()
+    with {_, nil} <- HashtagFollow.delete(user, hashtag),
+         follows <- HashtagFollow.get_by_user(user),
+         %User{} = user <- user |> Map.put(:followed_hashtags, follows) do
+      user
+      |> set_cache()
+    end
+  end
+
+  def following_hashtag?(%User{} = user, %Hashtag{} = hashtag) do
+    not is_nil(HashtagFollow.get(user, hashtag))
   end
 end

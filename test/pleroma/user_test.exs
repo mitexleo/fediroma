@@ -2687,11 +2687,9 @@ defmodule Pleroma.UserTest do
 
       assert {:ok, _} = user |> User.follow_hashtag(hashtag)
 
-      user =
-        User.get_cached_by_ap_id(user.ap_id)
-        |> Repo.preload(:followed_hashtags)
+      user = User.get_cached_by_ap_id(user.ap_id)
 
-      assert user.followed_hashtags |> length() == 1
+      assert user.followed_hashtags |> Enum.count() == 1
       assert hashtag.name in Enum.map(user.followed_hashtags, fn %{name: name} -> name end)
     end
 
@@ -2703,11 +2701,9 @@ defmodule Pleroma.UserTest do
 
       assert {:ok, _} = user |> User.follow_hashtag(hashtag)
 
-      user =
-        User.get_cached_by_ap_id(user.ap_id)
-        |> Repo.preload(:followed_hashtags)
+      user = User.get_cached_by_ap_id(user.ap_id)
 
-      assert user.followed_hashtags |> length() == 1
+      assert user.followed_hashtags |> Enum.count() == 1
       assert hashtag.name in Enum.map(user.followed_hashtags, fn %{name: name} -> name end)
     end
 
@@ -2719,11 +2715,9 @@ defmodule Pleroma.UserTest do
       assert {:ok, _} = user |> User.follow_hashtag(hashtag)
       assert {:ok, _} = user |> User.follow_hashtag(other_hashtag)
 
-      user =
-        User.get_cached_by_ap_id(user.ap_id)
-        |> Repo.preload(:followed_hashtags)
+      user = User.get_cached_by_ap_id(user.ap_id)
 
-      assert user.followed_hashtags |> length() == 2
+      assert user.followed_hashtags |> Enum.count() == 2
       assert hashtag.name in Enum.map(user.followed_hashtags, fn %{name: name} -> name end)
       assert other_hashtag.name in Enum.map(user.followed_hashtags, fn %{name: name} -> name end)
     end
@@ -2737,11 +2731,9 @@ defmodule Pleroma.UserTest do
       assert {:ok, _} = user |> User.follow_hashtag(hashtag)
       assert {1, nil} = user |> User.unfollow_hashtag(hashtag)
 
-      user =
-        User.get_cached_by_ap_id(user.ap_id)
-        |> Repo.preload(:followed_hashtags)
+      user = User.get_cached_by_ap_id(user.ap_id)
 
-      assert user.followed_hashtags |> length() == 0
+      assert user.followed_hashtags |> Enum.count() == 0
     end
 
     test "should not error when trying to unfollow a hashtag twice" do
@@ -2752,11 +2744,9 @@ defmodule Pleroma.UserTest do
       assert {1, nil} = user |> User.unfollow_hashtag(hashtag)
       assert {0, nil} = user |> User.unfollow_hashtag(hashtag)
 
-      user =
-        User.get_cached_by_ap_id(user.ap_id)
-        |> Repo.preload(:followed_hashtags)
+      user = User.get_cached_by_ap_id(user.ap_id)
 
-      assert user.followed_hashtags |> length() == 0
+      assert user.followed_hashtags |> Enum.count() == 0
     end
   end
 end
