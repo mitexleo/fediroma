@@ -2568,6 +2568,19 @@ defmodule Pleroma.User do
     %{user | followed_hashtags: followed_hashtags}
   end
 
+  def followed_hashtags(%User{followed_hashtags: follows})
+      when is_list(follows),
+      do: follows
+
+  def followed_hashtags(%User{} = user) do
+    {:ok, user} =
+      user
+      |> maybe_load_followed_hashtags()
+      |> set_cache()
+
+    user.followed_hashtags
+  end
+
   def follow_hashtag(%User{} = user, %Hashtag{} = hashtag) do
     Logger.debug("Follow hashtag #{hashtag.name} for user #{user.nickname}")
     user = maybe_load_followed_hashtags(user)
