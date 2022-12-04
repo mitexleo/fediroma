@@ -29,8 +29,11 @@ defmodule Pleroma.User.HashtagFollow do
   end
 
   def delete(%User{} = user, %Hashtag{} = hashtag) do
-    get(user, hashtag)
-    |> Repo.delete()
+    with %__MODULE__{} = user_hashtag_follow <- get(user, hashtag) do
+      Repo.delete(user_hashtag_follow)
+    else
+      _ -> {:ok, nil}
+    end
   end
 
   def get(%User{} = user, %Hashtag{} = hashtag) do

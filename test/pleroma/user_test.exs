@@ -2729,7 +2729,7 @@ defmodule Pleroma.UserTest do
       hashtag = insert(:hashtag)
 
       assert {:ok, _} = user |> User.follow_hashtag(hashtag)
-      assert {1, nil} = user |> User.unfollow_hashtag(hashtag)
+      assert {:ok, _} = user |> User.unfollow_hashtag(hashtag)
 
       user = User.get_cached_by_ap_id(user.ap_id)
 
@@ -2741,8 +2741,8 @@ defmodule Pleroma.UserTest do
       hashtag = insert(:hashtag)
 
       assert {:ok, _} = user |> User.follow_hashtag(hashtag)
-      assert {1, nil} = user |> User.unfollow_hashtag(hashtag)
-      assert {0, nil} = user |> User.unfollow_hashtag(hashtag)
+      assert {:ok, _} = user |> User.unfollow_hashtag(hashtag)
+      assert {:ok, _} = user |> User.unfollow_hashtag(hashtag)
 
       user = User.get_cached_by_ap_id(user.ap_id)
 

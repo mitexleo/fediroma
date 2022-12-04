@@ -15,7 +15,7 @@ defmodule Pleroma.Web.MastodonAPI.TagController do
 
   defdelegate open_api_operation(action), to: Pleroma.Web.ApiSpec.TagOperation
 
-  def show(conn, %{id: id} = params) do
+  def show(conn, %{id: id}) do
     with %Hashtag{} = hashtag <- Hashtag.get_by_name(id) do
       render(conn, "show.json", tag: hashtag, for_user: conn.assigns.user)
     else
@@ -23,23 +23,23 @@ defmodule Pleroma.Web.MastodonAPI.TagController do
     end
   end
 
-  def follow(conn, %{id: id} = params) do
+  def follow(conn, %{id: id}) do
     with %Hashtag{} = hashtag <- Hashtag.get_by_name(id),
          %User{} = user <- conn.assigns.user,
          {:ok, _} <-
            User.follow_hashtag(user, hashtag) do
-      render(conn, "show.json", tag: params["tag"], for_user: user)
+      render(conn, "show.json", tag: hashtag, for_user: user)
     else
       _ -> render_error(conn, :not_found, "Hashtag not found")
     end
   end
 
-  def unfollow(conn, %{id: id} = params) do
+  def unfollow(conn, %{id: id}) do
     with %Hashtag{} = hashtag <- Hashtag.get_by_name(id),
          %User{} = user <- conn.assigns.user,
          {:ok, _} <-
            User.unfollow_hashtag(user, hashtag) do
-      render(conn, "show.json", tag: params["tag"], for_user: user)
+      render(conn, "show.json", tag: hashtag, for_user: user)
     else
       _ -> render_error(conn, :not_found, "Hashtag not found")
     end
