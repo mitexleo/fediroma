@@ -13,7 +13,7 @@ defmodule Pleroma.Web.MastodonAPI.TagView do
 
     %{
       name: tag.name,
-      url: Helpers.tag_url(Pleroma.Web.Endpoint, :show, tag),
+      url: Helpers.tag_feed_url(Pleroma.Web.Endpoint, :feed, tag.name),
       history: [],
       following: following
     }

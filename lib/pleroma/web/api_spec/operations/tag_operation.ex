@@ -2,7 +2,7 @@ defmodule Pleroma.Web.ApiSpec.TagOperation do
   alias OpenApiSpex.Operation
   alias OpenApiSpex.Schema
   alias Pleroma.Web.ApiSpec.Schemas.ApiError
-  alias  Pleroma.Web.ApiSpec.Schemas.Tag
+  alias Pleroma.Web.ApiSpec.Schemas.Tag
 
   def open_api_operation(action) do
     operation = String.to_existing_atom("#{action}_operation")
@@ -29,7 +29,7 @@ defmodule Pleroma.Web.ApiSpec.TagOperation do
       tags: ["Tags"],
       summary: "Follow a hashtag",
       description: "Follow a hashtag",
-      security: [%{"oAuth" => ["write:follow"]}],
+      security: [%{"oAuth" => ["write:follows"]}],
       parameters: [id_param()],
       operationId: "TagController.follow",
       responses: %{

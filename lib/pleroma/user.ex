@@ -2584,7 +2584,7 @@ defmodule Pleroma.User do
     Logger.debug("Unfollow hashtag #{hashtag.name} for user #{user.nickname}")
     user = maybe_load_followed_hashtags(user)
 
-    with {_, nil} <- HashtagFollow.delete(user, hashtag),
+    with {:ok, _} <- HashtagFollow.delete(user, hashtag),
          follows <- HashtagFollow.get_by_user(user),
          %User{} = user <- user |> Map.put(:followed_hashtags, follows) do
       user
