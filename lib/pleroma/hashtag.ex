@@ -31,6 +31,10 @@ defmodule Pleroma.Hashtag do
     Repo.get(Hashtag, id)
   end
 
+  def get_by_name(name) do
+    Repo.get_by(Hashtag, name: normalize_name(name))
+  end
+
   def get_or_create_by_name(name) do
     changeset = changeset(%Hashtag{}, %{name: name})
 
