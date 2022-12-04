@@ -18,6 +18,8 @@ defmodule Pleroma.User do
   alias Pleroma.Emoji
   alias Pleroma.FollowingRelationship
   alias Pleroma.Formatter
+  alias Pleroma.Hashtag
+  alias Pleroma.User.HashtagFollow
   alias Pleroma.HTML
   alias Pleroma.Keys
   alias Pleroma.MFA
@@ -167,6 +169,12 @@ defmodule Pleroma.User do
     has_many(:incoming_relationships, UserRelationship, foreign_key: :target_id)
 
     has_many(:frontend_profiles, Pleroma.Akkoma.FrontendSettingsProfile)
+
+    many_to_many(:followed_hashtags, Hashtag,
+      on_replace: :delete,
+      on_delete: :delete_all,
+      join_through: HashtagFollow
+    )
 
     for {relationship_type,
          [
@@ -2549,5 +2557,25 @@ defmodule Pleroma.User do
       {1, [user]} -> set_cache(user)
       _ -> {:error, user}
     end
+  end
+
+  def hashtag_follows(%User{} = user) do
+    HashtagFollow
+    |> where(user_id: ^user.id)
+    |> Repo.all()
+  end
+
+  def follow_hashtag(%User{} = user, %Hashtag{} = hashtag) do
+    Logger.debug("Follow hashtag #{hashtag.name} for user #{user.nickname}")
+
+    HashtagFollow.new(user, hashtag)
+  end
+
+  def unfollow_hashtag(%User{} = user, %Hashtag{} = hashtag) do
+    Logger.debug("Unfollow hashtag #{hashtag.name} for user #{user.nickname}")
+
+    from(hf in HashtagFollow)
+    |> where([hf], hf.user_id == ^user.id and hf.hashtag_id == ^hashtag.id)
+    |> Repo.delete_all()
   end
 end
