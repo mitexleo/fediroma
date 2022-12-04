@@ -55,7 +55,7 @@ defmodule Pleroma.Web.MastodonAPI.TimelineController do
       |> Map.put(:announce_filtering_user, user)
       |> Map.put(:user, user)
       |> Map.put(:local_only, params[:local])
-      |> Map.put(:hashtags, followed_hashtags)
+      |> Map.put(:followed_hashtags, followed_hashtags)
       |> Map.delete(:local)
 
     activities =
