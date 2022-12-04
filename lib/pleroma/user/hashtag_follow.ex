@@ -1,5 +1,6 @@
 defmodule Pleroma.User.HashtagFollow do
   use Ecto.Schema
+  import Ecto.Query
   import Ecto.Changeset
 
   alias Pleroma.User
@@ -25,5 +26,21 @@ defmodule Pleroma.User.HashtagFollow do
     %__MODULE__{}
     |> changeset(%{user_id: user.id, hashtag_id: hashtag.id})
     |> Repo.insert(on_conflict: :nothing)
+  end
+
+  def delete(%User{} = user, %Hashtag{} = hashtag) do
+    get(user, hashtag)
+    |> Repo.delete()
+  end
+
+  def get(%User{} = user, %Hashtag{} = hashtag) do
+    from(hf in __MODULE__)
+    |> where([hf], hf.user_id == ^user.id and hf.hashtag_id == ^hashtag.id)
+    |> Repo.one()
+  end
+
+  def get_by_user(%User{} = user) do
+    Ecto.assoc(user, :followed_hashtags)
+    |> Repo.all()
   end
 end
