@@ -14,6 +14,10 @@
     <description><%= escape(@data["summary"]) %></description>
   <% end %>
 
+  <%= if get_in(@data, ["source", "mediaType"]) == "text/markdown" do %>
+    <source:markdown><%= rss_escape(get_in(@data, ["source", "content"])) %></source:markdown>
+  <% end %>
+
   <%= if @activity.local do %>
     <link><%= @data["id"] %></link>
   <% else %>

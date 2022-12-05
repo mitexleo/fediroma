@@ -112,4 +112,30 @@ defmodule Pleroma.Web.Feed.FeedView do
     |> html_escape()
     |> safe_to_string()
   end
+
+  # Encoding newlines, e.g., per XML spec
+  def rss_escape(nil), do: ""
+  def rss_escape(data) when is_binary(data) do
+    data
+    |> rss_escape_string()
+    |> to_string()
+  end
+
+  defp rss_escape_string(""), do: ""
+  defp rss_escape_string(<<"&"::utf8, rest::binary>>), do: rss_escape_entity(rest)
+  defp rss_escape_string(<<"<"::utf8, rest::binary>>), do: ["&lt;" | rss_escape_string(rest)]
+  defp rss_escape_string(<<">"::utf8, rest::binary>>), do: ["&gt;" | rss_escape_string(rest)]
+  defp rss_escape_string(<<"\""::utf8, rest::binary>>), do: ["&quot;" | rss_escape_string(rest)]
+  defp rss_escape_string(<<"'"::utf8, rest::binary>>), do: ["&apos;" | rss_escape_string(rest)]
+  defp rss_escape_string(<<"\t"::utf8, rest::binary>>), do: ["&#9;" | rss_escape_string(rest)]
+  defp rss_escape_string(<<"\n"::utf8, rest::binary>>), do: ["&#10;" | rss_escape_string(rest)]
+  defp rss_escape_string(<<"\r\n"::utf8, rest::binary>>), do: ["&#10;" | rss_escape_string(rest)]
+  defp rss_escape_string(<<"\r"::utf8, rest::binary>>), do: ["&#13;" | rss_escape_string(rest)]
+  defp rss_escape_string(<<c::utf8, rest::binary>>), do: [c | rss_escape_string(rest)]
+  defp rss_escape_entity(<<"amp;"::utf8, rest::binary>>), do: ["&amp;" | rss_escape_string(rest)]
+  defp rss_escape_entity(<<"lt;"::utf8, rest::binary>>), do: ["&lt;" | rss_escape_string(rest)]
+  defp rss_escape_entity(<<"gt;"::utf8, rest::binary>>), do: ["&gt;" | rss_escape_string(rest)]
+  defp rss_escape_entity(<<"quot;"::utf8, rest::binary>>), do: ["&quot;" | rss_escape_string(rest)]
+  defp rss_escape_entity(<<"apos;"::utf8, rest::binary>>), do: ["&apos;" | rss_escape_string(rest)]
+  defp rss_escape_entity(rest), do: ["&amp;" | rss_escape_string(rest)]
 end
