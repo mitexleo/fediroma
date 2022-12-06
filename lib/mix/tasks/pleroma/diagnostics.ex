@@ -51,7 +51,7 @@ defmodule Mix.Tasks.Pleroma.Diagnostics do
     Logger.info("User timeline query #{user.nickname}")
 
     params =
-      %{ limit: 20 }
+      %{limit: 20}
       |> Map.put(:type, ["Create", "Announce"])
       |> Map.put(:user, reading_user)
       |> Map.put(:actor_id, user.ap_id)
@@ -59,12 +59,15 @@ defmodule Mix.Tasks.Pleroma.Diagnostics do
 
     list_memberships = Pleroma.List.memberships(user)
 
-    query =
+    recipients =
       %{
         godmode: params[:godmode],
         reading_user: reading_user
       }
       |> Pleroma.Web.ActivityPub.ActivityPub.user_activities_recipients()
+
+    query =
+      (recipients ++ list_memberships)
       |> Pleroma.Web.ActivityPub.ActivityPub.fetch_activities_query(params)
       |> limit(20)
 
