@@ -6,7 +6,7 @@ defmodule Mix.Tasks.Pleroma.Diagnostics do
   require Pleroma.Constants
 
   import Mix.Pleroma
-
+  import Ecto.Query
   use Mix.Task
 
   def run(["home_timeline", nickname]) do
@@ -38,6 +38,7 @@ defmodule Mix.Tasks.Pleroma.Diagnostics do
         recipients ++ list_memberships,
         params
       )
+      |> limit(20)
 
     Ecto.Adapters.SQL.explain(Repo, :all, query, analyze: true, timeout: :infinity)
     |> IO.puts()
@@ -65,6 +66,7 @@ defmodule Mix.Tasks.Pleroma.Diagnostics do
       }
       |> Pleroma.Web.ActivityPub.ActivityPub.user_activities_recipients()
       |> Pleroma.Web.ActivityPub.ActivityPub.fetch_activities_query(params)
+      |> limit(20)
 
     Ecto.Adapters.SQL.explain(Repo, :all, query, analyze: true, timeout: :infinity)
     |> IO.puts()
