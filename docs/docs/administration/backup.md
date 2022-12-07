@@ -29,7 +29,7 @@
 
 [¹]: We assume the database name and user are both "akkoma". If not, you can find the correct name in your config files.  
 [²]: You can recreate the `config/setup_db.psql` by running the `mix pleroma.instance gen` task again. You can ignore most of the questions, but make the database user, name, and password the same as found in your backed up config file. This will also create a new `config/generated_config.exs` file which you may delete as it is not needed.  
-[³]: `pg_restore` will add data before adding indexes. The indexes are added in alphabeticall order. There's one index, `activities_visibility_index` which may take a long time because it can't make use of an index that's only added later. You can significantly speed up restoration by skipping this index and add it afterwards. For that, you can do the following (we assume the akkoma.pgdump is in the directory you're running the commands):  
+[³]: `pg_restore` will add data before adding indexes. The indexes are added in alphabetical order. There's one index, `activities_visibility_index` which may take a long time because it can't make use of an index that's only added later. You can significantly speed up restoration by skipping this index and add it afterwards. For that, you can do the following (we assume the akkoma.pgdump is in the directory you're running the commands):  
 
 ```sh
 pg_restore -l akkoma.pgdump > db.list
