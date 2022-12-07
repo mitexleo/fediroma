@@ -68,6 +68,176 @@ defmodule Mix.Tasks.Pleroma.DatabaseTest do
       assert length(Repo.all(Object)) == 1
       refute Object.get_by_id(id)
     end
+
+    test "with the --keep-threads option it still keeps non-old threads even with no local interactions" do
+      remote_user = insert(:user, local: false)
+      remote_user2 = insert(:user, local: false)
+
+      {:ok, remote_post_activity} =
+        CommonAPI.post(remote_user, %{status: "some thing", local: false})
+
+      {:ok, remote_post_reply_activity} =
+        CommonAPI.post(remote_user2, %{
+          status: "some reply",
+          in_reply_to_status_id: remote_post_activity.id
+        })
+
+      remote_post_activity
+      |> Ecto.Changeset.change(%{local: false})
+      |> Repo.update!()
+
+      remote_post_reply_activity
+      |> Ecto.Changeset.change(%{local: false})
+      |> Repo.update!()
+
+      assert length(Repo.all(Object)) == 2
+
+      Mix.Tasks.Pleroma.Database.run(["prune_objects", "--keep-threads"])
+
+      assert length(Repo.all(Object)) == 2
+    end
+
+    test "with the --keep-threads option it deletes old threads with no local interaction" do
+      deadline = Pleroma.Config.get([:instance, :remote_post_retention_days]) + 1
+
+      old_insert_date =
+        Timex.now()
+        |> Timex.shift(days: -deadline)
+        |> Timex.to_naive_datetime()
+        |> NaiveDateTime.truncate(:second)
+
+      remote_user = insert(:user, local: false)
+      remote_user2 = insert(:user, local: false)
+
+      {:ok, old_remote_post_activity} =
+        CommonAPI.post(remote_user, %{status: "some thing", local: false})
+
+      old_remote_post_activity
+      |> Ecto.Changeset.change(%{local: false, updated_at: old_insert_date})
+      |> Repo.update!()
+
+      {:ok, old_remote_post_reply_activity} =
+        CommonAPI.post(remote_user2, %{
+          status: "some reply",
+          in_reply_to_status_id: old_remote_post_activity.id
+        })
+
+      old_remote_post_reply_activity
+      |> Ecto.Changeset.change(%{local: false, updated_at: old_insert_date})
+      |> Repo.update!()
+
+      {:ok, old_favourite_activity} =
+        CommonAPI.favorite(remote_user2, old_remote_post_activity.id)
+
+      old_favourite_activity
+      |> Ecto.Changeset.change(%{local: false, updated_at: old_insert_date})
+      |> Repo.update!()
+
+      {:ok, old_repeat_activity} = CommonAPI.repeat(old_remote_post_activity.id, remote_user2)
+
+      old_repeat_activity
+      |> Ecto.Changeset.change(%{local: false, updated_at: old_insert_date})
+      |> Repo.update!()
+
+      assert length(Repo.all(Object)) == 2
+
+      Mix.Tasks.Pleroma.Database.run(["prune_objects", "--keep-threads"])
+
+      assert Repo.all(Object) == []
+    end
+
+    test "with the --keep-threads option it keeps old threads with local interaction" do
+      deadline = Pleroma.Config.get([:instance, :remote_post_retention_days]) + 1
+
+      old_insert_date =
+        Timex.now()
+        |> Timex.shift(days: -deadline)
+        |> Timex.to_naive_datetime()
+        |> NaiveDateTime.truncate(:second)
+
+      remote_user = insert(:user, local: false)
+      local_user = insert(:user, local: true)
+
+      # local reply
+      {:ok, old_remote_post1_activity} =
+        CommonAPI.post(remote_user, %{status: "some thing", local: false})
+
+      old_remote_post1_activity
+      |> Ecto.Changeset.change(%{local: false, updated_at: old_insert_date})
+      |> Repo.update!()
+
+      {:ok, old_local_post2_reply_activity} =
+        CommonAPI.post(local_user, %{
+          status: "some reply",
+          in_reply_to_status_id: old_remote_post1_activity.id
+        })
+
+      old_local_post2_reply_activity
+      |> Ecto.Changeset.change(%{local: true, updated_at: old_insert_date})
+      |> Repo.update!()
+
+      # local Like
+      {:ok, old_remote_post3_activity} =
+        CommonAPI.post(remote_user, %{status: "some thing", local: false})
+
+      old_remote_post3_activity
+      |> Ecto.Changeset.change(%{local: false, updated_at: old_insert_date})
+      |> Repo.update!()
+
+      {:ok, old_favourite_activity} = CommonAPI.favorite(local_user, old_remote_post3_activity.id)
+
+      old_favourite_activity
+      |> Ecto.Changeset.change(%{local: true, updated_at: old_insert_date})
+      |> Repo.update!()
+
+      # local Announce
+      {:ok, old_remote_post4_activity} =
+        CommonAPI.post(remote_user, %{status: "some thing", local: false})
+
+      old_remote_post4_activity
+      |> Ecto.Changeset.change(%{local: false, updated_at: old_insert_date})
+      |> Repo.update!()
+
+      {:ok, old_repeat_activity} = CommonAPI.repeat(old_remote_post4_activity.id, local_user)
+
+      old_repeat_activity
+      |> Ecto.Changeset.change(%{local: true, updated_at: old_insert_date})
+      |> Repo.update!()
+
+      assert length(Repo.all(Object)) == 4
+
+      Mix.Tasks.Pleroma.Database.run(["prune_objects", "--keep-threads"])
+
+      assert length(Repo.all(Object)) == 4
+    end
+
+    test "with the --keep-threads option it keeps old threads with bookmarked posts" do
+      deadline = Pleroma.Config.get([:instance, :remote_post_retention_days]) + 1
+
+      old_insert_date =
+        Timex.now()
+        |> Timex.shift(days: -deadline)
+        |> Timex.to_naive_datetime()
+        |> NaiveDateTime.truncate(:second)
+
+      remote_user = insert(:user, local: false)
+      local_user = insert(:user, local: true)
+
+      {:ok, old_remote_post_activity} =
+        CommonAPI.post(remote_user, %{status: "some thing", local: false})
+
+      old_remote_post_activity
+      |> Ecto.Changeset.change(%{local: false, updated_at: old_insert_date})
+      |> Repo.update!()
+
+      Pleroma.Bookmark.create(local_user.id, old_remote_post_activity.id)
+
+      assert length(Repo.all(Object)) == 1
+
+      Mix.Tasks.Pleroma.Database.run(["prune_objects", "--keep-threads"])
+
+      assert length(Repo.all(Object)) == 1
+    end
   end
 
   describe "running update_users_following_followers_counts" do

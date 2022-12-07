@@ -67,7 +67,8 @@ defmodule Mix.Tasks.Pleroma.Database do
       OptionParser.parse(
         args,
         strict: [
-          vacuum: :boolean
+          vacuum: :boolean,
+          keep_threads: :boolean
         ]
       )
 
@@ -77,24 +78,47 @@ defmodule Mix.Tasks.Pleroma.Database do
 
     Logger.info("Pruning objects older than #{deadline} days")
 
-    time_deadline =
-      NaiveDateTime.utc_now()
-      |> NaiveDateTime.add(-(deadline * 86_400))
+    if Keyword.get(options, :keep_threads) do
+      # We delete objects from threads where
+      # 1. the newest post is still old
+      # 2. none of the activities is local
+      # 3. none of the activities is bookmarked
+      delete_keep_threads_statement = """
+      delete
+      from public.objects o
+      where o.data ->> 'context' in (
+      select
+      a.data ->> 'context'
+      from public.activities a
+      left join public.bookmarks b on a.id = b.activity_id
+      group by (a.data ->> 'context'::text)
+      having max(a.updated_at) < now() - interval '#{deadline} day'
+      and not bool_or(a.local)
+      and max(b.id) is null
+      );
+      """
 
-    from(o in Object,
-      where:
-        fragment(
-          "?->'to' \\? ? OR ?->'cc' \\? ?",
-          o.data,
-          ^Pleroma.Constants.as_public(),
-          o.data,
-          ^Pleroma.Constants.as_public()
-        ),
-      where: o.inserted_at < ^time_deadline,
-      where:
-        fragment("split_part(?->>'actor', '/', 3) != ?", o.data, ^Pleroma.Web.Endpoint.host())
-    )
-    |> Repo.delete_all(timeout: :infinity)
+      Repo.query(delete_keep_threads_statement)
+    else
+      time_deadline =
+        NaiveDateTime.utc_now()
+        |> NaiveDateTime.add(-(deadline * 86_400))
+
+      from(o in Object,
+        where:
+          fragment(
+            "?->'to' \\? ? OR ?->'cc' \\? ?",
+            o.data,
+            ^Pleroma.Constants.as_public(),
+            o.data,
+            ^Pleroma.Constants.as_public()
+          ),
+        where: o.inserted_at < ^time_deadline,
+        where:
+          fragment("split_part(?->>'actor', '/', 3) != ?", o.data, ^Pleroma.Web.Endpoint.host())
+      )
+      |> Repo.delete_all(timeout: :infinity)
+    end
 
     prune_hashtags_query = """
     DELETE FROM hashtags AS ht
