@@ -44,7 +44,7 @@ defmodule Pleroma.HTML.Scrubber.Default do
   Meta.allow_tag_with_these_attributes(:li, [])
   Meta.allow_tag_with_these_attributes(:ol, [])
   Meta.allow_tag_with_these_attributes(:p, [])
-  Meta.allow_tag_with_these_attributes(:pre, [])
+  Meta.allow_tag_with_these_attributes(:pre, ["aria-hidden", "aria-label"])
   Meta.allow_tag_with_these_attributes(:strong, [])
   Meta.allow_tag_with_these_attributes(:sub, [])
   Meta.allow_tag_with_these_attributes(:sup, [])
