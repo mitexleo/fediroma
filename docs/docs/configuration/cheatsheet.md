@@ -1140,3 +1140,9 @@ Translations are available at `/api/v1/statuses/:id/translations/:language`, whe
 
 - `:url` - URL of LibreTranslate instance
 - `:api_key` - API key for LibreTranslate
+
+### `:argos_translate`
+
+- `:command_argos_translate` - command for `argos-translate`. Can be the command if it's in your PATH, or the full path to the file  (default: `argos-translate`).
+- `:command_argospm` - command for `argospm`. Can be the command if it's in your PATH, or the full path to the file (default: `argospm`).
+- `:default_language` - When no language is provided to translate from, this language will be used. Must be a two letter langage code from a language you have installed (default: `en`).
