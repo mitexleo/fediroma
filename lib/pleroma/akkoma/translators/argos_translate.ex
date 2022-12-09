@@ -11,8 +11,8 @@ defmodule Pleroma.Akkoma.Translators.ArgosTranslate do
     Config.get([:argos_translate, :command_argospm])
   end
 
-  defp default_language do
-    Config.get([:argos_translate, :default_language])
+  defp fallback_language do
+    Config.get([:argos_translate, :fallback_language])
   end
 
   defp safe_languages() do
@@ -63,19 +63,45 @@ defmodule Pleroma.Akkoma.Translators.ArgosTranslate do
     end
   end
 
+  defp clean_string(string, true) do
+    string
+    |> String.replace("<p>", "\n")
+    |> String.replace("</p>", "\n")
+    |> String.replace("<br>", "\n")
+    |> String.replace("<br/>", "\n")
+    |> String.replace("<li>", "\n")
+    |> Pleroma.HTML.strip_tags()
+    |> HtmlEntities.decode()
+  end
+
+  defp clean_string(string, _), do: string
+
+  defp htmlify_response(string, true) do
+    string
+    |> HtmlEntities.encode()
+    |> String.replace("\n", "<br/>")
+  end
+
+  defp htmlify_response(string, _), do: string
+
   @impl Pleroma.Akkoma.Translator
   def translate(string, from_language, to_language) do
+    strip_html = Config.get([:argos_translate, :strip_html])
     # Akkoma's Pleroma-fe expects us to detect the source language automatically.
     # Argos-translate doesn't have that option (yet?)
     #     see <https://github.com/argosopentech/argos-translate/issues/9>
-    # For now we choose a default source language from settings.
+    # For now we choose a fallback source language from settings.
     # Afterwards people get the option to overwrite the source language from a dropdown.
-    from_language = from_language || default_language()
-    to_language = to_language || default_language()
+    from_language = from_language || fallback_language()
+    to_language = to_language || fallback_language()
+    # Argos Translate doesn't properly translate HTML (yet?)
+    # For now we give admins the option to strip the html before translating
+    # Note that we have to add some html back to the response afterwards
+    string = clean_string(string, strip_html)
 
     with {translated, 0} <-
            safe_translate(string, from_language, to_language) do
-      {:ok, from_language, translated}
+      {:ok, from_language, translated |> htmlify_response(strip_html)}
     else
       {response, _} -> {:error, "ArgosTranslate failed to translate (#{response})"}
     end

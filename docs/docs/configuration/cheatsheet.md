@@ -1143,6 +1143,9 @@ Translations are available at `/api/v1/statuses/:id/translations/:language`, whe
 
 ### `:argos_translate`
 
+[Argos Translate](https://github.com/argosopentech/argos-translate) is the library used by Libre Translate and can run as a command line tool. It's more basic than Libre Translate as it doesn't provide a way to properly handle html or language detection.
+
 - `:command_argos_translate` - command for `argos-translate`. Can be the command if it's in your PATH, or the full path to the file  (default: `argos-translate`).
 - `:command_argospm` - command for `argospm`. Can be the command if it's in your PATH, or the full path to the file (default: `argospm`).
-- `:default_language` - When no language is provided to translate from, this language will be used. Must be a two letter langage code from a language you have installed (default: `en`).
+- `:fallback_language` - When no language is provided to translate from, this language will be used. Must be a two letter langage code from a language you have installed (default: `en`).
+- `:strip_html` - Strip html from the post before translating the text (default: `true`).

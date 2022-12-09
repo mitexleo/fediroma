@@ -63,4 +63,39 @@ defmodule Pleroma.Akkoma.Translators.ArgosTranslateTest do
     assert {:error, "ArgosTranslate failed to translate" <> _} =
              ArgosTranslate.translate("blabla", "nl", "en")
   end
+
+  test "it can strip html" do
+    content =
+      ~s[<p>What&#39;s up my fellow fedizens?</p><p>So anyway</p><ul><li><a class="hashtag" data-tag="cofe" href="https://suya.space/tag/cofe">#cofe</a></li><li><a class="hashtag" data-tag="suya" href="https://cofe.space/tag/suya">#Suya</a></li></ul><p>ammiright!<br/>:ablobfoxhyper:</p>]
+
+    stripped_content =
+      "\nWhat's up my fellow fedizens?\n\nSo anyway\n\n#cofe\n#Suya\nammiright!\n:ablobfoxhyper:\n"
+
+    expected_response_strip_html =
+      "<br/>What&#39;s up my fellow fedizens?<br/><br/>So anyway<br/><br/>#cofe<br/>#Suya<br/>ammiright!<br/>:ablobfoxhyper:<br/>"
+
+    response_strip_html =
+      with_mock System, [:passthrough],
+        cmd: fn "argos-translate_test",
+                ["--from-lang", _, "--to-lang", _, ^stripped_content],
+                _ ->
+          {stripped_content, 0}
+        end do
+        ArgosTranslate.translate(content, "nl", "en")
+      end
+
+    clear_config([:argos_translate, :strip_html], false)
+
+    response_no_strip_html =
+      with_mock System, [:passthrough],
+        cmd: fn "argos-translate_test", ["--from-lang", _, "--to-lang", _, string], _ ->
+          {string, 0}
+        end do
+        ArgosTranslate.translate(content, "nl", "en")
+      end
+
+    assert {:ok, "nl", content} == response_no_strip_html
+
+    assert {:ok, "nl", expected_response_strip_html} == response_strip_html
+  end
 end

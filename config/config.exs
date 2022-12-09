@@ -885,7 +885,8 @@ config :pleroma, :libre_translate,
 config :pleroma, :argos_translate,
   command_argos_translate: "argos-translate",
   command_argospm: "argospm",
-  default_language: "en"
+  fallback_language: "en",
+  strip_html: true
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
