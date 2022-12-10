@@ -27,19 +27,11 @@ defmodule Pleroma.Akkoma.Translators.ArgosTranslateTest do
     assert [%{code: "en", name: "en"}, %{code: "nl", name: "nl"}] = dest_langs |> Enum.sort()
   end
 
-  test "it translates from default language when no language is set" do
-    translation_response =
-      with_mock System, [:passthrough],
-        cmd: fn "argos-translate_test", ["--from-lang", "en", "--to-lang", "fr", "blabla"], _ ->
-          {"yadayada", 0}
-        end do
-        ArgosTranslate.translate("blabla", nil, "fr")
-      end
-
-    assert {:ok, "en", "yadayada"} = translation_response
+  test "it translates from the to language when no language is set and returns the text unchanged" do
+    assert {:ok, "nl", "blabla"} = ArgosTranslate.translate("blabla", nil, "nl")
   end
 
-  test "it translates from the provided language" do
+  test "it translates from the provided language if provided" do
     translation_response =
       with_mock System, [:passthrough],
         cmd: fn "argos-translate_test", ["--from-lang", "nl", "--to-lang", "en", "blabla"], _ ->
