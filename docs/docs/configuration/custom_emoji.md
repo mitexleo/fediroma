@@ -67,3 +67,29 @@ Priority of tags assigns in emoji.txt and custom.txt:
 Priority for globs:
 
 `special group setting in config.exs > default setting in config.exs`
+
+## Stealing emoji
+
+Managing your emoji can be hard work, and you just want to have the cool emoji your friends use? As usual, crime comes to the rescue!
+
+You can use the `Pleroma.Web.ActivityPub.MRF.StealEmojiPolicy` Message Rewrite Facility to automatically add to your instance emoji that massages from specific servers contain. Note that this happens on message processing, so the emoji will be added only after your instance receives some interaction containing emoji _after_ configuring this.
+
+To activate this you have to configure it in your configuration file (`prod.secret.exs` or `dev.secret.exs`). For example if you wanted to steal from `coolemoji.space` and `spiceenthusiasts.biz` any emoji that is not related to cinnamon and not larger than about 10K you would add the following:
+```elixir
+config :pleroma, :mrf,
+  policies: [
+    Pleroma.Web.ActivityPub.MRF.StealEmojiPolicy
+  ]
+
+config :pleroma, :mrf_steal_emoji,
+  hosts: [
+    "coolemoji.space",
+    "spiceenthusiasts.biz"
+  ],
+  rejected_shortcodes: [
+    ".*cinnamon.*"
+  ],
+  size_limit: 10000
+```
+
+Note that this _might_ actually be illegal in some ways, due to emoji pack licensing. It's extremely unlikely that anyone will care, but keep this in mind for when Nintendo starts their own instance.
