@@ -190,6 +190,8 @@ defmodule Pleroma.Mixfile do
        git: "https://akkoma.dev/AkkomaGang/mfm-parser.git",
        ref: "912fba81152d4d572e457fd5427f9875b2bc3dbe"},
       {:poison, ">= 0.0.0"},
+      {:broadway, "~> 1.0"},
+      {:broadway_rabbitmq, "~> 0.7"},
 
       ## dev & test
       {:ex_doc, "~> 0.22", only: :dev, runtime: false},

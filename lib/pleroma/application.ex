@@ -68,11 +68,11 @@ defmodule Pleroma.Application do
       ] ++
         cachex_children() ++
         http_children() ++
+        queue_children() ++
         [
           Pleroma.Stats,
           Pleroma.JobQueueMonitor,
           {Majic.Pool, [name: Pleroma.MajicPool, pool_size: Config.get([:majic_pool, :size], 2)]},
-          {Oban, Config.get(Oban)},
           Pleroma.Web.Endpoint
         ] ++
         elasticsearch_children() ++
@@ -266,5 +266,17 @@ defmodule Pleroma.Application do
       |> Keyword.put(:name, MyFinch)
 
     [{Finch, config}]
+  end
+
+  defp queue_children do
+    queue_module = Config.get([:queue, :module])
+
+    case queue_module do
+      Oban ->
+        [{Oban, Config.get(Oban)}]
+
+      Pleroma.Broadway ->
+        Pleroma.Broadway.children()
+    end
   end
 end

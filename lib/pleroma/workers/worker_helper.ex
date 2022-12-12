@@ -25,30 +25,55 @@ defmodule Pleroma.Workers.WorkerHelper do
   defmacro __using__(opts) do
     caller_module = __CALLER__.module
     queue = Keyword.fetch!(opts, :queue)
+    queue_system = Config.get([:queue, :module])
 
-    quote do
-      # Note: `max_attempts` is intended to be overridden in `new/2` call
-      use Oban.Worker,
-        queue: unquote(queue),
-        max_attempts: 1
+    case queue_system do
+      Oban ->
+        quote do
+          # Note: `max_attempts` is intended to be overridden in `new/2` call
+          use Oban.Worker,
+            queue: unquote(queue),
+            max_attempts: 1
 
-      alias Oban.Job
+          alias Oban.Job
 
-      def enqueue(op, params, worker_args \\ []) do
-        params = Map.merge(%{"op" => op}, params)
-        queue_atom = String.to_atom(unquote(queue))
-        worker_args = worker_args ++ WorkerHelper.worker_args(queue_atom)
+          def enqueue(op, params, worker_args \\ []) do
+            params = Map.merge(%{"op" => op}, params)
+            queue_atom = String.to_atom(unquote(queue))
+            worker_args = worker_args ++ WorkerHelper.worker_args(queue_atom)
 
-        unquote(caller_module)
-        |> apply(:new, [params, worker_args])
-        |> Oban.insert()
-      end
+            unquote(caller_module)
+            |> apply(:new, [params, worker_args])
+            |> Oban.insert()
+          end
 
-      @impl Oban.Worker
-      def timeout(_job) do
-        queue_atom = String.to_atom(unquote(queue))
-        Config.get([:workers, :timeout, queue_atom], :timer.minutes(1))
-      end
+          @impl Oban.Worker
+          def timeout(_job) do
+            queue_atom = String.to_atom(unquote(queue))
+            Config.get([:workers, :timeout, queue_atom], :timer.minutes(1))
+          end
+        end
+
+      Pleroma.Broadway ->
+        quote do
+          @topic unquote(queue)
+          use Oban.Worker,
+            queue: unquote(queue),
+            max_attempts: 1
+
+          alias Oban.Job
+
+          def enqueue(op, params, worker_args \\ []) do
+            worker = to_string(__MODULE__)
+
+            params =
+              params
+              |> Map.put("__module__", worker)
+              |> Map.put("op", op)
+
+            Pleroma.Broadway.produce(unquote(queue), Jason.encode!(params))
+          end
+        end
     end
   end
 end

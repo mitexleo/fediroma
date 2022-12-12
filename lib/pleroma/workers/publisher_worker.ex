@@ -15,6 +15,7 @@ defmodule Pleroma.Workers.PublisherWorker do
   @impl Oban.Worker
   def perform(%Job{args: %{"op" => "publish", "activity_id" => activity_id, "object_data" => nil}}) do
     activity = Activity.get_by_id(activity_id)
+    IO.inspect(activity)
     Federator.perform(:publish, activity)
   end
 
