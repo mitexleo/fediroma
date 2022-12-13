@@ -319,6 +319,4 @@ defmodule Mix.Tasks.Pleroma.Instance do
 
     enabled_filters
   end
-
-  defp upload_filters(_), do: []
 end

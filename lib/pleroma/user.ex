@@ -3,6 +3,10 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 defmodule Pleroma.User do
+  @moduledoc """
+  A user, local or remote
+  """
+
   use Ecto.Schema
 
   import Ecto.Changeset
@@ -939,7 +943,8 @@ defmodule Pleroma.User do
 
   def needs_update?(_), do: true
 
-  @spec maybe_direct_follow(User.t(), User.t()) :: {:ok, User.t()} | {:error, String.t()}
+  @spec maybe_direct_follow(User.t(), User.t()) ::
+          {:ok, User.t(), User.t()} | {:error, String.t()}
 
   # "Locked" (self-locked) users demand explicit authorization of follow requests
   def maybe_direct_follow(%User{} = follower, %User{local: true, is_locked: true} = followed) do
@@ -2492,15 +2497,19 @@ defmodule Pleroma.User do
     with {:ok, relationship} <- UserRelationship.create_block(user, blocked) do
       @cachex.del(:user_cache, "blocked_users_ap_ids:#{user.ap_id}")
       {:ok, relationship}
+    else
+      err -> err
     end
   end
 
-  @spec add_to_block(User.t(), User.t()) ::
+  @spec remove_from_block(User.t(), User.t()) ::
           {:ok, UserRelationship.t()} | {:ok, nil} | {:error, Ecto.Changeset.t()}
   defp remove_from_block(%User{} = user, %User{} = blocked) do
     with {:ok, relationship} <- UserRelationship.delete_block(user, blocked) do
       @cachex.del(:user_cache, "blocked_users_ap_ids:#{user.ap_id}")
       {:ok, relationship}
+    else
+      err -> err
     end
   end
 

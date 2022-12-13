@@ -104,7 +104,7 @@ defmodule Pleroma.Helpers.MediaHelper do
         args: args
       ])
 
-    fifo = Port.open(to_charlist(fifo_path), [:eof, :binary, :stream, :out])
+    fifo = Port.open({:spawn, to_charlist(fifo_path)}, [:eof, :binary, :stream, :out])
     fix = Pleroma.Helpers.QtFastStart.fix(env.body)
     true = Port.command(fifo, fix)
     :erlang.port_close(fifo)
