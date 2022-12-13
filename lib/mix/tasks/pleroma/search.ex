@@ -10,6 +10,7 @@ defmodule Mix.Tasks.Pleroma.Search do
 
   def run(["import", "activities" | _rest]) do
     start_pleroma()
+
     Elasticsearch.Index.Bulk.upload(
       Pleroma.Search.Elasticsearch.Cluster,
       "activities",

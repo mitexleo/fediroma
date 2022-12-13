@@ -553,9 +553,17 @@ defmodule Pleroma.User do
   end
 
   defp put_fields(changeset) do
+    # These fields are inconsistent in tests when it comes to binary/atom keys
     if raw_fields = get_change(changeset, :raw_fields) do
       raw_fields =
         raw_fields
+        |> Enum.map(fn
+          %{name: name, value: value} ->
+            %{"name" => name, "value" => value}
+
+          %{"name" => _} = field ->
+            field
+        end)
         |> Enum.filter(fn %{"name" => n} -> n != "" end)
 
       fields =

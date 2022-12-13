@@ -378,8 +378,10 @@ defmodule Mix.Tasks.Pleroma.User do
   def run(["show", nickname]) do
     start_pleroma()
 
-    user = nickname
-        |> User.get_cached_by_nickname()
+    user =
+      nickname
+      |> User.get_cached_by_nickname()
+
     shell_info("#{inspect(user)}")
   end
 
