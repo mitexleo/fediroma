@@ -197,7 +197,11 @@ defmodule Pleroma.Mixfile do
       ## dev & test
       {:ex_doc, "~> 0.22", only: :dev, runtime: false},
       {:ex_machina, "~> 2.4", only: :test},
-      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:credo,
+       git: "https://github.com/rrrene/credo.git",
+       ref: "1c1b99ea41a457761383d81aaf6a606913996fe7",
+       only: [:dev, :test],
+       runtime: false},
       {:mock, "~> 0.3.5", only: :test},
       {:excoveralls, "0.15.1", only: :test},
       {:mox, "~> 1.0", only: :test},

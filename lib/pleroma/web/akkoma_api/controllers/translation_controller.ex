@@ -27,7 +27,9 @@ defmodule Pleroma.Web.AkkomaAPI.TranslationController do
       |> json(%{source: source_languages, target: dest_languages})
     else
       {:enabled, false} -> json(conn, %{})
-      e -> IO.inspect(e)
+      e ->
+        Logger.error("Translation language list error: #{inspect(e)}")
+        {:error, e}
     end
   end
 
