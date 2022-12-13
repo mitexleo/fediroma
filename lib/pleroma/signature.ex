@@ -26,7 +26,7 @@ defmodule Pleroma.Signature do
         {:ok, ap_id}
 
       _ ->
-        case Pleroma.Web.WebFinger.finger(maybe_ap_id) do
+        case IO.inspect(Pleroma.Web.WebFinger.finger(maybe_ap_id), label: :fing) do
           {:ok, %{"ap_id" => ap_id}} -> {:ok, ap_id}
           _ -> {:error, maybe_ap_id}
         end

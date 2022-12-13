@@ -539,7 +539,7 @@ defmodule Pleroma.Web.MastodonAPI.TimelineControllerTest do
         build_conn()
         |> assign(:user, user_one)
         |> assign(:token, insert(:oauth_token, user: user_one, scopes: ["read:statuses"]))
-        |> get("api/v1/timelines/direct")
+        |> get("/api/v1/timelines/direct")
 
       [status] = json_response_and_validate_schema(res_conn, :ok)
 
