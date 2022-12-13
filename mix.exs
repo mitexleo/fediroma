@@ -115,7 +115,7 @@ defmodule Pleroma.Mixfile do
     [
       {:phoenix, "~> 1.6.11"},
       {:tzdata, "~> 1.1.1"},
-      {:plug_cowboy, "~> 2.5"},
+      {:plug_cowboy, "~> 2.6"},
       {:phoenix_pubsub, "~> 2.1"},
       {:phoenix_ecto, "~> 4.4"},
       {:ecto_enum, "~> 1.4"},
@@ -129,14 +129,13 @@ defmodule Pleroma.Mixfile do
       {:bcrypt_elixir, "~> 2.2"},
       {:trailing_format_plug, "~> 0.0.7"},
       {:fast_sanitize, "~> 0.2.3"},
-      {:html_entities, "~> 0.5", override: true},
-      {:phoenix_html, "~> 3.1", override: true},
+      {:html_entities, "~> 0.5"},
+      {:phoenix_html, "~> 3.1"},
       {:calendar, "~> 1.0"},
       {:cachex, "~> 3.4"},
-      {:poison, "~> 5.0", override: true},
-      {:tesla, "~> 1.4.4", override: true},
+      {:tesla, "~> 1.4.4"},
       {:castore, "~> 0.1"},
-      {:cowlib, "~> 2.9", override: true},
+      {:cowlib, "~> 2.9"},
       {:finch, "~> 0.14.0"},
       {:jason, "~> 1.2"},
       {:mogrify, "~> 0.9.1"},
@@ -193,9 +192,7 @@ defmodule Pleroma.Mixfile do
       {:mfm_parser,
        git: "https://akkoma.dev/AkkomaGang/mfm-parser.git",
        ref: "912fba81152d4d572e457fd5427f9875b2bc3dbe"},
-
-      # indirect dependency version override
-      {:plug, "~> 1.10.4", override: true},
+      {:poison, ">= 0.0.0"},
 
       ## dev & test
       {:ex_doc, "~> 0.22", only: :dev, runtime: false},
