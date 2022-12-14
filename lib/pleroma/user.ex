@@ -718,7 +718,7 @@ defmodule Pleroma.User do
   end
 
   @spec register_changeset(User.t(), map(), keyword()) :: Changeset.t()
-  def register_changeset(struct, params \\ %{}, opts \\ []) do
+  def register_changeset(%User{} = struct, params \\ %{}, opts \\ []) do
     bio_limit = Config.get([:instance, :user_bio_length], 5000)
     name_limit = Config.get([:instance, :user_name_length], 100)
     reason_limit = Config.get([:instance, :registration_reason_length], 500)
@@ -832,12 +832,14 @@ defmodule Pleroma.User do
   end
 
   @doc "Inserts provided changeset, performs post-registration actions (confirmation email sending etc.)"
+  @spec register(Changeset.t()) :: {:ok, User.t()} | {:error, any} | nil
   def register(%Ecto.Changeset{} = changeset) do
     with {:ok, user} <- Repo.insert(changeset) do
       post_register_action(user)
     end
   end
 
+  @spec post_register_action(User.t()) :: {:error, any} | {:ok, User.t()}
   def post_register_action(%User{is_confirmed: false} = user) do
     with {:ok, _} <- maybe_send_confirmation_email(user) do
       {:ok, user}
@@ -2440,7 +2442,7 @@ defmodule Pleroma.User do
     cast(user, params, [:is_confirmed, :confirmation_token])
   end
 
-  @spec approval_changeset(User.t(), keyword()) :: Changeset.t()
+  @spec approval_changeset(Changeset.t(), keyword()) :: Changeset.t()
   def approval_changeset(user, set_approval: approved?) do
     cast(user, %{is_approved: approved?}, [:is_approved])
   end
