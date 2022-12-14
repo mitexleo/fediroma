@@ -35,8 +35,6 @@ defmodule Pleroma.Web.Feed.UserController do
   end
 
   def feed(conn, %{"nickname" => nickname} = params) do
-    [nickname | _rest] = String.split(nickname, ".")
-    IO.puts(nickname)
     format = get_format(conn)
 
     format =

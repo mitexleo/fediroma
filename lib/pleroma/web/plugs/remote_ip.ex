@@ -17,6 +17,7 @@ defmodule Pleroma.Web.Plugs.RemoteIp do
     if Config.get([__MODULE__, :enabled]) do
       {headers, proxies} = remote_ip_opts()
       new_remote_ip = RemoteIp.from(conn.req_headers, headers: headers, proxies: proxies)
+
       if new_remote_ip != original_remote_ip do
         Map.put(conn, :remote_ip, new_remote_ip)
       else

@@ -92,7 +92,7 @@ defmodule Pleroma.Web.Auth.PleromaAuthenticator do
            Registration.changeset(registration, %{user_id: new_user.id}) |> Repo.update() do
       {:ok, new_user}
     else
-      err -> {:error, err}
+      err -> err
     end
   end
 
