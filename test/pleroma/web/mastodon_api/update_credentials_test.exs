@@ -388,7 +388,7 @@ defmodule Pleroma.Web.MastodonAPI.UpdateCredentialsTest do
           "pleroma_background_image" => new_background_oversized
         })
 
-      assert user_response = json_response_and_validate_schema(res, 413)
+      assert json_response_and_validate_schema(res, 413)
       assert user.background == %{}
 
       clear_config([:instance, :upload_limit], upload_limit)
