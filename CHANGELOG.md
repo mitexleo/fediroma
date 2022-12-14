@@ -6,10 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
 
-## Removed
+### Removed
 - Non-finch HTTP adapters
+- Legacy redirect from /api/pleroma/admin to /api/v1/pleroma/admin
 
-## Upgrade notes
+### Changed
+- Return HTTP error 413 when uploading an avatar or banner that's above the configured upload limit instead of a 500.
+
+### Upgrade notes
 - Ensure `config :tesla, :adapter` is either unset, or set to `{Tesla.Adapter.Finch, name: MyFinch}` in your .exs config
 
 ## 2022.12
