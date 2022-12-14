@@ -717,6 +717,7 @@ defmodule Pleroma.User do
     |> put_private_key()
   end
 
+  @spec register_changeset(User.t(), map(), keyword()) :: Changeset.t()
   def register_changeset(struct, params \\ %{}, opts \\ []) do
     bio_limit = Config.get([:instance, :user_bio_length], 5000)
     name_limit = Config.get([:instance, :user_name_length], 100)
@@ -1085,6 +1086,11 @@ defmodule Pleroma.User do
     get_cached_by_nickname(nickname)
   end
 
+  @spec set_cache(
+          {:error, any}
+          | {:ok, User.t()}
+          | User.t()
+        ) :: {:ok, User.t()} | {:error, any}
   def set_cache({:ok, user}), do: set_cache(user)
   def set_cache({:error, err}), do: {:error, err}
 
@@ -1095,12 +1101,14 @@ defmodule Pleroma.User do
     {:ok, user}
   end
 
+  @spec update_and_set_cache(User.t(), map()) :: {:ok, User.t()} | {:error, any}
   def update_and_set_cache(struct, params) do
     struct
     |> update_changeset(params)
     |> update_and_set_cache()
   end
 
+  @spec update_and_set_cache(Changeset.t()) :: {:ok, User.t()} | {:error, any}
   def update_and_set_cache(%{data: %Pleroma.User{} = user} = changeset) do
     was_superuser_before_update = User.superuser?(user)
 
@@ -1155,6 +1163,7 @@ defmodule Pleroma.User do
     end
   end
 
+  @spec get_cached_by_id(String.t()) :: nil | Pleroma.User.t()
   def get_cached_by_id(id) do
     key = "id:#{id}"
 
@@ -2315,6 +2324,7 @@ defmodule Pleroma.User do
     end
   end
 
+  @spec delete_alias(User.t(), User.t()) :: {:error, :no_such_alias}
   def delete_alias(user, alias_user) do
     current_aliases = user.also_known_as || []
     alias_ap_id = alias_user.ap_id
