@@ -72,9 +72,9 @@ Priority for globs:
 
 Managing your emoji can be hard work, and you just want to have the cool emoji your friends use? As usual, crime comes to the rescue!
 
-You can use the `Pleroma.Web.ActivityPub.MRF.StealEmojiPolicy` Message Rewrite Facility to automatically add to your instance emoji that massages from specific servers contain. Note that this happens on message processing, so the emoji will be added only after your instance receives some interaction containing emoji _after_ configuring this.
+You can use the `Pleroma.Web.ActivityPub.MRF.StealEmojiPolicy` [Message Rewrite Facility](../configuration/cheatsheet.md#mrf) to automatically add to your instance emoji that messages from specific servers contain. Note that this happens on message processing, so the emoji will be added only after your instance receives some interaction containing emoji _after_ configuring this.
 
-To activate this you have to configure it in your configuration file (`prod.secret.exs` or `dev.secret.exs`). For example if you wanted to steal from `coolemoji.space` and `spiceenthusiasts.biz` any emoji that is not related to cinnamon and not larger than about 10K you would add the following:
+To activate this you have to [configure](../configuration/cheatsheet.md#mrf_steal_emoji) it in your configuration file. For example if you wanted to steal any emoji that is not related to cinnamon and not larger than about 10K from `coolemoji.space` and `spiceenthusiasts.biz`, you would add the following:
 ```elixir
 config :pleroma, :mrf,
   policies: [
@@ -92,4 +92,4 @@ config :pleroma, :mrf_steal_emoji,
   size_limit: 10000
 ```
 
-Note that this _might_ actually be illegal in some ways, due to emoji pack licensing. It's extremely unlikely that anyone will care, but keep this in mind for when Nintendo starts their own instance.
+Note that this may not obey emoji licensing restrictions. It's extremely unlikely that anyone will care, but keep this in mind for when Nintendo starts their own instance.
