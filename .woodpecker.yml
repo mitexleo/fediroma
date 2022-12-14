@@ -74,6 +74,14 @@ pipeline:
       - mix deps.get
       - mix compile
 
+  credo:
+    <<: *on-pr-open
+    image: akkoma/ci-base:1.14
+    commands:
+    - mix local.hex --force
+    - mix local.rebar --force
+    - mix credo || true # we don't want to error here
+
   test:
     image: akkoma/ci-base:1.14
     <<: *on-pr-open
