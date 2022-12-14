@@ -384,7 +384,7 @@ defmodule Pleroma.Web.ActivityPub.SideEffects do
         {:ok, expires_at} =
           Pleroma.EctoType.ActivityPub.ObjectValidators.DateTime.cast(meta[:expires_at])
 
-        Pleroma.Workers.PurgeExpiredActivity.enqueue(%{
+        Pleroma.Workers.PurgeExpiredActivity.schedule(%{
           activity_id: meta[:activity_id],
           expires_at: expires_at
         })

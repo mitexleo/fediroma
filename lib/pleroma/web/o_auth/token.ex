@@ -117,7 +117,7 @@ defmodule Pleroma.Web.OAuth.Token do
   def create(%App{} = app, %User{} = user, attrs \\ %{}) do
     with {:ok, token} <- do_create(app, user, attrs) do
       if Pleroma.Config.get([:oauth2, :clean_expired_tokens]) do
-        Pleroma.Workers.PurgeExpiredToken.enqueue(%{
+        Pleroma.Workers.PurgeExpiredToken.schedule(%{
           token_id: token.id,
           valid_until: DateTime.from_naive!(token.valid_until, "Etc/UTC"),
           mod: __MODULE__

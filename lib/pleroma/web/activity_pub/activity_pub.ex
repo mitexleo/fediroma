@@ -230,7 +230,7 @@ defmodule Pleroma.Web.ActivityPub.ActivityPub do
          %{data: %{"expires_at" => %DateTime{} = expires_at}} = activity
        ) do
     with {:ok, _job} <-
-           Pleroma.Workers.PurgeExpiredActivity.enqueue(%{
+           Pleroma.Workers.PurgeExpiredActivity.schedule(%{
              activity_id: activity.id,
              expires_at: expires_at
            }) do

@@ -178,7 +178,7 @@ defmodule Mix.Tasks.Pleroma.Database do
           |> DateTime.from_naive!("Etc/UTC")
           |> Timex.shift(days: days)
 
-        Pleroma.Workers.PurgeExpiredActivity.enqueue(%{
+        Pleroma.Workers.PurgeExpiredActivity.schedule(%{
           activity_id: activity.id,
           expires_at: expires_at
         })

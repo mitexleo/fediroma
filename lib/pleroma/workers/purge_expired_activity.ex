@@ -7,23 +7,17 @@ defmodule Pleroma.Workers.PurgeExpiredActivity do
   Worker which purges expired activity.
   """
 
-  use Oban.Worker, queue: :activity_expiration, max_attempts: 1, unique: [period: :infinity]
+  use Pleroma.Workers.WorkerHelper, queue: "activity_expiration", max_attempts: 1, unique: [period: :infinity]
 
   import Ecto.Query
 
   alias Pleroma.Activity
 
-  @spec enqueue(map()) ::
-          {:ok, Oban.Job.t()}
-          | {:error, :expired_activities_disabled}
-          | {:error, :expiration_too_close}
-  def enqueue(args) do
+  def schedule(args) do
     with true <- enabled?() do
       {scheduled_at, args} = Map.pop(args, :expires_at)
 
-      args
-      |> new(scheduled_at: scheduled_at)
-      |> Oban.insert()
+      enqueue("delete", args, scheduled_at: scheduled_at)
     end
   end
 

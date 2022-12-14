@@ -133,7 +133,7 @@ defmodule Pleroma.Filter do
   defp maybe_add_expires_at(changeset, _), do: changeset
 
   defp maybe_add_expiration_job(%{expires_at: %NaiveDateTime{} = expires_at} = filter) do
-    Pleroma.Workers.PurgeExpiredFilter.enqueue(%{
+    Pleroma.Workers.PurgeExpiredFilter.schedule(%{
       filter_id: filter.id,
       expires_at: DateTime.from_naive!(expires_at, "Etc/UTC")
     })

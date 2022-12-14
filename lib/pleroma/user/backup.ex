@@ -34,7 +34,7 @@ defmodule Pleroma.User.Backup do
   def create(user, admin_id \\ nil) do
     with :ok <- validate_limit(user, admin_id),
          {:ok, backup} <- user |> new() |> Repo.insert() do
-      BackupWorker.process(backup, admin_id)
+      BackupWorker.enqueue("process", %{"backup_id" => backup.id, "admin_user_id" => admin_id})
     end
   end
 
