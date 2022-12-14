@@ -10,23 +10,25 @@ defmodule Pleroma.Web.Plugs.RemoteIpTest do
 
   import Pleroma.Tests.Helpers, only: [clear_config: 2]
 
-  setup do:
-          clear_config(RemoteIp,
-            enabled: true,
-            headers: ["x-forwarded-for"],
-            proxies: [],
-            reserved: [
-              "127.0.0.0/8",
-              "::1/128",
-              "fc00::/7",
-              "10.0.0.0/8",
-              "172.16.0.0/12",
-              "192.168.0.0/16"
-            ]
-          )
+  setup do
+    clear_config([RemoteIp, :enabled], true)
+    clear_config([RemoteIp, :headers], ["x-forwarded-for"])
+    clear_config([RemoteIp, :proxies], [])
+    clear_config(
+      [RemoteIp, :reserved],
+      [
+        "127.0.0.0/8",
+        "::1/128",
+        "fc00::/7",
+        "10.0.0.0/8",
+        "172.16.0.0/12",
+        "192.168.0.0/16"
+      ]
+    )
+  end
 
   test "disabled" do
-    clear_config(RemoteIp, enabled: false)
+    clear_config([RemoteIp, :enabled], false)
 
     %{remote_ip: remote_ip} = conn(:get, "/")
 
@@ -48,7 +50,8 @@ defmodule Pleroma.Web.Plugs.RemoteIpTest do
   end
 
   test "custom headers" do
-    clear_config(RemoteIp, enabled: true, headers: ["cf-connecting-ip"])
+    clear_config([RemoteIp, :enabled], true)
+    clear_config([RemoteIp, :headers], ["cf-connecting-ip"])
 
     conn =
       conn(:get, "/")

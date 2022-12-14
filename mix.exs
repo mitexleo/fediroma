@@ -7,7 +7,7 @@ defmodule Pleroma.Mixfile do
       version: version("3.5.0"),
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      compilers: [:phoenix] ++ Mix.compilers(),
       elixirc_options: [warnings_as_errors: warnings_as_errors()],
       xref: [exclude: [:eldap]],
       start_permanent: Mix.env() == :prod,
@@ -94,7 +94,8 @@ defmodule Pleroma.Mixfile do
   # Specifies OAuth dependencies.
   defp oauth_deps do
     oauth_strategy_packages =
-      System.get_env("OAUTH_CONSUMER_STRATEGIES")
+      "OAUTH_CONSUMER_STRATEGIES"
+      |> System.get_env()
       |> to_string()
       |> String.split()
       |> Enum.map(fn strategy_entry ->
@@ -118,13 +119,13 @@ defmodule Pleroma.Mixfile do
       {:plug_cowboy, "~> 2.6"},
       {:phoenix_pubsub, "~> 2.1"},
       {:phoenix_ecto, "~> 4.4"},
+      {:inet_cidr, "~> 1.0.0"},
       {:ecto_enum, "~> 1.4"},
       {:ecto_sql, "~> 3.9.0"},
       {:postgrex, ">= 0.16.3"},
       {:oban, "~> 2.12.1"},
       {:gettext, "~> 0.20.0"},
       {:bcrypt_elixir, "~> 2.2"},
-      {:trailing_format_plug, "~> 0.0.7"},
       {:fast_sanitize, "~> 0.2.3"},
       {:html_entities, "~> 0.5"},
       {:phoenix_html, "~> 3.2"},
@@ -333,7 +334,7 @@ defmodule Pleroma.Mixfile do
 # Pleroma: A lightweight social networking server
 # Copyright © 2017-#{year} Pleroma Authors <https://pleroma.social/>
 # SPDX-License-Identifier: AGPL-3.0-only
-# Akkoma: The cooler pleroma
+# Akkoma: Magically expressive social media
 # Copyright © 2022-#{year} Akkoma Authors <https://akkoma.dev/>
 # SPDX-License-Identifier: AGPL-3.0-only
 

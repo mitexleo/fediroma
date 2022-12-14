@@ -116,7 +116,6 @@ defmodule Pleroma.Web.Endpoint do
     plug(Phoenix.CodeReloader)
   end
 
-  plug(Pleroma.Web.Plugs.TrailingFormatPlug)
   plug(Plug.RequestId)
   plug(Plug.Logger, log: :debug)
 

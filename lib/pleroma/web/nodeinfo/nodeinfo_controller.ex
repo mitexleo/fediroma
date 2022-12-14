@@ -96,7 +96,8 @@ defmodule Pleroma.Web.Nodeinfo.NodeinfoController do
 
   # Schema definition: https://github.com/jhass/nodeinfo/blob/master/schemas/2.0/schema.json
   # and https://github.com/jhass/nodeinfo/blob/master/schemas/2.1/schema.json
-  def nodeinfo(conn, %{"version" => "2.0"}) do
+  # and some backwards-compatibility to allow the `.json` extension
+  def nodeinfo(conn, %{"version" => version}) when version in ["2.0", "2.0.json"] do
     conn
     |> put_resp_header(
       "content-type",
@@ -105,7 +106,7 @@ defmodule Pleroma.Web.Nodeinfo.NodeinfoController do
     |> json(raw_nodeinfo())
   end
 
-  def nodeinfo(conn, %{"version" => "2.1"}) do
+  def nodeinfo(conn, %{"version" => version}) when version in ["2.1", "2.1.json"] do
     raw_response = raw_nodeinfo()
 
     updated_software =
