@@ -7,7 +7,10 @@ defmodule Pleroma.Workers.PurgeExpiredActivity do
   Worker which purges expired activity.
   """
 
-  use Pleroma.Workers.WorkerHelper, queue: "activity_expiration", max_attempts: 1, unique: [period: :infinity]
+  use Pleroma.Workers.WorkerHelper,
+    queue: "activity_expiration",
+    max_attempts: 1,
+    unique: [period: :infinity]
 
   import Ecto.Query
 

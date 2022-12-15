@@ -7,7 +7,10 @@ defmodule Pleroma.Workers.PurgeExpiredFilter do
   Worker which purges expired filters
   """
 
-  use Pleroma.Workers.WorkerHelper, queue: "filter_expiration", max_attempts: 1, unique: [period: :infinity]
+  use Pleroma.Workers.WorkerHelper,
+    queue: "filter_expiration",
+    max_attempts: 1,
+    unique: [period: :infinity]
 
   import Ecto.Query
 

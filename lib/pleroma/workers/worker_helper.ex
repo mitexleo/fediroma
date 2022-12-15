@@ -71,7 +71,7 @@ defmodule Pleroma.Workers.WorkerHelper do
               |> Map.put("__module__", worker)
               |> Map.put("op", op)
 
-            Pleroma.Broadway.produce(unquote(queue), Jason.encode!(params))
+            Pleroma.Broadway.produce(unquote(queue), Jason.encode!(params), worker_args)
           end
         end
     end
