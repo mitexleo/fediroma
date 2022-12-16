@@ -179,6 +179,7 @@ config :pleroma, :http,
   receive_timeout: :timer.seconds(15),
   proxy_url: nil,
   user_agent: :default,
+  pool_size: 50,
   adapter: []
 
 config :pleroma, :instance,
@@ -425,7 +426,7 @@ config :pleroma, :rich_media,
     Pleroma.Web.RichMedia.Parsers.TwitterCard,
     Pleroma.Web.RichMedia.Parsers.OEmbed
   ],
-  failure_backoff: 60_000,
+  failure_backoff: :timer.minutes(20),
   ttl_setters: [Pleroma.Web.RichMedia.Parser.TTL.AwsSignedUrl]
 
 config :pleroma, :media_proxy,

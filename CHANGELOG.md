@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - Prometheus metrics exporting from `/api/v1/akkoma/metrics`
+- Ability to alter http pool size
 
 ### Removed
 - Non-finch HTTP adapters
@@ -17,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 - Return HTTP error 413 when uploading an avatar or banner that's above the configured upload limit instead of a 500.
 - Non-admin users now cannot register `admin` scope tokens (not security-critical, they didn't work before, but you _could_ create them)
+- Rich media will now backoff for 20 minutes after a failure
 
 ### Upgrade notes
 - Ensure `config :tesla, :adapter` is either unset, or set to `{Tesla.Adapter.Finch, name: MyFinch}` in your .exs config
