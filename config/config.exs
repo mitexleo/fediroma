@@ -259,7 +259,8 @@ config :pleroma, :instance,
   profile_directory: true,
   privileged_staff: false,
   local_bubble: [],
-  max_frontend_settings_json_chars: 100_000
+  max_frontend_settings_json_chars: 100_000,
+  export_prometheus_metrics: true
 
 config :pleroma, :welcome,
   direct_message: [
@@ -780,14 +781,6 @@ config :pleroma, :frontends,
       "build_url" =>
         "https://akkoma-updates.s3-website.fr-par.scw.cloud/frontend/${ref}/admin-fe.zip",
       "ref" => "stable"
-    },
-    "soapbox-fe" => %{
-      "name" => "soapbox-fe",
-      "git" => "https://gitlab.com/soapbox-pub/soapbox",
-      "build_url" =>
-        "https://gitlab.com/soapbox-pub/soapbox/-/jobs/artifacts/${ref}/download?job=build-production",
-      "ref" => "v2.0.0",
-      "build_dir" => "static"
     },
     # For developers - enables a swagger frontend to view the openapi spec
     "swagger-ui" => %{
