@@ -1,10 +1,10 @@
 # Verifying OTP release integrity
 
-All stable OTP releases are cryptographically signed, to allow
+All develop OTP releases are cryptographically signed, to allow
 you to verify the integrity if you choose to.
 
 Releases are signed with [Signify](https://man.openbsd.org/signify.1),
-with [the public key in the main repository](https://akkoma.dev/AkkomaGang/akkoma/src/branch/stable/SIGNING_KEY.pub)
+with [the public key in the main repository](https://akkoma.dev/AkkomaGang/akkoma/src/branch/develop/SIGNING_KEY.pub)
 
 Release URLs will always be of the form
 
@@ -12,13 +12,13 @@ Release URLs will always be of the form
 https://akkoma-updates.s3-website.fr-par.scw.cloud/{branch}/akkoma-{flavour}.zip
 ```
 
-Where branch is usually `stable` or `develop`, and `flavour` is
+Where branch is usually `develop`, and `flavour` is
 the one [that you detect on install](../otp_en/#detecting-flavour).
 
-So, for an AMD64 stable install, your update URL will be
+So, for an AMD64 develop install, your update URL will be
 
 ```
-https://akkoma-updates.s3-website.fr-par.scw.cloud/stable/akkoma-amd64.zip
+https://akkoma-updates.s3-website.fr-par.scw.cloud/develop/akkoma-amd64.zip
 ```
 
 To verify the integrity of this file, we have two helper files
@@ -38,7 +38,7 @@ Thus, to upgrade manually, with integrity checking, consider the following scrip
 set -eo pipefail
 
 export FLAVOUR=amd64
-export BRANCH=stable
+export BRANCH=develop
 
 # Fetch signing key
 curl --silent https://akkoma.dev/AkkomaGang/akkoma/raw/branch/$BRANCH/SIGNING_KEY.pub -o AKKOMA_SIGNING_KEY.pub

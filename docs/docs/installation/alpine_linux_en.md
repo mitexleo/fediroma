@@ -84,12 +84,12 @@ doas adduser -S -s /bin/false -h /opt/akkoma -H -G akkoma akkoma
 
 **Note**: To execute a single command as the Akkoma system user, use `doas -u akkoma command`. You can also switch to a shell by using `doas -su akkoma`. If you don’t have and want `doas` on your system, you can use `su` as root user (UID 0) for a single command by using `su -l akkoma -s $SHELL -c 'command'` and `su -l akkoma -s $SHELL` for starting a shell.
 
-* Git clone the AkkomaBE repository and make the Akkoma user the owner of the directory:
+* Git clone the AkkomaBE repository from development-branch and make the Akkoma user the owner of the directory:
 
 ```shell
 doas mkdir -p /opt/akkoma
 doas chown -R akkoma:akkoma /opt/akkoma
-doas -u akkoma git clone https://akkoma.dev/AkkomaGang/akkoma.git /opt/akkoma
+doas -u akkoma git clone https://akkoma.dev/AkkomaGang/akkoma.git -b develop /opt/akkoma
 ```
 
 * Change to the new directory:

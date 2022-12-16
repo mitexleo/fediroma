@@ -17,8 +17,8 @@ su -s "$SHELL" akkoma
 
 ## For OTP installations
 ```sh
-# Download latest stable release
-./bin/pleroma_ctl update --branch stable
+# Download latest develop release
+./bin/pleroma_ctl update --branch develop
 
 # Stop akkoma
 ./bin/pleroma stop # or using the system service manager (e.g. systemctl stop akkoma)
@@ -26,8 +26,8 @@ su -s "$SHELL" akkoma
 # Run database migrations
 ./bin/pleroma_ctl migrate
 
-# Update frontend(s). See Frontend Configuration doc for more information.
-./bin/pleroma_ctl frontend install pleroma-fe --ref stable
+# Update Pleroma-FE frontend to latest develop. For other Frontends see Frontend Configration doc for more information.
+./bin/pleroma_ctl frontend install pleroma-fe --ref develop
 
 # Start akkoma
 ./bin/pleroma daemon # or using the system service manager (e.g. systemctl start akkoma)
@@ -57,8 +57,8 @@ sudo systemctl stop akkoma
 # Run database migrations
 mix ecto.migrate
 
-# Update frontend(s). See Frontend Configration doc for more information.
-mix pleroma.frontend install pleroma-fe --ref stable
+# Update Pleroma-FE frontend to latest develop. For other Frontends see Frontend Configration doc for more information.
+mix pleroma.frontend install pleroma-fe --ref develop
 
 # Start akkoma (replace with your system service manager's equivalent if different)
 sudo systemctl start akkoma

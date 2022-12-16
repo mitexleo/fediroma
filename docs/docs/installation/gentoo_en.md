@@ -124,7 +124,7 @@ It is highly recommended you use your own fork for the `https://path/to/repo` pa
 
 ```shell
  akkoma$ cd ~
- akkoma$ git clone -b stable https://path/to/repo
+ akkoma$ git clone -b develop https://path/to/repo
 ```
 
 * Change to the new directory:
