@@ -31,7 +31,6 @@ defmodule Pleroma.Akkoma.Translators.ArgosTranslate do
         |> String.split("\n", trim: true)
         |> Enum.map(fn
           "translate-" <> l -> String.split(l, "_")
-          _ -> ""
         end)
 
       source_langs =
