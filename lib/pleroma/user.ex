@@ -479,7 +479,7 @@ defmodule Pleroma.User do
     |> validate_format(:nickname, @email_regex)
     |> validate_length(:bio, max: bio_limit)
     |> validate_length(:name, max: name_limit)
-    |> validate_fields(true)
+    |> validate_fields(true, struct)
     |> validate_non_local()
   end
 
@@ -549,7 +549,7 @@ defmodule Pleroma.User do
       :pleroma_settings_store,
       &{:ok, Map.merge(struct.pleroma_settings_store, &1)}
     )
-    |> validate_fields(false)
+    |> validate_fields(false, struct)
   end
 
   defp put_fields(changeset) do
@@ -2359,7 +2359,8 @@ defmodule Pleroma.User do
     |> update_and_set_cache()
   end
 
-  def validate_fields(changeset, remote? \\ false) do
+  @spec validate_fields(Ecto.Changeset.t(), Boolean.t(), User.t()) :: Ecto.Changeset.t()
+  def validate_fields(changeset, remote? \\ false, struct) do
     limit_name = if remote?, do: :max_remote_account_fields, else: :max_account_fields
     limit = Config.get([:instance, limit_name], 0)
 
@@ -2372,6 +2373,7 @@ defmodule Pleroma.User do
         [fields: "invalid"]
       end
     end)
+    |> maybe_validate_rel_me_field(struct)
   end
 
   defp valid_field?(%{"name" => name, "value" => value}) do
@@ -2383,6 +2385,48 @@ defmodule Pleroma.User do
   end
 
   defp valid_field?(_), do: false
+
+  defp is_url(uri) do
+    case URI.parse(uri) do
+      %URI{host: nil} -> false
+      %URI{scheme: nil} -> false
+      _ -> true
+    end
+  end
+
+  @spec maybe_validate_rel_me_field(Changeset.t(), User.t()) :: Changeset.t()
+  defp maybe_validate_rel_me_field(changeset, %User{ap_id: _ap_id} = struct) do
+    fields = get_change(changeset, :fields)
+
+    if is_nil(fields) do
+      changeset
+    else
+      validate_rel_me_field(changeset, fields, struct)
+    end
+  end
+
+  defp maybe_validate_rel_me_field(changeset, _), do: changeset
+
+  @spec validate_rel_me_field(Changeset.t(), [Map.t()], User.t()) :: Changeset.t()
+  defp validate_rel_me_field(changeset, fields, %User{ap_id: ap_id}) do
+    fields =
+      fields
+      |> Enum.map(fn %{"name" => name, "value" => value} ->
+        if is_url(value) do
+          with "me" <- RelMe.maybe_put_rel_me(value, [ap_id]) do
+            %{"name" => name, "value" => value, "verified_at" => DateTime.to_iso8601(DateTime.utc_now())}
+          else
+            e ->
+              Logger.error("Could not check for rel=me, #{inspect(e)}")
+              %{"name" => name, "value" => value}
+          end
+        else
+          %{"name" => name, "value" => value}
+        end
+      end)
+
+    put_change(changeset, :fields, fields)
+  end
 
   defp truncate_field(%{"name" => name, "value" => value}) do
     {name, _chopped} =
@@ -2551,11 +2595,8 @@ defmodule Pleroma.User do
   # - display name
   def sanitize_html(%User{} = user, filter) do
     fields =
-      Enum.map(user.fields, fn %{"name" => name, "value" => value} ->
-        %{
-          "name" => name,
-          "value" => HTML.filter_tags(value, Pleroma.HTML.Scrubber.LinksOnly)
-        }
+      Enum.map(user.fields, fn %{"value" => value} = field ->
+        Map.put(field, "value", HTML.filter_tags(value, Pleroma.HTML.Scrubber.LinksOnly))
       end)
 
     user
