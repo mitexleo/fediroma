@@ -2386,6 +2386,7 @@ defmodule Pleroma.User do
 
   defp valid_field?(_), do: false
 
+  defp is_url(nil), do: nil
   defp is_url(uri) do
     case URI.parse(uri) do
       %URI{host: nil} -> false
@@ -2417,7 +2418,12 @@ defmodule Pleroma.User do
       fields
       |> Enum.with_index()
       |> Enum.map(fn {%{"name" => name, "value" => value}, index} ->
-        raw_value = Enum.at(raw_fields, index)["value"]
+        raw_value =
+          if is_nil(raw_fields) do
+            nil
+          else
+            Enum.at(raw_fields, index)["value"]
+          end
 
         if is_url(raw_value) do
           frontend_url =
