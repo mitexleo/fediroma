@@ -2397,24 +2397,32 @@ defmodule Pleroma.User do
   @spec maybe_validate_rel_me_field(Changeset.t(), User.t()) :: Changeset.t()
   defp maybe_validate_rel_me_field(changeset, %User{ap_id: _ap_id} = struct) do
     fields = get_change(changeset, :fields)
+    raw_fields = get_change(changeset, :raw_fields)
 
     if is_nil(fields) do
       changeset
     else
-      validate_rel_me_field(changeset, fields, struct)
+      validate_rel_me_field(changeset, fields, raw_fields, struct)
     end
   end
 
   defp maybe_validate_rel_me_field(changeset, _), do: changeset
 
-  @spec validate_rel_me_field(Changeset.t(), [Map.t()], User.t()) :: Changeset.t()
-  defp validate_rel_me_field(changeset, fields, %User{ap_id: ap_id}) do
+  @spec validate_rel_me_field(Changeset.t(), [Map.t()], [Map.t()], User.t()) :: Changeset.t()
+  defp validate_rel_me_field(changeset, fields, raw_fields, %User{ap_id: ap_id}) do
     fields =
       fields
-      |> Enum.map(fn %{"name" => name, "value" => value} ->
-        if is_url(value) do
-          with "me" <- RelMe.maybe_put_rel_me(value, [ap_id]) do
-            %{"name" => name, "value" => value, "verified_at" => DateTime.to_iso8601(DateTime.utc_now())}
+      |> Enum.with_index()
+      |> Enum.map(fn {%{"name" => name, "value" => value}, index} ->
+        raw_value = Enum.at(raw_fields, index)["value"]
+
+        if is_url(raw_value) do
+          with "me" <- RelMe.maybe_put_rel_me(raw_value, [ap_id]) do
+            %{
+              "name" => name,
+              "value" => value,
+              "verified_at" => DateTime.to_iso8601(DateTime.utc_now())
+            }
           else
             e ->
               Logger.error("Could not check for rel=me, #{inspect(e)}")
