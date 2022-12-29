@@ -2387,6 +2387,7 @@ defmodule Pleroma.User do
   defp valid_field?(_), do: false
 
   defp is_url(nil), do: nil
+
   defp is_url(uri) do
     case URI.parse(uri) do
       %URI{host: nil} -> false
