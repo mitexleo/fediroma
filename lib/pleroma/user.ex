@@ -2409,7 +2409,10 @@ defmodule Pleroma.User do
   defp maybe_validate_rel_me_field(changeset, _), do: changeset
 
   @spec validate_rel_me_field(Changeset.t(), [Map.t()], [Map.t()], User.t()) :: Changeset.t()
-  defp validate_rel_me_field(changeset, fields, raw_fields, %User{ap_id: ap_id}) do
+  defp validate_rel_me_field(changeset, fields, raw_fields, %User{
+         nickname: nickname,
+         ap_id: ap_id
+       }) do
     fields =
       fields
       |> Enum.with_index()
@@ -2417,7 +2420,16 @@ defmodule Pleroma.User do
         raw_value = Enum.at(raw_fields, index)["value"]
 
         if is_url(raw_value) do
-          with "me" <- RelMe.maybe_put_rel_me(raw_value, [ap_id]) do
+          frontend_url =
+            Pleroma.Web.Router.Helpers.redirect_url(
+              Pleroma.Web.Endpoint,
+              :redirector_with_meta,
+              nickname
+            )
+
+          possible_urls = [ap_id, frontend_url]
+
+          with "me" <- RelMe.maybe_put_rel_me(raw_value, possible_urls) do
             %{
               "name" => name,
               "value" => value,
