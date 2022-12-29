@@ -45,7 +45,7 @@ defmodule Pleroma.Web.RelMe do
     e -> nil
   end
 
-  def maybe_put_rel_me(a, b) do
+  def maybe_put_rel_me(_, _) do
     nil
   end
 end
