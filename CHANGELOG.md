@@ -11,6 +11,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Ability to alter http pool size
 - Translation of statuses via ArgosTranslate
 - Argon2 password hashing
+- Ability to "verify" links in profile fields via rel=me
+- Mix tasks to dump/load config to/from json for bulk editing
 
 ### Removed
 - Non-finch HTTP adapters
