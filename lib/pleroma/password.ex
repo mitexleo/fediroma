@@ -7,10 +7,12 @@ defmodule Pleroma.Password do
 
   alias Pleroma.User
   alias Pleroma.Password.Pbkdf2
+  require Logger
 
   @hashing_module Argon2
 
-  defdelegate hash_pwd_salt, to: @hashing_module
+  @spec hash_pwd_salt(String.t()) :: String.t()
+  defdelegate hash_pwd_salt(pass), to: @hashing_module
 
   @spec checkpw(String.t(), String.t()) :: boolean()
   def checkpw(password, "$2" <> _ = password_hash) do

@@ -17,7 +17,7 @@ defmodule Pleroma.Web.Plugs.AuthenticationPlugTest do
     user = %User{
       id: 1,
       name: "dude",
-      password_hash: Pleroma.Password.Pbkdf2.hash_pwd_salt("guy")
+      password_hash: Pleroma.Password.hash_pwd_salt("guy")
     }
 
     conn =
@@ -105,7 +105,9 @@ defmodule Pleroma.Web.Plugs.AuthenticationPlugTest do
     end
 
     test "check argon2 hash" do
-      hash = "$argon2id$v=19$m=65536,t=8,p=2$zEMMsTuK5KkL5AFWbX7jyQ$VyaQD7PF6e9btz0oH1YiAkWwIGZ7WNDZP8l+a/O171g"
+      hash =
+        "$argon2id$v=19$m=65536,t=8,p=2$zEMMsTuK5KkL5AFWbX7jyQ$VyaQD7PF6e9btz0oH1YiAkWwIGZ7WNDZP8l+a/O171g"
+
       assert AuthenticationPlug.checkpw("password", hash)
       refute AuthenticationPlug.checkpw("password1", hash)
     end
