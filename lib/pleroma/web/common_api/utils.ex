@@ -328,9 +328,16 @@ defmodule Pleroma.Web.CommonAPI.Utils do
   end
 
   def to_masto_date(%NaiveDateTime{} = date) do
-    date
-    |> NaiveDateTime.to_iso8601()
-    |> String.replace(~r/(\.\d+)?$/, ".000Z", global: false)
+    # NOTE: Elixir’s ISO 8601 format is a superset of the real standard
+    # It supports negative years for example.
+    # ISO8601 only supports years before 1583 with mutual agreement
+    if date.year < 1583 do
+      ""
+    else
+      date
+      |> NaiveDateTime.to_iso8601()
+      |> String.replace(~r/(\.\d+)?$/, ".000Z", global: false)
+    end
   end
 
   def to_masto_date(date) when is_binary(date) do
