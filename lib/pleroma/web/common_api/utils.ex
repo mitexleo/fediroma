@@ -332,7 +332,7 @@ defmodule Pleroma.Web.CommonAPI.Utils do
     # It supports negative years for example.
     # ISO8601 only supports years before 1583 with mutual agreement
     if date.year < 1583 do
-      ""
+      "1970-01-01T00:00:00Z"
     else
       date
       |> NaiveDateTime.to_iso8601()
@@ -344,11 +344,11 @@ defmodule Pleroma.Web.CommonAPI.Utils do
     with {:ok, date} <- NaiveDateTime.from_iso8601(date) do
       to_masto_date(date)
     else
-      _ -> ""
+      _ -> "1970-01-01T00:00:00Z"
     end
   end
 
-  def to_masto_date(_), do: ""
+  def to_masto_date(_), do: "1970-01-01T00:00:00Z"
 
   defp shortname(name) do
     with max_length when max_length > 0 <-
