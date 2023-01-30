@@ -4,8 +4,10 @@
 
 defmodule Pleroma.Web.MastodonAPI.FollowRequestController do
   use Pleroma.Web, :controller
+
   import Pleroma.Web.ControllerHelper,
-         only: [add_link_headers: 2]
+    only: [add_link_headers: 2]
+
   alias Pleroma.User
   alias Pleroma.Web.CommonAPI
   alias Pleroma.Web.Plugs.OAuthScopesPlug
@@ -27,11 +29,10 @@ defmodule Pleroma.Web.MastodonAPI.FollowRequestController do
 
   @doc "GET /api/v1/follow_requests"
   def index(%{assigns: %{user: followed}} = conn, params) do
-    params = Map.put(params, :id_type, :integer)
     follow_requests =
       followed
       |> User.get_follow_requests_query()
-      |> Pagination.fetch_paginated(params)
+      |> Pagination.fetch_paginated(params, :keyset, :follower)
 
     conn
     |> add_link_headers(follow_requests)

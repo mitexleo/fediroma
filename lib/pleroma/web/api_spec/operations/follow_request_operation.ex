@@ -66,11 +66,11 @@ defmodule Pleroma.Web.ApiSpec.FollowRequestOperation do
 
   defp pagination_params do
     [
-      Operation.parameter(:max_id, :query, :integer, "Return items older than this ID"),
+      Operation.parameter(:max_id, :query, :string, "Return items older than this ID"),
       Operation.parameter(
         :since_id,
         :query,
-        :integer,
+        :string,
         "Return the oldest items newer than this ID"
       ),
       Operation.parameter(
@@ -81,5 +81,4 @@ defmodule Pleroma.Web.ApiSpec.FollowRequestOperation do
       )
     ]
   end
-
 end
