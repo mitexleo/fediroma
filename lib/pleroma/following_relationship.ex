@@ -155,14 +155,14 @@ defmodule Pleroma.FollowingRelationship do
     |> Repo.aggregate(:count, :id)
   end
 
-  def get_follow_requests(%User{id: id}) do
+  def get_follow_requests_query(%User{id: id}) do
     __MODULE__
     |> join(:inner, [r], f in assoc(r, :follower))
     |> where([r], r.state == ^:follow_pending)
     |> where([r], r.following_id == ^id)
     |> where([r, f], f.is_active == true)
     |> select([r, f], f)
-    |> Repo.all()
+    |> order_by([r, f], r.inserted_at)
   end
 
   def following?(%User{id: follower_id}, %User{id: followed_id}) do
