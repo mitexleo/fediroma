@@ -53,6 +53,12 @@ defmodule Akkoma.Collections.Fetcher do
     fetch_page_items(id)
   end
 
+  defp objects_from_collection(%{"type" => type, "first" => %{"items" => items} = first})
+       when type in ["Collection", "OrderedCollection"] and is_list(items) do
+    maybe_next_page(first, items)
+  end
+
+
   defp objects_from_collection(_page), do: []
 
   defp fetch_page_items(id, items \\ []) do
