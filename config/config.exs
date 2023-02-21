@@ -568,7 +568,8 @@ config :pleroma, Oban,
     mute_expire: 5,
     search_indexing: 10,
     nodeinfo_fetcher: 1,
-    database_prune: 1
+    database_prune: 1,
+    reply_refresher: 50,
   ],
   plugins: [
     Oban.Plugins.Pruner,

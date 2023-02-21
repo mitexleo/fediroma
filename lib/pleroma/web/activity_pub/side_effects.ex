@@ -22,6 +22,7 @@ defmodule Pleroma.Web.ActivityPub.SideEffects do
   alias Pleroma.Web.Push
   alias Pleroma.Web.Streamer
   alias Pleroma.Workers.PollWorker
+  alias Pleroma.Workers.ReplyRefresherWorker
 
   require Pleroma.Constants
   require Logger
@@ -230,6 +231,7 @@ defmodule Pleroma.Web.ActivityPub.SideEffects do
       end)
 
       Pleroma.Search.add_to_index(Map.put(activity, :object, object))
+      ReplyRefresherWorker.schedule(object.data["id"])
 
       meta =
         meta
