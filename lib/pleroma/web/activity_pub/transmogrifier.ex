@@ -428,7 +428,9 @@ defmodule Pleroma.Web.ActivityPub.Transmogrifier do
       |> Map.put("type", "EmojiReact")
       |> handle_incoming(options)
     else
-      handle_incoming(options)
+      data
+      |> Map.delete("content")
+      |> handle_incoming(options)
     end
   end
 
