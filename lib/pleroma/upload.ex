@@ -86,7 +86,7 @@ defmodule Pleroma.Upload do
          {_, true} <-
            {:description_limit,
             String.length(description) <= Pleroma.Config.get([:instance, :description_limit])},
-         {:ok, url_spec} <- Pleroma.Uploaders.Uploader.put_file(opts.uploader, upload) do
+         {:ok, file} <- Pleroma.Uploaders.Uploader.put_file(opts.uploader, upload) do
       {:ok,
        %{
          "id" => Utils.generate_object_id(),
@@ -96,7 +96,7 @@ defmodule Pleroma.Upload do
            %{
              "type" => "Link",
              "mediaType" => upload.content_type,
-             "href" => url_from_spec(upload, opts.base_url, url_spec)
+             "href" => get_url(upload, file)
            }
            |> Maps.put_if_present("width", upload.width)
            |> Maps.put_if_present("height", upload.height)
@@ -142,8 +142,7 @@ defmodule Pleroma.Upload do
       size_limit: Keyword.get(opts, :size_limit, size_limit),
       uploader: Keyword.get(opts, :uploader, Pleroma.Config.get([__MODULE__, :uploader])),
       filters: Keyword.get(opts, :filters, Pleroma.Config.get([__MODULE__, :filters])),
-      description: Keyword.get(opts, :description),
-      base_url: base_url()
+      description: Keyword.get(opts, :description)
     }
   end
 
@@ -215,7 +214,9 @@ defmodule Pleroma.Upload do
     tmp_path
   end
 
-  defp url_from_spec(%__MODULE__{name: name}, base_url, {:file, path}) do
+  defp get_url(%__MODULE__{name: name}, {:file, path}) do
+    base_url = base_url()
+
     path =
       URI.encode(path, &char_unescaped?/1) <>
         if Pleroma.Config.get([__MODULE__, :link_name], false) do
@@ -228,42 +229,10 @@ defmodule Pleroma.Upload do
     |> Path.join()
   end
 
-  defp url_from_spec(_upload, _base_url, {:url, url}), do: url
+  defp get_url(_upload, {:url, url}), do: url
 
   def base_url do
     uploader = Config.get([Pleroma.Upload, :uploader])
-    upload_base_url = Config.get([Pleroma.Upload, :base_url])
-    public_endpoint = Config.get([uploader, :public_endpoint])
-
-    case uploader do
-      Pleroma.Uploaders.Local ->
-        upload_base_url || Pleroma.Web.Endpoint.url() <> "/media/"
-
-      Pleroma.Uploaders.S3 ->
-        bucket = Config.get([Pleroma.Uploaders.S3, :bucket])
-        truncated_namespace = Config.get([Pleroma.Uploaders.S3, :truncated_namespace])
-        namespace = Config.get([Pleroma.Uploaders.S3, :bucket_namespace])
-
-        bucket_with_namespace =
-          cond do
-            !is_nil(truncated_namespace) ->
-              truncated_namespace
-
-            !is_nil(namespace) ->
-              namespace <> ":" <> bucket
-
-            true ->
-              bucket
-          end
-
-        if public_endpoint do
-          Path.join([public_endpoint, bucket_with_namespace])
-        else
-          Path.join([upload_base_url, bucket_with_namespace])
-        end
-
-      _ ->
-        public_endpoint || upload_base_url || Pleroma.Web.Endpoint.url() <> "/media/"
-    end
+    uploader.base_url()
   end
 end

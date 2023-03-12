@@ -41,6 +41,8 @@ defmodule Pleroma.UploadTest do
         do: {:ok, conn, {:file, "post-process-file.jpg"}}
 
       def put_file(upload), do: TestUploaderBase.put_file(upload, __MODULE__)
+
+      def base_url(), do: "http://localhost:4001/media/"
     end
 
     setup do: [uploader: TestUploaderSuccess]

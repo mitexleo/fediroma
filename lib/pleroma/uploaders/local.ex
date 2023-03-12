@@ -4,6 +4,7 @@
 
 defmodule Pleroma.Uploaders.Local do
   @behaviour Pleroma.Uploaders.Uploader
+  alias Pleroma.Config
 
   @impl true
   def get_file(_) do
@@ -33,7 +34,7 @@ defmodule Pleroma.Uploaders.Local do
   end
 
   def upload_path do
-    Pleroma.Config.get!([__MODULE__, :uploads])
+    Config.get!([__MODULE__, :uploads])
   end
 
   @impl true
@@ -45,5 +46,10 @@ defmodule Pleroma.Uploaders.Local do
       :ok -> :ok
       {:error, posix_error} -> {:error, to_string(posix_error)}
     end
+  end
+
+  @impl true
+  def base_url() do
+    Config.get([Pleroma.Upload, :base_url]) || Pleroma.Web.Endpoint.url() <> "/media/"
   end
 end

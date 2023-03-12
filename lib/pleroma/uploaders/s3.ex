@@ -67,6 +67,33 @@ defmodule Pleroma.Uploaders.S3 do
     end
   end
 
+  @impl true
+  def base_url() do
+    upload_base_url = Config.get([Pleroma.Upload, :base_url])
+    public_endpoint = Config.get([Pleroma.Uploaders.S3, :public_endpoint])
+    bucket = Config.get([Pleroma.Uploaders.S3, :bucket])
+    truncated_namespace = Config.get([Pleroma.Uploaders.S3, :truncated_namespace])
+    namespace = Config.get([Pleroma.Uploaders.S3, :bucket_namespace])
+
+    bucket_with_namespace =
+      cond do
+        !is_nil(truncated_namespace) ->
+          truncated_namespace
+
+        !is_nil(namespace) ->
+          namespace <> ":" <> bucket
+
+        true ->
+          bucket
+      end
+
+    if public_endpoint do
+      Path.join([public_endpoint, bucket_with_namespace])
+    else
+      Path.join([upload_base_url, bucket_with_namespace])
+    end
+  end
+
   @regex Regex.compile!("[^0-9a-zA-Z!.*/'()_-]")
   def strict_encode(name) do
     String.replace(name, @regex, "-")
