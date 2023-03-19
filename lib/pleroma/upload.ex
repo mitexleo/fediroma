@@ -66,7 +66,7 @@ defmodule Pleroma.Upload do
   defstruct [:id, :name, :tempfile, :content_type, :width, :height, :blurhash, :path]
 
   defp get_description(opts, upload) do
-    case {opts[:description], Pleroma.Config.get([Pleroma.Upload, :default_description])} do
+    case {opts[:description], Config.get([Pleroma.Upload, :default_description])} do
       {description, _} when is_binary(description) -> description
       {_, :filename} -> upload.name
       {_, str} when is_binary(str) -> str
@@ -78,6 +78,7 @@ defmodule Pleroma.Upload do
   @doc "Store a file. If using a `Plug.Upload{}` as the source, be sure to use `Majic.Plug` to ensure its content_type and filename is correct."
   def store(upload, opts \\ []) do
     opts = get_opts(opts)
+    uploader = Config.get([__MODULE__, :uploader])
 
     with {:ok, upload} <- prepare_upload(upload, opts),
          upload = %__MODULE__{upload | path: upload.path || "#{upload.id}/#{upload.name}"},
@@ -85,8 +86,8 @@ defmodule Pleroma.Upload do
          description = get_description(opts, upload),
          {_, true} <-
            {:description_limit,
-            String.length(description) <= Pleroma.Config.get([:instance, :description_limit])},
-         {:ok, file} <- Pleroma.Uploaders.Uploader.put_file(opts.uploader, upload) do
+            String.length(description) <= Config.get([:instance, :description_limit])},
+         {:ok, file} <- Pleroma.Uploaders.Uploader.put_file(uploader, upload) do
       {:ok,
        %{
          "id" => Utils.generate_object_id(),
@@ -110,7 +111,7 @@ defmodule Pleroma.Upload do
 
       {:error, error} ->
         Logger.error(
-          "#{__MODULE__} store (using #{inspect(opts.uploader)}) failed: #{inspect(error)}"
+          "#{__MODULE__} store (using #{inspect(uploader)}) failed: #{inspect(error)}"
         )
 
         {:error, error}
@@ -125,23 +126,22 @@ defmodule Pleroma.Upload do
     {size_limit, activity_type} =
       case Keyword.get(opts, :type) do
         :banner ->
-          {Pleroma.Config.get!([:instance, :banner_upload_limit]), "Image"}
+          {Config.get!([:instance, :banner_upload_limit]), "Image"}
 
         :avatar ->
-          {Pleroma.Config.get!([:instance, :avatar_upload_limit]), "Image"}
+          {Config.get!([:instance, :avatar_upload_limit]), "Image"}
 
         :background ->
-          {Pleroma.Config.get!([:instance, :background_upload_limit]), "Image"}
+          {Config.get!([:instance, :background_upload_limit]), "Image"}
 
         _ ->
-          {Pleroma.Config.get!([:instance, :upload_limit]), "Document"}
+          {Config.get!([:instance, :upload_limit]), "Document"}
       end
 
     %{
       activity_type: Keyword.get(opts, :activity_type, activity_type),
       size_limit: Keyword.get(opts, :size_limit, size_limit),
-      uploader: Keyword.get(opts, :uploader, Pleroma.Config.get([__MODULE__, :uploader])),
-      filters: Keyword.get(opts, :filters, Pleroma.Config.get([__MODULE__, :filters])),
+      filters: Keyword.get(opts, :filters, Config.get([__MODULE__, :filters])),
       description: Keyword.get(opts, :description)
     }
   end
@@ -219,7 +219,7 @@ defmodule Pleroma.Upload do
 
     path =
       URI.encode(path, &char_unescaped?/1) <>
-        if Pleroma.Config.get([__MODULE__, :link_name], false) do
+        if Config.get([__MODULE__, :link_name], false) do
           "?name=#{URI.encode(name, &char_unescaped?/1)}"
         else
           ""
@@ -231,8 +231,5 @@ defmodule Pleroma.Upload do
 
   defp get_url(_upload, {:url, url}), do: url
 
-  def base_url do
-    uploader = Config.get([Pleroma.Upload, :uploader])
-    uploader.base_url()
-  end
+  def base_url(), do: Config.get([__MODULE__, :uploader]).base_url()
 end
