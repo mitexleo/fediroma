@@ -30,7 +30,7 @@ defmodule Pleroma.Uploaders.Local do
       File.cp!(upload.tempfile, result_file)
     end
 
-    :ok
+    {:ok, upload}
   end
 
   def upload_path do

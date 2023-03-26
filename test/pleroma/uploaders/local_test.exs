@@ -24,7 +24,7 @@ defmodule Pleroma.Uploaders.LocalTest do
         tempfile: Path.absname("test/fixtures/image_tmp.jpg")
       }
 
-      assert Local.put_file(file) == :ok
+      assert Local.put_file(file) == {:ok, file}
 
       assert Path.join([Local.upload_path(), file_path])
              |> File.exists?()
@@ -43,8 +43,8 @@ defmodule Pleroma.Uploaders.LocalTest do
         tempfile: Path.absname("test/fixtures/image_tmp.jpg")
       }
 
-      :ok = Local.put_file(file)
-      local_path = Path.join([Local.upload_path(), file_path])
+      {:ok, file} = Local.put_file(file)
+      local_path = Path.join([Local.upload_path(), file.path])
       assert File.exists?(local_path)
 
       Local.delete_file(file_path)

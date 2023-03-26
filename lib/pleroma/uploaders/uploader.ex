@@ -34,26 +34,23 @@ defmodule Pleroma.Uploaders.Uploader do
   * `:wait_callback` will wait for an http post request at `/api/pleroma/upload_callback/:upload_path` and call the uploader's `http_callback/3` method.
 
   """
-  @type file_spec :: {:file | :url, String.t()}
   @callback put_file(upload :: struct()) ::
-              :ok | {:ok, file_spec()} | {:error, String.t()} | :wait_callback
+              :ok | {:ok, Pleroma.Upload} | {:error, String.t()} | :wait_callback
 
   @callback delete_file(file :: String.t()) :: :ok | {:error, String.t()}
 
   @callback base_url() :: String.t()
 
-  @callback http_callback(Plug.Conn.t(), Map.t()) ::
-              {:ok, Plug.Conn.t()}
-              | {:ok, Plug.Conn.t(), file_spec()}
+  @callback http_callback(Plug.Conn.t(), Map.t(), Pleroma.Upload) ::
+              {:ok, Plug.Conn.t(), Pleroma.Upload}
               | {:error, Plug.Conn.t(), String.t()}
-  @optional_callbacks http_callback: 2
+  @optional_callbacks http_callback: 3
 
-  @spec put_file(module(), upload :: struct()) :: {:ok, file_spec()} | {:error, String.t()}
+  @spec put_file(module(), upload :: struct()) :: {:ok, Pleroma.Upload} | {:error, String.t()}
   def put_file(uploader, upload) do
     case uploader.put_file(upload) do
-      :ok -> {:ok, {:file, upload.path}}
+      {:ok, %Pleroma.Upload{}} = ok -> ok
       :wait_callback -> handle_callback(uploader, upload)
-      {:ok, _} = ok -> ok
       {:error, _} = error -> error
     end
   end
@@ -63,10 +60,10 @@ defmodule Pleroma.Uploaders.Uploader do
 
     receive do
       {__MODULE__, pid, conn, params} ->
-        case uploader.http_callback(conn, params) do
-          {:ok, conn, ok} ->
+        case uploader.http_callback(conn, params, upload) do
+          {:ok, conn, upload} ->
             send(pid, {__MODULE__, conn})
-            {:ok, ok}
+            {:ok, upload}
 
           {:error, conn, error} ->
             send(pid, {__MODULE__, conn})

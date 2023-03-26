@@ -9,7 +9,7 @@ defmodule Pleroma.Upload.Filter.MogrifyTest do
   alias Pleroma.Upload.Filter
 
   test "apply mogrify filter" do
-    clear_config(Filter.Mogrify, args: [{"tint", "40"}])
+    clear_config([Filter.Mogrify, :args], [{"tint", "40"}])
 
     File.cp!(
       "test/fixtures/image.jpg",

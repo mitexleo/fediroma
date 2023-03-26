@@ -87,7 +87,7 @@ defmodule Pleroma.Upload do
          {_, true} <-
            {:description_limit,
             String.length(description) <= Config.get([:instance, :description_limit])},
-         {:ok, file} <- Pleroma.Uploaders.Uploader.put_file(uploader, upload) do
+         {:ok, upload} <- Pleroma.Uploaders.Uploader.put_file(uploader, upload) do
       {:ok,
        %{
          "id" => Utils.generate_object_id(),
@@ -97,7 +97,7 @@ defmodule Pleroma.Upload do
            %{
              "type" => "Link",
              "mediaType" => upload.content_type,
-             "href" => get_url(upload, file)
+             "href" => get_url(upload.name, upload.path)
            }
            |> Maps.put_if_present("width", upload.width)
            |> Maps.put_if_present("height", upload.height)
@@ -110,9 +110,7 @@ defmodule Pleroma.Upload do
         {:error, :description_too_long}
 
       {:error, error} ->
-        Logger.error(
-          "#{__MODULE__} store (using #{inspect(uploader)}) failed: #{inspect(error)}"
-        )
+        Logger.error("#{__MODULE__} store (using #{inspect(uploader)}) failed: #{inspect(error)}")
 
         {:error, error}
     end
@@ -214,7 +212,7 @@ defmodule Pleroma.Upload do
     tmp_path
   end
 
-  defp get_url(%__MODULE__{name: name}, {:file, path}) do
+  defp get_url(name, path) do
     base_url = base_url()
 
     path =
@@ -228,8 +226,6 @@ defmodule Pleroma.Upload do
     [base_url, path]
     |> Path.join()
   end
-
-  defp get_url(_upload, {:url, url}), do: url
 
   def base_url(), do: Config.get([__MODULE__, :uploader]).base_url()
 end

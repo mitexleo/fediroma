@@ -67,7 +67,7 @@ defmodule Pleroma.Uploaders.S3Test do
 
     test "save file", %{file_upload: file_upload} do
       with_mock ExAws, request: fn _ -> {:ok, :ok} end do
-        assert S3.put_file(file_upload) == {:ok, {:file, "test_folder/image-tet.jpg"}}
+        assert S3.put_file(file_upload) == {:ok, file_upload}
       end
     end
 

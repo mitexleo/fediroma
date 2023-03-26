@@ -37,8 +37,8 @@ defmodule Pleroma.UploadTest do
 
   describe "Tried storing a file when http callback response success result" do
     defmodule TestUploaderSuccess do
-      def http_callback(conn, _params),
-        do: {:ok, conn, {:file, "post-process-file.jpg"}}
+      def http_callback(conn, _params, upload),
+        do: {:ok, conn, Map.put(upload, :path, "post-process-file.jpg")}
 
       def put_file(upload), do: TestUploaderBase.put_file(upload, __MODULE__)
 
@@ -74,7 +74,7 @@ defmodule Pleroma.UploadTest do
 
   describe "Tried storing a file when http callback response error" do
     defmodule TestUploaderError do
-      def http_callback(conn, _params), do: {:error, conn, "Errors"}
+      def http_callback(conn, _params, _upload), do: {:error, conn, "Errors"}
 
       def put_file(upload), do: TestUploaderBase.put_file(upload, __MODULE__)
     end
