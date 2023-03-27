@@ -47,7 +47,8 @@ defmodule Pleroma.Uploaders.S3 do
 
     case ExAws.request(op) do
       {:ok, _} ->
-        {:ok, Map.put(upload, :path, s3_name)}
+        {:ok,
+         upload |> Map.put(:path, s3_name) |> Map.put(:url, Path.join([base_url(), s3_name]))}
 
       error ->
         Logger.error("#{__MODULE__}: #{inspect(error)}")

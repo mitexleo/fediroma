@@ -30,7 +30,9 @@ defmodule Pleroma.Uploaders.Local do
       File.cp!(upload.tempfile, result_file)
     end
 
-    {:ok, upload}
+    url = [base_url(), URI.encode(upload.path, &Pleroma.Upload.char_unescaped?/1)] |> Path.join()
+
+    {:ok, upload |> Map.put(:url, url)}
   end
 
   def upload_path do

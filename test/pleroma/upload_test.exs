@@ -38,7 +38,12 @@ defmodule Pleroma.UploadTest do
   describe "Tried storing a file when http callback response success result" do
     defmodule TestUploaderSuccess do
       def http_callback(conn, _params, upload),
-        do: {:ok, conn, Map.put(upload, :path, "post-process-file.jpg")}
+        do:
+          {:ok, conn,
+           Map.merge(upload, %{
+             path: "post-process-file.jpg",
+             url: "http://localhost:4001/media/post-process-file.jpg"
+           })}
 
       def put_file(upload), do: TestUploaderBase.put_file(upload, __MODULE__)
 

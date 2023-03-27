@@ -35,18 +35,18 @@ defmodule Pleroma.Uploaders.Uploader do
 
   """
   @callback put_file(upload :: struct()) ::
-              :ok | {:ok, Pleroma.Upload} | {:error, String.t()} | :wait_callback
+              :ok | {:ok, Pleroma.Upload.t()} | {:error, String.t()} | :wait_callback
 
   @callback delete_file(file :: String.t()) :: :ok | {:error, String.t()}
 
   @callback base_url() :: String.t()
 
-  @callback http_callback(Plug.Conn.t(), Map.t(), Pleroma.Upload) ::
-              {:ok, Plug.Conn.t(), Pleroma.Upload}
+  @callback http_callback(Plug.Conn.t(), Map.t(), Pleroma.Upload.t()) ::
+              {:ok, Plug.Conn.t(), Pleroma.Upload.t()}
               | {:error, Plug.Conn.t(), String.t()}
   @optional_callbacks http_callback: 3
 
-  @spec put_file(module(), upload :: struct()) :: {:ok, Pleroma.Upload} | {:error, String.t()}
+  @spec put_file(module(), upload :: struct()) :: {:ok, Pleroma.Upload.t()} | {:error, String.t()}
   def put_file(uploader, upload) do
     case uploader.put_file(upload) do
       {:ok, %Pleroma.Upload{}} = ok -> ok

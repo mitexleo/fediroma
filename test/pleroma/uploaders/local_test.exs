@@ -21,7 +21,8 @@ defmodule Pleroma.Uploaders.LocalTest do
         name: "image.jpg",
         content_type: "image/jpeg",
         path: file_path,
-        tempfile: Path.absname("test/fixtures/image_tmp.jpg")
+        tempfile: Path.absname("test/fixtures/image_tmp.jpg"),
+        url: "http://localhost:4001/media/local_upload/files/image.jpg"
       }
 
       assert Local.put_file(file) == {:ok, file}

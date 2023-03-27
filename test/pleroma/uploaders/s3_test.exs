@@ -59,7 +59,8 @@ defmodule Pleroma.Uploaders.S3Test do
         name: "image-tet.jpg",
         content_type: "image/jpeg",
         path: "test_folder/image-tet.jpg",
-        tempfile: Path.absname("test/instance_static/add/shortcode.png")
+        tempfile: Path.absname("test/instance_static/add/shortcode.png"),
+        url: "https://s3.amazonaws.com/test_bucket/test_folder/image-tet.jpg"
       }
 
       [file_upload: file_upload]

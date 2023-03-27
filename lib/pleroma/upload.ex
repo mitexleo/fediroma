@@ -63,7 +63,7 @@ defmodule Pleroma.Upload do
           blurhash: String.t(),
           path: String.t()
         }
-  defstruct [:id, :name, :tempfile, :content_type, :width, :height, :blurhash, :path]
+  defstruct [:id, :name, :tempfile, :content_type, :width, :height, :blurhash, :path, :url]
 
   defp get_description(opts, upload) do
     case {opts[:description], Config.get([Pleroma.Upload, :default_description])} do
@@ -97,7 +97,7 @@ defmodule Pleroma.Upload do
            %{
              "type" => "Link",
              "mediaType" => upload.content_type,
-             "href" => get_url(upload.name, upload.path)
+             "href" => url_with_query_params(upload)
            }
            |> Maps.put_if_present("width", upload.width)
            |> Maps.put_if_present("height", upload.height)
@@ -212,19 +212,13 @@ defmodule Pleroma.Upload do
     tmp_path
   end
 
-  defp get_url(name, path) do
-    base_url = base_url()
-
-    path =
-      URI.encode(path, &char_unescaped?/1) <>
-        if Config.get([__MODULE__, :link_name], false) do
-          "?name=#{URI.encode(name, &char_unescaped?/1)}"
-        else
-          ""
-        end
-
-    [base_url, path]
-    |> Path.join()
+  defp url_with_query_params(%__MODULE__{url: url, name: name}) do
+    url <>
+      if Config.get([__MODULE__, :link_name], false) do
+        "?name=#{URI.encode(name, &char_unescaped?/1)}"
+      else
+        ""
+      end
   end
 
   def base_url(), do: Config.get([__MODULE__, :uploader]).base_url()
