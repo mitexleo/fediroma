@@ -1,25 +1,25 @@
 # Monitoring Akkoma
 
-If you run akkoma, you may be inclined to collect metrics to ensure your instance is running smoothly,
+If you run Akkoma, you may be inclined to collect metrics to ensure your instance is running smoothly,
 and that there's nothing quietly failing in the background.
 
-To facilitate this, akkoma exposes prometheus metrics to be scraped.
+To facilitate this, Akkoma exposes Prometheus metrics to be scrapped.
 
 ## Prometheus
 
 See: [export\_prometheus\_metrics](../../configuration/cheatsheet#instance)
 
-To scrape prometheus metrics, we need an oauth2 token with the `admin:metrics` scope.
+To scrape Prometheus metrics, we need an oauth2 token with the `admin:metrics` scope.
 
-consider using [constanze](https://akkoma.dev/AkkomaGang/constanze) to make this easier -
+Consider using [constanze](https://akkoma.dev/AkkomaGang/constanze) to make this easier -
 
 ```bash
 constanze token --client-app --scopes "admin:metrics" --client-name "Prometheus"
 ```
 
-or see `scripts/create_metrics_app.sh` in the source tree for the process to get this token.
+Or see `scripts/create_metrics_app.sh` in the source tree for the process to get this token.
 
-Once you have your token of the form `Bearer $ACCESS_TOKEN`, you can use that in your prometheus config:
+Once you have your token of the form `Bearer $ACCESS_TOKEN`, you can use that in your Prometheus config:
 
 ```yaml
 - job_name: akkoma

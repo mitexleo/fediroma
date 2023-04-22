@@ -2,7 +2,7 @@
 
 ## Installation
 
-This guide will show you how to get akkoma working in a docker container,
+This guide will show you how to get Akkoma working in a docker container,
 if you want isolation, or if you run a distribution not supported by the OTP
 releases.
 
@@ -11,10 +11,10 @@ If you want to migrate from or OTP to docker, check out [the migration guide](./
 ### Prepare the system
 
 * Install docker and docker-compose
-  * [Docker](https://docs.docker.com/engine/install/) 
+  * [Docker](https://docs.docker.com/engine/install/)
   * [Docker-compose](https://docs.docker.com/compose/install/)
   * This will usually just be a repository installation and a package manager invocation.
-* Clone the akkoma repository
+* Clone the Akkoma repository
   * `git clone https://akkoma.dev/AkkomaGang/akkoma.git -b stable`
   * `cd akkoma`
 
@@ -30,7 +30,7 @@ variables for the docker-compose file.
 
 ### Building the container
 
-The container provided is a thin wrapper around akkoma's dependencies, 
+The container provided is a thin wrapper around Akkoma's dependencies,
 it does not contain the code itself. This is to allow for easy updates
 and debugging if required.
 
@@ -52,7 +52,7 @@ mkdir pgdata
 
 This will ask you a few questions - the defaults are fine for most things,
 the database hostname is `db`, the database password is `akkoma`
-(not auto generated), and you will want to set the ip to `0.0.0.0`.
+(not auto generated), and you will want to set the IP to `0.0.0.0`.
 
 Now we'll want to copy over the config it just created
 
@@ -60,12 +60,12 @@ Now we'll want to copy over the config it just created
 cp config/generated_config.exs config/prod.secret.exs
 ```
 
-### Setting up the database 
+### Setting up the database
 
 We need to run a few commands on the database container, this isn't too bad
 
 ```bash
-docker-compose run --rm --user akkoma -d db 
+docker-compose run --rm --user akkoma -d db
 # Note down the name it gives here, it will be something like akkoma_db_run
 docker-compose run --rm akkoma psql -h db -U akkoma -f config/setup_db.psql
 docker stop akkoma_db_run # Replace with the name you noted down
@@ -89,7 +89,7 @@ docker-compose up
 
 If everything went well, you should be able to access your instance at http://localhost:4000
 
-You can `ctrl-c` out of the docker-compose now to shutdown the server.
+You can `ctrl-c` out of the docker-compose now to shut down the server.
 
 ### Running in the background
 
@@ -105,17 +105,17 @@ If your instance is up and running, you can create your first user with administ
 ./docker-resources/manage.sh mix pleroma.user new MY_USERNAME MY_EMAIL@SOMEWHERE --admin
 ```
 
-And follow the prompts 
+And follow the prompts
 
 ### Reverse proxies
 
 This is a tad more complex in docker than on the host itself. It
 
-You've got two options. 
+You've got two options.
 
 #### Running caddy in a container
 
-This is by far the easiest option. It'll handle HTTPS and all that for you. 
+This is by far the easiest option. It'll handle HTTPS and all that for you.
 
 ```bash
 mkdir caddy-data
@@ -137,7 +137,7 @@ as needed. Your standard setup can be found in the [Debian Guide](../debian_base
 
 ### You're done!
 
-All that's left is to set up your frontends. 
+All that's left is to set up your frontends.
 
 The standard from-source commands will apply to you, just make sure you
 prefix them with `./docker-resources/manage.sh`!

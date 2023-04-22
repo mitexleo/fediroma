@@ -8,7 +8,7 @@ command to install.
 
 For most installations, the following will suffice:
 
-=== "OTP" 
+=== "OTP"
     ```sh
     ./bin/pleroma_ctl frontend install pleroma-fe --ref stable
     # and also, if desired
@@ -27,5 +27,4 @@ For most installations, the following will suffice:
     ./docker-resources/manage.sh mix pleroma.frontend install admin-fe --ref stable
     ```
 
-For more customised installations, refer to [Frontend Management](../../configuration/frontend_management)
-
+For more customized installations, refer to [Frontend Management](../../configuration/frontend_management)

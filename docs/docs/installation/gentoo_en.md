@@ -18,13 +18,13 @@ dev-db/postgresql uuid
 
 You could opt to add `USE="uuid"` to `/etc/portage/make.conf` if you'd rather set this as a global USE flags, but this flags does unrelated things in other packages, so keep that in mind if you elect to do so.
 
-If you are planning to use `nginx`, as this guide suggests, you should also add the following flag to the same file.
+If you are planning to use `NGINX`, as this guide suggests, you should also add the following flag to the same file.
 
 ```text
 www-servers/nginx NGINX_MODULES_HTTP: slice
 ```
 
-Double check your compiler flags in `/etc/portage/make.conf`. If you require any special compilation flags or would like to set up remote builds, now is the time to do so. Be sure that your CFLAGS and MAKEOPTS make sense for the platform you are using. It is not recommended to use above `-O2` or risky optimization flags for a production server.
+Double-check your compiler flags in `/etc/portage/make.conf`. If you require any special compilation flags or would like to set up remote builds, now is the time to do so. Be sure that your CFLAGS and MAKEOPTS make sense for the platform you are using. It is not recommended to use above `-O2` or risky optimization flags for a production server.
 
 ### Installing a cron daemon
 
@@ -42,7 +42,7 @@ Gentoo quite pointedly does not come with a cron daemon installed, and as such i
 
 * `www-servers/nginx` (preferred, example configs for other reverse proxies can be found in the repo)
 * `app-crypt/certbot` (or any other ACME client for Let’s Encrypt certificates)
-* `app-crypt/certbot-nginx` (nginx certbot plugin that allows use of the all-powerful `--nginx` flag on certbot)
+* `app-crypt/certbot-nginx` (NGINX Certbot plugin that allows use of the all-powerful `--nginx` flag on Certbot)
 * `media-gfx/imagemagick`
 * `media-video/ffmpeg`
 * `media-libs/exiftool`
@@ -63,29 +63,29 @@ Gentoo quite pointedly does not come with a cron daemon installed, and as such i
 
 If you would not like to install the optional packages, remove them from this line.
 
-If you're running this from a low-powered virtual machine, it should work though it will take some time. There were no issues on a VPS with a single core and 1GB of RAM; if you are using an even more limited device and run into issues, you can try creating a swapfile or use a more powerful machine running Gentoo to [cross build](https://wiki.gentoo.org/wiki/Cross_build_environment). If you have a wait ahead of you, now would be a good time to take a break, strech a bit, refresh your beverage of choice and/or get a snack, and reply to Arch users' posts with "I use Gentoo btw" as we do.
+If you're running this from a low-powered virtual machine, it should work, though it will take some time. There were no issues on a VPS with a single core and 1GB of RAM; if you are using an even more limited device and run into issues, you can try creating a swapfile or use a more powerful machine running Gentoo to [cross build](https://wiki.gentoo.org/wiki/Cross_build_environment). If you have a wait ahead of you, now would be a good time to take a break, strech a bit, refresh your beverage of choice and/or get a snack, and reply to Arch users' posts with "I use Gentoo btw" as we do.
 
 ### Install PostgreSQL
 
-[Gentoo  Wiki article](https://wiki.gentoo.org/wiki/PostgreSQL) as well as [PostgreSQL QuickStart](https://wiki.gentoo.org/wiki/PostgreSQL/QuickStart) might be worth a quick glance, as the way Gentoo handles postgres is slightly unusual, with built in capability to have two different databases running for testing and live or whatever other purpouse. While it is still straightforward to install, it does mean that the version numbers used in this guide might change for future updates, so keep an eye out for the output you get from `emerge` to ensure you are using the correct ones.
+[Gentoo Wiki article](https://wiki.gentoo.org/wiki/PostgreSQL) as well as [PostgreSQL QuickStart](https://wiki.gentoo.org/wiki/PostgreSQL/QuickStart) might be worth a quick glance, as the way Gentoo handles postgres is slightly unusual, with built in capability to have two different databases running for testing and live or whatever other purpouse. While it is still straightforward to install, it does mean that the version numbers used in this guide might change for future updates, so keep an eye out for the output you get from `emerge` to ensure you are using the correct ones.
 
-* Install postgresql if you have not done so already:
+* Install PostgreSQL if you have not done so already:
 
 ```shell
  # emerge --ask dev-db/postgresql
 ```
 
-Ensure that `/etc/conf.d/postgresql-11` has the encoding you want (it defaults to UTF8 which is probably what you want) and make any adjustments to the data directory if you find it necessary. Be sure to adjust the number at the end depending on what version of postgres you actually installed.
+Ensure that `/etc/conf.d/postgresql-11` has the encoding you want (it defaults to UTF8, which is probably what you want) and make any adjustments to the data directory if you find it necessary. Be sure to adjust the number at the end depending on what version of PostgreSQL you actually installed.
 
 * Initialize the database cluster
 
-The output from emerging postgresql should give you a command for initializing the postgres database. The default slot should be indicated in this command, ensure that it matches the command below.
+The output from emerging PostgreSQL should give you a command for initializing the PostgreSQL database. The default slot should be indicated in this command, ensure that it matches the command below.
 
 ```shell
  # emerge --config dev-db/postgresql:11
 ```
 
-* Start postgres and enable the system service
+* Start PostgreSQL and enable the system service
 
 ```shell
  # /etc/init.d/postgresql-11 start
@@ -108,7 +108,7 @@ Not only does this make it much easier to deploy changes you make, as you can co
 
 * Add a new system user for the Akkoma service and set up default directories:
 
-Remove `,wheel` if you do not want this user to be able to use `sudo`, however note that being able to `sudo` as the `akkoma` user will make finishing the insallation and common maintenence tasks somewhat easier:
+Remove `,wheel` if you do not want this user to be able to use `sudo`, however, note that being able to `sudo` as the `akkoma` user will make finishing the insallation and common maintenence tasks somewhat easier:
 
 ```shell
  # useradd -m -G users,wheel -s /bin/bash akkoma
@@ -149,7 +149,7 @@ akkoma$ MIX_ENV=prod mix pleroma.instance gen
 
   * This part precompiles some parts of Akkoma, so it might take a few moments
 
-  * After that it will ask you a few questions about your instance and generates a configuration file in `config/generated_config.exs`.
+  * After that, it will ask you a few questions about your instance and generates a configuration file in `config/generated_config.exs`.
 
   * Spend some time with `generated_config.exs` to ensure that everything is in order. If you plan on using an S3-compatible service to store your local media, that can be done here. You will likely mostly be using `prod.secret.exs` for a production instance, however if you would like to set up a development environment, make a copy to `dev.secret.exs` and adjust settings as needed as well.
 
@@ -157,7 +157,7 @@ akkoma$ MIX_ENV=prod mix pleroma.instance gen
 akkoma$ mv config/generated_config.exs config/prod.secret.exs
 ```
 
-* The previous command creates also the file `config/setup_db.psql`, with which you can create the database. Ensure that it is using the correct database name on the `CREATE DATABASE` and the `\c` lines, then run the postgres script:
+* The previous command also creates the file `config/setup_db.psql`, with which you can create the database. Ensure that it is using the correct database name on the `CREATE DATABASE` and the `\c` lines, then run the PostgreSQL script:
 
 ```shell
 akkoma$ sudo -Hu postgres psql -f config/setup_db.psql
@@ -175,15 +175,15 @@ akkoma$ MIX_ENV=prod mix ecto.migrate
 akkoma$ MIX_ENV=prod mix phx.server
 ```
 
-It probably won't work over the public internet quite yet, however, as we still need to set up a web servere to proxy to the akkoma application, as well as configure SSL.
+It probably won't work over the public internet quite yet, however, as we still need to set up a web server to proxy to the Akkoma application, as well as configure SSL.
 
 ### Finalize installation
 
-Assuming you want to open your newly installed federated social network to, well, the federation, you should run nginx or some other webserver/proxy in front of Akkoma. It is also a good idea to set up Akkoma to run as a system service.
+Assuming you want to open your newly installed federated social network to, well, the federation, you should run NGINX or some other webserver/proxy in front of Akkoma. It is also a good idea to set up Akkoma to run as a system service.
 
-#### Nginx
+#### NGINX
 
-* Install nginx, if not already done:
+* Install NGINX, if not already done:
 
 ```shell
  # emerge --ask www-servers/nginx
@@ -201,7 +201,7 @@ Assuming you want to open your newly installed federated social network to, well
 include sites-enabled/*;
 ```
 
-* Setup your SSL cert, using your method of choice or certbot. If using certbot, install it if you haven't already:
+* Setup your SSL cert, using your method of choice or Certbot. If using Certbot, install it if you haven't already:
 
 ```shell
  # emerge --ask app-crypt/certbot app-crypt/certbot-nginx
@@ -214,33 +214,33 @@ and then set it up:
  # certbot certonly --email <your@emailaddress> -d <yourdomain> --standalone
 ```
 
-If that doesn't work the first time, add `--dry-run` to further attempts to avoid being ratelimited as you identify the issue, and do not remove it until the dry run succeeds. If that doesn’t work, make sure, that nginx is not already running. If it still doesn’t work, try setting up nginx first (change ssl “on” to “off” and try again). Often the answer to issues with certbot is to use the `--nginx` flag once you have nginx up and running.
+If that doesn't work the first time, add `--dry-run` to further attempts to avoid being rate-limited as you identify the issue, and do not remove it until the dry run succeeds. If that doesn’t work, make sure, that NGINX is not already running. If it still doesn’t work, try setting up NGINX first (change SSL “on” to “off” and try again). Often the answer to issues with certbot is to use the `--nginx` flag once you have NGINX up and running.
 
 If you are using any additional subdomains, such as for a media proxy, you can re-run the same command with the subdomain in question. When it comes time to renew later, you will not need to run multiple times for each domain, one renew will handle it.
 
 ---
 
-* Copy the example nginx configuration and activate it:
+* Copy the example NGINX configuration and activate it:
 
 ```shell
  # cp /home/akkoma/akkoma/installation/nginx/akkoma.nginx /etc/nginx/sites-available/
  # ln -s /etc/nginx/sites-available/akkoma.nginx /etc/nginx/sites-enabled/akkoma.nginx
 ```
 
-* Take some time to ensure that your nginx config is correct
+* Take some time to ensure that your NGINX config is correct
 
-Replace all instances of `example.tld` with your instance's public URL. If for whatever reason you made changes to the port that your akkoma app runs on, be sure that is reflected in your configuration.
+Replace all instances of `example.tld` with your instance's public URL. If for whatever reason you made changes to the port that your Akkoma app runs on, be sure that is reflected in your configuration.
 
-Pay special attention to the line that begins with `ssl_ecdh_curve`. It is stongly advised to comment that line out so that OpenSSL will use its full capabilities, and it is also possible you are running OpenSSL 1.0.2 necessitating that you do this.
+Pay special attention to the line that begins with `ssl_ecdh_curve`. It is strongly advised to comment that line out so that OpenSSL will use its full capabilities, and it is also possible you are running OpenSSL 1.0.2 necessitating that you do this.
 
-* Enable and start nginx:
+* Enable and start NGINX:
 
 ```shell
  # rc-update add nginx default
  # /etc/init.d/nginx start
 ```
 
-If you are using certbot, it is HIGHLY recommend you set up a cron job that renews your certificate, and that you install the suggested `certbot-nginx` plugin. If you don't do these things, you only have yourself to blame when your instance breaks suddenly because you forgot about it.
+If you are using Certbot, it is HIGHLY recommended you set up a cron job that renews your certificate, and that you install the suggested `certbot-nginx` plugin. If you don't do these things, you only have yourself to blame when your instance breaks suddenly because you forgot about it.
 
 First, ensure that the command you will be installing into your crontab works.
 
@@ -248,7 +248,7 @@ First, ensure that the command you will be installing into your crontab works.
  # /usr/bin/certbot renew --nginx
 ```
 
-Assuming not much time has passed since you got certbot working a few steps ago, you should get a message for all domains you installed certificates for saying `Cert not yet due for renewal`.
+Assuming not much time has passed since you got Certbot working a few steps ago, you should get a message for all domains you installed certificates for saying `Cert not yet due for renewal`.
 
 Now, run crontab as a superuser with `crontab -e` or `sudo crontab -e` as appropriate, and add the following line to your cron:
 
@@ -256,7 +256,7 @@ Now, run crontab as a superuser with `crontab -e` or `sudo crontab -e` as approp
 0 0 1 * * /usr/bin/certbot renew --nginx
 ```
 
-This will run certbot on the first of the month at midnight. If you'd rather run more frequently, it's not a bad idea, feel free to go for it.
+This will run Certbot on the first of the month at midnight. If you'd rather run more frequently, it's not a bad idea, feel free to go for it.
 
 #### Other webserver/proxies
 

@@ -8,7 +8,7 @@ This guide will assume that you have administrative rights, either as root or a 
 
 ### Required packages
 
-* `postgresql`
+* `PostgreSQL`
 * `elixir`
 * `git`
 * `base-devel`
@@ -17,11 +17,11 @@ This guide will assume that you have administrative rights, either as root or a 
 
 #### Optional packages used in this guide
 
-* `nginx` (preferred, example configs for other reverse proxies can be found in the repo)
-* `certbot` (or any other ACME client for Let’s Encrypt certificates)
+* `NGINX` (preferred, example configs for other reverse proxies can be found in the repo)
+* `Certbot` (or any other ACME client for Let’s Encrypt certificates)
 * `ImageMagick`
-* `ffmpeg`
-* `exiftool`
+* `FFmpeg`
+* `ExifTool`
 
 ### Prepare the system
 
@@ -31,7 +31,7 @@ This guide will assume that you have administrative rights, either as root or a 
 sudo pacman -Syu
 ```
 
-* Install some of the above mentioned programs:
+* Install some of the above-mentioned programs:
 
 ```shell
 sudo pacman -S git base-devel elixir cmake file
@@ -97,8 +97,8 @@ sudo -Hu akkoma mix deps.get
 
 * Generate the configuration: `sudo -Hu akkoma MIX_ENV=prod mix pleroma.instance gen`
   * Answer with `yes` if it asks you to install `rebar3`.
-  * This may take some time, because parts of akkoma get compiled first.
-  * After that it will ask you a few questions about your instance and generates a configuration file in `config/generated_config.exs`.
+  * This may take some time, because parts of Akkoma get compiled first.
+  * After that, it will ask you a few questions about your instance and generates a configuration file in `config/generated_config.exs`.
 
 * Check the configuration and if all looks right, rename it, so Akkoma will load it (`prod.secret.exs` for productive instances):
 
@@ -106,7 +106,7 @@ sudo -Hu akkoma mix deps.get
 sudo -Hu akkoma mv config/{generated_config.exs,prod.secret.exs}
 ```
 
-* The previous command creates also the file `config/setup_db.psql`, with which you can create the database:
+* The previous command also creates the file `config/setup_db.psql`, with which you can create the database:
 
 ```shell
 sudo -Hu postgres psql -f config/setup_db.psql
@@ -126,11 +126,11 @@ sudo -Hu akkoma MIX_ENV=prod mix phx.server
 
 ### Finalize installation
 
-If you want to open your newly installed instance to the world, you should run nginx or some other webserver/proxy in front of Akkoma and you should consider to create a systemd service file for Akkoma.
+If you want to open your newly installed instance to the world, you should run NGINX or some other webserver/proxy in front of Akkoma and you should consider to create a systemd service file for Akkoma.
 
-#### Nginx
+#### NGINX
 
-* Install nginx, if not already done:
+* Install NGINX, if not already done:
 
 ```shell
 sudo pacman -S nginx
@@ -148,7 +148,7 @@ sudo mkdir -p /etc/nginx/sites-{available,enabled}
 include sites-enabled/*;
 ```
 
-* Setup your SSL cert, using your method of choice or certbot. If using certbot, first install it:
+* Setup your SSL cert, using your method of choice or Certbot. If using Certbot, first install it:
 
 ```shell
 sudo pacman -S certbot certbot-nginx
@@ -161,25 +161,25 @@ sudo mkdir -p /var/lib/letsencrypt/
 sudo certbot certonly --email <your@emailaddress> -d <yourdomain> --standalone
 ```
 
-If that doesn’t work, make sure, that nginx is not already running. If it still doesn’t work, try setting up nginx first (change ssl “on” to “off” and try again).
+If that doesn’t work, make sure, that NGINX is not already running. If it still doesn’t work, try setting up NGINX first (change SSL “on” to “off” and try again).
 
 ---
 
-* Copy the example nginx configuration and activate it:
+* Copy the example NGINX configuration and activate it:
 
 ```shell
 sudo cp /opt/akkoma/installation/nginx/akkoma.nginx /etc/nginx/sites-available/akkoma.nginx
 sudo ln -s /etc/nginx/sites-available/akkoma.nginx /etc/nginx/sites-enabled/akkoma.nginx
 ```
 
-* Before starting nginx edit the configuration and change it to your needs (e.g. change servername, change cert paths)
-* Enable and start nginx:
+* Before starting NGINX edit the configuration and change it to your needs (e.g. change servername, change cert paths)
+* Enable and start NGINX:
 
 ```shell
 sudo systemctl enable --now nginx.service
 ```
 
-If you need to renew the certificate in the future, uncomment the relevant location block in the nginx config and run:
+If you need to renew the certificate in the future, uncomment the relevant location block in the NGINX config and run:
 
 ```shell
 sudo certbot certonly --email <your@emailaddress> -d <yourdomain> --webroot -w /var/lib/letsencrypt/

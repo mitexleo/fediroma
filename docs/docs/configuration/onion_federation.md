@@ -5,14 +5,14 @@ In addition, federating with such instances will also help furthering that goal.
 This is a guide to show you how it can be easily done.
 
 This guide assumes you already got Akkoma working, and that it's running on the default port 4000.
-This guide also assumes you're using Nginx as the reverse proxy.
+This guide also assumes you're using NGINX as the reverse proxy.
 
 To install Tor on Debian / Ubuntu:
 ```
 apt -yq install tor
 ```
 
-**WARNING:** Onion instances not using a Tor version supporting V3 addresses will not be able to federate with you. 
+**WARNING:** Onion instances not using a Tor version supporting V3 addresses will not be able to federate with you.
 
 Create the hidden service for your Akkoma instance in `/etc/tor/torrc`, with an HTTP tunnel:
 ```
@@ -21,7 +21,7 @@ HiddenServicePort 80 127.0.0.1:8099
 HiddenServiceVersion 3  # Remove if Tor version is below 0.3 ( tor --version )
 HTTPTunnelPort 9080
 ```
-Restart Tor to generate an adress:
+Restart Tor to generate an address:
 ```
 systemctl restart tor@default.service
 ```
@@ -60,21 +60,21 @@ If creating a Tor-only instance, open `config/prod.secret.exs` and under "config
 ```
    url: [host: "onionaddress", scheme: "http", port: 80],
 ```
-In addition to that, replace the existing nginx config's contents with the example below.
+In addition to that, replace the existing NGINX config's contents with the example below.
 
 ## Existing Instance (Clearnet Instance)
-If not a Tor-only instance, 
-add the nginx config below to your existing config at `/etc/nginx/sites-enabled/akkoma.nginx`.
+If not a Tor-only instance,
+add the NGINX config below to your existing config at `/etc/nginx/sites-enabled/akkoma.nginx`.
 
 ---
-For both cases, disable CSP in Akkoma's config (STS is disabled by default) so you can define those yourself separately from the clearnet (if your instance is also on the clearnet).
+For both cases, disable CSP in Akkoma's config (STS is disabled by default) so you can define those yourself separately from the Clearnet (if your instance is also on the Clearnet).
 Copy the following into the `config/prod.secret.exs` in your Akkoma folder (/home/akkoma/akkoma/):
 ```
 config :pleroma, :http_security,
   enabled: false
 ```
 
-Use this as the Nginx config:
+Use this as the NGINX config:
 ```
 proxy_cache_path /tmp/akkoma-media-cache levels=1:2 keys_zone=akkoma_media_cache:10m max_size=10g inactive=720m use_temp_path=off;
 # The above already exists in a clearnet instance's config.
@@ -123,7 +123,7 @@ server {
     }
 }
 ```
-reload Nginx:
+reload NGINX:
 ```
 systemctl reload nginx
 ```
@@ -134,7 +134,7 @@ You should now be able to both access your instance using Tor and federate with 
 
 ### Possible Issues
 
-* In Debian, make sure your hidden service folder `/var/lib/tor/akkoma_hidden_service/` and its contents, has debian-tor as both owner and group by using 
+* In Debian, make sure your hidden service folder `/var/lib/tor/akkoma_hidden_service/` and its contents, has debian-tor as both owner and group by using
 ```
 ls -la /var/lib/tor/
 ```

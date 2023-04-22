@@ -1,16 +1,16 @@
 # Installing on Fedora
 
-## OTP releases and RedHat-distributions
+## OTP releases and RedHat-based distributions
 
-While the OTP releases of Akkoma work on most Linux distributions, they do not work correctly with RedHat-distributions. Therefore from-source installations are the recommended way to go when trying to install Akkoma on Fedora, Centos Stream or RedHat.
+While the OTP releases of Akkoma work on most Linux distributions, they do not work correctly with RedHat-based distributions. Therefore, from-source installations are the recommended way to go when trying to install Akkoma on Fedora, Centos Stream or Red Hat.
 
-However, it is possible to compile your own OTP release of Akkoma for RedHat. Keep in mind that this has a few drawbacks, and has no particular advantage over a from-source installation, since you'll need to install Erlang and Elixir anyway.
+However, it is possible to compile your own OTP release of Akkoma for Red Hat. Keep in mind that this has a few drawbacks, and has no particular advantage over a from-source installation, since you'll need to install Erlang and Elixir anyway.
 
-This guide will cover a from-source installation. For instructions on how to build your own OTP release, please check out [the OTP for RedHat guide](./otp_redhat_en.md).
+This guide will cover a from-source installation. For instructions on how to build your own OTP release, please check out [the OTP for Red Hat guide](./otp_redhat_en.md).
 
 ## Installation
 
-This guide will assume you are on Fedora 36. This guide should also work with current releases of Centos Stream and RedHat, although it has not been tested yet. It also assumes that you have administrative rights, either as root or a user with [sudo permissions](https://docs.fedoraproject.org/en-US/quick-docs/adding_user_to_sudoers_file/). If you want to run this guide with root, ignore the `sudo` at the beginning of the lines, unless it calls a user like `sudo -Hu akkoma`; in this case, use `su <username> -s $SHELL -c 'command'` instead.
+This guide will assume you are on Fedora 36. This guide should also work with current releases of CentOS Stream and Red Hat, although it has not been tested yet. It also assumes that you have administrative rights, either as root or a user with [sudo permissions](https://docs.fedoraproject.org/en-US/quick-docs/adding_user_to_sudoers_file/). If you want to run this guide with root, ignore the `sudo` at the beginning of the lines, unless it calls a user like `sudo -Hu akkoma`; in this case, use `su <username> -s $SHELL -c 'command'` instead.
 
 {! installation/generic_dependencies.include !}
 
@@ -22,13 +22,13 @@ This guide will assume you are on Fedora 36. This guide should also work with cu
 sudo dnf upgrade --refresh
 ```
 
-* Install some of the above mentioned programs:
+* Install some of the above-mentioned programs:
 
 ```shell
 sudo dnf install git gcc g++ make cmake file-devel postgresql-server postgresql-contrib
 ```
 
-* Enable and initialize Postgres:
+* Enable and initialize PostgreSQL:
 ```shell
 sudo postgresql-setup --initdb --unit postgresql
 # Allow password auth for postgres
@@ -44,10 +44,9 @@ sudo systemctl enable --now postgresql.service
 sudo dnf install elixir erlang-os_mon erlang-eldap erlang-xmerl erlang-erl_interface erlang-syntax_tools
 ```
 
-
 ### Optional packages: [`docs/installation/optional/media_graphics_packages.md`](../installation/optional/media_graphics_packages.md)
 
-* Install ffmpeg (requires setting up the RPM-fusion repositories):
+* Install FFmpeg (requires setting up the RPM-fusion repositories):
 
 ```shell
 sudo dnf -y install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
@@ -60,7 +59,6 @@ sudo dnf install ffmpeg
 ```shell
 sudo dnf install ImageMagick perl-Image-ExifTool
 ```
-
 
 
 ### Install AkkomaBE
@@ -95,8 +93,8 @@ sudo -Hu akkoma mix deps.get
 
 * Generate the configuration: `sudo -Hu akkoma MIX_ENV=prod mix pleroma.instance gen`
   * Answer with `yes` if it asks you to install `rebar3`.
-  * This may take some time, because parts of akkoma get compiled first.
-  * After that it will ask you a few questions about your instance and generates a configuration file in `config/generated_config.exs`.
+  * This may take some time, because parts of Akkoma get compiled first.
+  * After that, it will ask you a few questions about your instance and generates a configuration file in `config/generated_config.exs`.
 
 * Check the configuration and if all looks right, rename it, so Akkoma will load it (`prod.secret.exs` for productive instances):
 
@@ -104,8 +102,7 @@ sudo -Hu akkoma mix deps.get
 sudo -Hu akkoma mv config/{generated_config.exs,prod.secret.exs}
 ```
 
-
-* The previous command creates also the file `config/setup_db.psql`, with which you can create the database:
+* The previous command also creates the file `config/setup_db.psql`, with which you can create the database:
 
 ```shell
 sudo -Hu postgres psql -f config/setup_db.psql
@@ -125,17 +122,17 @@ sudo -Hu akkoma MIX_ENV=prod mix phx.server
 
 ### Finalize installation
 
-If you want to open your newly installed instance to the world, you should run nginx or some other webserver/proxy in front of Akkoma and you should consider to create a systemd service file for Akkoma.
+If you want to open your newly installed instance to the world, you should run NGINX or some other webserver/proxy in front of Akkoma and you should consider to create a systemd service file for Akkoma.
 
-#### Nginx
+#### NGINX
 
-* Install nginx, if not already done:
+* Install NGINX, if not already done:
 
 ```shell
 sudo dnf install nginx
 ```
 
-* Setup your SSL cert, using your method of choice or certbot. If using certbot, first install it:
+* Setup your SSL cert, using your method of choice or Certbot. If using Certbot, first install it:
 
 ```shell
 sudo dnf install certbot
@@ -148,24 +145,24 @@ sudo mkdir -p /var/lib/letsencrypt/
 sudo certbot certonly --email <your@emailaddress> -d <yourdomain> --standalone
 ```
 
-If that doesn’t work, make sure, that nginx is not already running. If it still doesn’t work, try setting up nginx first (change ssl “on” to “off” and try again).
+If that doesn’t work, make sure, that NGINX is not already running. If it still doesn’t work, try setting up NGINX first (change SSL “on” to “off” and try again).
 
 ---
 
-* Copy the example nginx configuration and activate it:
+* Copy the example NGINX configuration and activate it:
 
 ```shell
 sudo cp /opt/akkoma/installation/nginx/akkoma.nginx /etc/nginx/conf.d/akkoma.conf
 ```
 
-* Before starting nginx edit the configuration and change it to your needs (e.g. change servername, change cert paths)
-* Enable and start nginx:
+* Before starting NGINX edit the configuration and change it to your needs (e.g. change servername, change cert paths)
+* Enable and start NGINX:
 
 ```shell
 sudo systemctl enable --now nginx.service
 ```
 
-If you need to renew the certificate in the future, uncomment the relevant location block in the nginx config and run:
+If you need to renew the certificate in the future, uncomment the relevant location block in the NGINX config and run:
 
 ```shell
 sudo certbot certonly --email <your@emailaddress> -d <yourdomain> --webroot -w /var/lib/letsencrypt/

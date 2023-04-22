@@ -26,7 +26,7 @@ If you use a From Source installation and want to manage your custom files in th
 
 ## robots.txt
 
-There's a mix tasks to [generate a new robot.txt](../../administration/CLI_tasks/robots_txt/).
+There's a mix task to [generate a new robot.txt](../../administration/CLI_tasks/robots_txt/).
 
 For more complex things, you can write your own robots.txt to `$static_dir/robots.txt`.
 
@@ -49,7 +49,7 @@ Add `$static_dir/instance/thumbnail.jpeg` with your selfie or other neat picture
 
 ## Instance-specific panel
 
-Create and Edit your file at `$static_dir/instance/panel.html`.
+Create and edit your file at `$static_dir/instance/panel.html`.
 
 ## Background
 
@@ -66,10 +66,10 @@ config :pleroma, :frontend_configurations,
 
 ## Logo
 
-!!! important
+!!! Important
     Note the extra `static` folder for the default logo.png location
 
-If you want to give a brand to your instance, You can change the logo of your instance by uploading it to the static directory `$static_dir/static/logo.png`.
+If you want to give a brand to your instance, you can change the logo of your instance by uploading it to the static directory `$static_dir/static/logo.png`.
 
 Alternatively, you can specify the path to your logo in [your configuration](../cheatsheet/#frontend_configurations).
 
@@ -84,26 +84,26 @@ config :pleroma, :frontend_configurations,
 
 ## Terms of Service
 
-!!! important
+!!! Important
     Note the extra `static` folder for the terms-of-service.html
 
 Terms of Service will be shown to all users on the registration page. It's the best place where to write down the rules for your instance. You can modify the rules by adding and changing `$static_dir/static/terms-of-service.html`.
 
 ## Favicon
 
-The favicon will display on the frontend, and in the browser tab. 
+The favicon will display on the frontend, and in the browser tab.
 
 Place a PNG file at `$static_dir/favicon.png` to change the favicon. Not that this
 is _one level above_ where the logo is placed, it should be on the same level as
 the `frontends` directory.
- 	
+
 ## Styling rendered pages
 
 To overwrite the CSS stylesheet of the OAuth form and other static pages, you can upload your own CSS file to `instance/static/static.css`. This will completely replace the CSS used by those pages, so it might be a good idea to copy the one from `priv/static/instance/static.css` and make your changes.
 
-## Overriding pleroma-fe styles
+## Overriding Pleroma-fe styles
 
-To overwrite the CSS stylesheet of pleroma-fe, you can put a file at
+To overwrite the CSS stylesheet of Pleroma-fe, you can put a file at
 `$static_dir/static/custom.css` containing your styles. These will be loaded
 with the rest of the CSS.
 

@@ -16,8 +16,7 @@
     mix pleroma.digest test <nickname> [since_date]
     ```
 
-
-Example: 
+Example:
 
 === "OTP"
 
@@ -30,4 +29,3 @@ Example:
     ```sh
     mix pleroma.digest test donaldtheduck 2019-05-20
     ```
-

@@ -15,12 +15,12 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # Run an http server who rebuilds when files change
-# Accessable on http://127.0.0.1:8000
+# Accessible on http://127.0.0.1:8000
 mkdocs serve
 
 # Build the docs
 # The static html pages will have been created in the folder "site"
-# You can serve them from a server by pointing your server software (nginx, apache...) to this location
+# You can serve them from a server by pointing your server software (NGINX, Apache...) to this location
 mkdocs build
 
 # To get out of the virtual environment, you do

@@ -12,7 +12,7 @@
     mix pleroma.frontend install <frontend> [--ref <ref>] [--file <file>] [--build-url <build-url>] [--path <path>] [--build-dir <build-dir>]
     ```
 
-Frontend can be installed either from local zip file, or automatically downloaded from the web.
+Frontend can be installed either from a local zip file, or automatically downloaded from the web.
 
 You can give all the options directly on the command line, but missing information will be filled out by looking at the data configured under `frontends.available` in the config files.
 
@@ -91,4 +91,3 @@ The installation process is the same, but you will have to give all the needed o
     ```
 
 If you don't have a zip file but just want to install a frontend from a local path, you can simply copy the files over a folder of this template: `${instance_static}/frontends/${name}/${ref}`.
-

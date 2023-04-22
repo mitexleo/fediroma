@@ -44,7 +44,7 @@ The configuration of Akkoma (and Pleroma) has traditionally been managed with a 
 
 4. ⚠️ **THIS IS NOT REQUIRED** ⚠️
 
-  Now you can edit your config file and strip it down to the only settings which are not possible to control in the database. e.g., the Postgres (Repo) and webserver (Endpoint) settings cannot be controlled in the database because the application needs the settings to start up and access the database.
+  Now you can edit your config file and strip it down to the only settings which are not possible to control in the database. e.g., the PostgreSQL (Repo) and webserver (Endpoint) settings cannot be controlled in the database because the application needs the settings to start up and access the database.
 
   Any settings in the database will override those in the config file, but you may find it less confusing if the setting is only declared in one place.
 
@@ -74,8 +74,7 @@ The configuration of Akkoma (and Pleroma) has traditionally been managed with a 
   config :pleroma, configurable_from_database: true
   ```
 
-5. Restart your instance and you can now access the Settings tab in AdminFE.
-
+5. Restart your instance, and you can now access the Settings tab in AdminFE.
 
 ## Reverting back from database config
 
@@ -127,12 +126,12 @@ You can clear the database config with the following command:
   $ ./bin/pleroma_ctl config reset
   ```
 
-Additionally, every time you migrate the configuration to the database the config table is automatically truncated to ensure a clean migration.
+Additionally, every time you migrate the configuration to the database, the config table is automatically truncated to ensure a clean migration.
 
 ### Manually removing a setting
 If you encounter a situation where the server cannot run properly because of an invalid setting in the database and this is preventing you from accessing AdminFE, you can manually remove the offending setting if you know which one it is.
 
-e.g., here is an example showing a the removal of the `config :pleroma, :instance` settings:
+e.g., here is an example showing the removal of the `config :pleroma, :instance` settings:
 
   **Source:**
 
@@ -152,4 +151,4 @@ e.g., here is an example showing a the removal of the `config :pleroma, :instanc
   config :pleroma, :instance deleted from the ConfigDB.
   ```
 
-Now the `config :pleroma, :instance` settings have been removed from the database.
+Now, the `config :pleroma, :instance` settings have been removed from the database.

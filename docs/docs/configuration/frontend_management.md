@@ -2,7 +2,7 @@
 
 Frontends in Akkoma are swappable, you can pick which you'd like.
 
-For a basic setup, you can set a frontends for the key `primary` and `admin` and the options of `name` and `ref`. This will then make Akkoma serve the frontend from a folder constructed by concatenating the instance static path, `frontends` and the name and ref.
+For a basic setup, you can set a frontend for the key `primary` and `admin` and the options of `name` and `ref`. This will then make Akkoma serve the frontend from a folder constructed by concatenating the instance static path, `frontends` and the name and ref.
 
 The key `primary` refers to the frontend that will be served by default for general requests. The key `admin` refers to the frontend that will be served at the `/pleroma/admin` path.
 
@@ -26,7 +26,7 @@ config :pleroma, :frontends,
   }
 ```
 
-This would serve the frontend from the the folder at `$instance_static/frontends/pleroma/stable`. You have to copy the frontend into this folder yourself. You can choose the name and ref any way you like, but they will be used by mix tasks to automate installation in the future, the name referring to the project and the ref referring to a commit.
+This would serve the frontend from the folder at `$instance_static/frontends/pleroma/stable`. You have to copy the frontend into this folder yourself. You can choose the name and ref any way you like, but they will be used by mix tasks to automate installation in the future, the name referring to the project and the ref referring to a commit.
 
 Refer to [the frontend CLI task](../../administration/CLI_tasks/frontend) for how to install the frontend's files
 
@@ -42,9 +42,9 @@ as well as [fedibird](https://github.com/fedibird/mastodon)'s extended frontend 
 To enable either one, you must run the `frontend.install` task for either `mastodon-fe` or `fedibird-fe` (both `--ref akkoma`), then make sure
 `:pleroma, :frontends, :mastodon` references the one you want.
 
-## Swagger (openAPI) documentation viewer
+## Swagger (OpenAPI) documentation viewer
 
-If you're a developer and you'd like a human-readable rendering of the
+If you're a developer, and you'd like a human-readable rendering of the
 API documentation, you can enable [Swagger UI](https://github.com/swagger-api/swagger-ui).
 
 In your config:

@@ -7,7 +7,7 @@
 pkgin should have been installed by the NetBSD installer if you selected
 the right options. If it isn't installed, install it using pkg_add.
 
-Note that `postgresql11-contrib` is needed for the Postgres extensions
+Note that `postgresql11-contrib` is needed for the PostgreSQL extensions
 Akkoma uses.
 
 The `mksh` shell is needed to run the Elixir `mix` script.
@@ -35,14 +35,14 @@ Copy the rc.d scripts to the right directory:
 # cp /usr/pkg/share/examples/rc.d/nginx /usr/pkg/share/examples/rc.d/pgsql /etc/rc.d
 ```
 
-Add nginx and Postgres to `/etc/rc.conf`:
+Add NGINX and PostgreSQL to `/etc/rc.conf`:
 
 ```
 nginx=YES
 pgsql=YES
 ```
 
-## Configuring postgres
+## Configuring PostgreSQL
 
 First, run `# /etc/rc.d/pgsql start`. Then, `$ sudo -Hu pgsql -g pgsql createdb`.
 
@@ -76,7 +76,7 @@ $ mix deps.get
 $ MIX_ENV=prod mix pleroma.instance gen # You will be asked a few questions here.
 ```
 
-Since Postgres is configured, we can now initialize the database. There should
+Since PostgreSQL is configured, we can now initialize the database. There should
 now be a file in `config/setup_db.psql` that makes this easier. Edit it, and
 *change the password* to a password of your choice. Make sure it is secure, since
 it'll be protecting your database. Now initialize the database:
@@ -85,11 +85,11 @@ it'll be protecting your database. Now initialize the database:
 $ sudo -Hu pgsql -g pgsql psql -f config/setup_db.psql
 ```
 
-Postgres allows connections from all users without a password by default. To
+PostgreSQL allows connections from all users without a password by default. To
 fix this, edit `/usr/pkg/pgsql/data/pg_hba.conf`. Change every `trust` to
 `password`.
 
-Once this is done, restart Postgres with `# /etc/rc.d/pgsql restart`.
+Once this is done, restart PostgreSQL with `# /etc/rc.d/pgsql restart`.
 
 Run the database migrations.
 You will need to do this whenever you update with `git pull`:
@@ -98,14 +98,14 @@ You will need to do this whenever you update with `git pull`:
 $ MIX_ENV=prod mix ecto.migrate
 ```
 
-## Configuring nginx
+## Configuring NGINX
 
 Install the example configuration file
 `/home/akkoma/akkoma/installation/nginx/akkoma.nginx` to
 `/usr/pkg/etc/nginx.conf`.
 
 Note that it will need to be wrapped in a `http {}` block. You should add
-settings for the nginx daemon outside of the http block, for example:
+settings for the NGINX daemon outside the HTTP block, for example:
 
 ```
 user                    nginx  nginx;
@@ -133,7 +133,7 @@ First, get your account fingerprint:
 $ sudo -Hu nginx -g nginx acme.sh --register-account
 ```
 
-You need to add the following to your nginx configuration for the server
+You need to add the following to your NGINX configuration for the server
 running on port 80:
 
 ```
@@ -143,7 +143,7 @@ running on port 80:
   }
 ```
 
-Replace the string after after `$1.` with your fingerprint.
+Replace the string after `$1.` with your fingerprint.
 
 Start nginx:
 
@@ -193,10 +193,10 @@ Run `# /etc/rc.d/akkoma start` to start Akkoma.
 
 ## Conclusion
 
-Restart nginx with `# /etc/rc.d/nginx restart` and you should be up and running.
+Restart NGINX with `# /etc/rc.d/nginx restart` and you should be up and running.
 
 Make sure your time is in sync, or other instances will receive your posts with
-incorrect timestamps. You should have ntpd running.
+incorrect timestamps. You should have `ntpd` running.
 
 ## Instances running NetBSD
 

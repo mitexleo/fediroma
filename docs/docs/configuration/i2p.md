@@ -1,4 +1,4 @@
-# I2P Federation and Accessability
+# I2P Federation and Accessibility
 
 This guide is going to focus on the Akkoma federation aspect. The actual installation is neatly explained in the official documentation, and more likely to remain up-to-date.
 It might be added to this guide if there will be a need for that.
@@ -17,7 +17,7 @@ One using the config, and one using external software (fedproxy). The external s
 
 **Warning:** So far, everytime I followed this way of federating using I2P, the rest of my federation stopped working. I'm leaving this here in case it will help with making it work.
 
-Assuming you're running in prod, cd to your Akkoma folder and append the following to `config/prod.secret.exs`:
+Assuming you're running in prod, `cd` to your Akkoma folder and append the following to `config/prod.secret.exs`:
 ```
 config :pleroma, :http, proxy_url: {:socks5, :localhost, 4447}
 ```
@@ -39,13 +39,13 @@ You can change the socks proxy port in `/etc/i2pd/i2pd.conf`.
 
 ### Using Fedproxy
 
-Fedproxy passes through clearnet requests direct to where they are going. It doesn't force anything over Tor.
+Fedproxy passes through Clearnet requests direct to where they are going. It doesn't force anything over Tor.
 
 To use [fedproxy](https://github.com/majestrate/fedproxy) you'll need to install Golang.
 ```
 apt install golang
 ```
-Use a different user than akkoma or root. Run the following to add the Gopath to your ~/.bashrc.
+Use a different user than Akkoma or root. Run the following to add the GOPATH to your ~/.bashrc.
 ```
 echo "export GOPATH=/home/ren/.go" >> ~/.bashrc
 ```
@@ -62,7 +62,7 @@ fedproxy 127.0.0.1:2000 127.0.0.1:4447
 If you want to also use it for Tor, add `127.0.0.1:9050` to that command.
 You'll also need to modify your Akkoma config.
 
-Assuming you're running in prod, cd to your Akkoma folder and append the following to `config/prod.secret.exs`:
+Assuming you're running in prod,  `cd` to your Akkoma folder and append the following to `config/prod.secret.exs`:
 ```
 config :pleroma, :http, proxy_url: {:socks5, :localhost, 2000}
 ```
@@ -103,12 +103,12 @@ systemctl start i2pd.service
 *Notice:* The stop command initiates a graceful shutdown process, i2pd stops after finishing to route transit tunnels (maximum 10 minutes).
 
 Now you'll have to find your address.
-To do that you can download and use I2PD tools.[^1]  
-Or you'll need to access your web-console on localhost:7070.
+To do that, you can download and use I2PD tools.[^1]
+Or, you'll need to access your web-console on localhost:7070.
 If you don't have a GUI, you'll have to SSH tunnel into it like this:
 `ssh -L 7070:127.0.0.1:7070 user@ip -p port`.
 Now you can access it at localhost:7070.
-Go to I2P tunnels page. Look for Server tunnels and you will see an address that ends with `.b32.i2p` next to "akkoma".
+Go to I2P tunnels page. Look for Server tunnels, and you will see an address that ends with `.b32.i2p` next to "akkoma".
 This is your site's address.
 
 ### I2P-only Instance
@@ -117,20 +117,20 @@ If creating an I2P-only instance, open `config/prod.secret.exs` and under "confi
 ```
    url: [host: "i2paddress", scheme: "http", port: 80],
 ```
-In addition to that, replace the existing nginx config's contents with the example below.
+In addition to that, replace the existing NGINX config's contents with the example below.
 
 ### Existing Instance (Clearnet Instance)
 
 If not an I2P-only instance, add the nginx config below to your existing config at `/etc/nginx/sites-enabled/akkoma.nginx`.
 
-And for both cases, disable CSP in Akkoma's config (STS is disabled by default) so you can define those yourself separately from the clearnet (if your instance is also on the clearnet).
+And for both cases, disable CSP in Akkoma's config (STS is disabled by default) so you can define those yourself separately from the Clearnet (if your instance is also on the Clearnet).
 Copy the following into the `config/prod.secret.exs` in your Akkoma folder (/home/akkoma/akkoma/):
 ```
 config :pleroma, :http_security,
   enabled: false
 ```
 
-Use this as the Nginx config:
+Use this as the NGINX config:
 ```
 proxy_cache_path /tmp/akkoma-media-cache levels=1:2 keys_zone=akkoma_media_cache:10m max_size=10g inactive=720m use_temp_path=off;
 # The above already exists in a clearnet instance's config.
@@ -179,7 +179,7 @@ server {
     }
 }
 ```
-reload Nginx:
+reload NGINX:
 ```
 systemctl stop i2pd.service --no-block
 systemctl start i2pd.service

@@ -1,6 +1,6 @@
 # Admin API
 
-Authentication is required and the user must be an admin.
+Authentication is required, and the user must be an admin.
 
 Backwards-compatibility for admin API endpoints without version prefixes (`/api/pleroma/admin/*`) has been removed as of Akkoma 3.6.0. Please use `/api/v1/pleroma/admin/*` instead.
 
@@ -137,7 +137,7 @@ Backwards-compatibility for admin API endpoints without version prefixes (`/api/
 
 ## `GET /api/v1/pleroma/admin/users/:nickname/permission_group`
 
-### Get user user permission groups membership
+### Get user permission groups membership
 
 - Params: none
 - Response:
@@ -153,7 +153,7 @@ Backwards-compatibility for admin API endpoints without version prefixes (`/api/
 
 Note: Available `:permission_group` is currently moderator and admin. 404 is returned when the permission group doesn’t exist.
 
-### Get user user permission groups membership per permission group
+### Get user permission groups membership per permission group
 
 - Params: none
 - Response:
@@ -303,7 +303,7 @@ Removes the user(s) from follower recommendations.
 
 ## `GET /api/v1/pleroma/admin/users/:nickname_or_id`
 
-### Retrive the details of a user
+### Retrieve the details of a user
 
 - Params:
   - `nickname` or `id`
@@ -313,7 +313,7 @@ Removes the user(s) from follower recommendations.
 
 ## `GET /api/v1/pleroma/admin/users/:nickname_or_id/statuses`
 
-### Retrive user's latest statuses
+### Retrieve user's latest statuses
 
 - Params:
   - `nickname` or `id`
@@ -337,7 +337,7 @@ Removes the user(s) from follower recommendations.
 
 ## `GET /api/v1/pleroma/admin/instances/:instance/statuses`
 
-### Retrive instance's latest statuses
+### Retrieve instance's latest statuses
 
 - Params:
   - `instance`: instance name
@@ -377,7 +377,7 @@ It may take some time.
 
 ## `GET /api/v1/pleroma/admin/statuses`
 
-### Retrives all latest statuses
+### Retrieves all latest statuses
 
 - Params:
   - *optional* `page_size`: number of statuses to return (default is `20`)
@@ -414,7 +414,7 @@ Params:
 
 Response:
 
-* On success: relay json object
+* On success: relay JSON object
 
 ```json
 {"actor": "https://example.com/relay", "followed_back": true}
@@ -426,7 +426,7 @@ Response:
 
 - Params:
   - `relay_url`
-  - *optional* `force`: forcefully unfollow a relay even when the relay is not available. (default is `false`)
+  - *optional* `force`: forcefully unfollow a relay, even when the relay is not available. (default is `false`)
 
 Response:
 
@@ -505,7 +505,7 @@ Response:
 
 ## `POST /api/v1/pleroma/admin/users/email_invite`
 
-### Sends registration invite via email
+### Sends registration invites via email
 
 - Params:
   - `email`
@@ -528,7 +528,6 @@ Response:
 
 ### Get a password reset token for a given nickname
 
-
 - Params: none
 - Response:
 
@@ -541,7 +540,7 @@ Response:
 
 ## `PATCH /api/v1/pleroma/admin/users/force_password_reset`
 
-### Force passord reset for a user with a given nickname
+### Force password reset for a user with a given nickname
 
 - Params:
   - `nicknames`
@@ -549,7 +548,7 @@ Response:
 
 ## PUT `/api/v1/pleroma/admin/users/disable_mfa`
 
-### Disable mfa for user's account.
+### Disable MFA for user's account.
 
 - Params:
   - `nickname`
@@ -960,7 +959,7 @@ Status: 404
 
 ## `GET /api/v1/pleroma/admin/need_reboot`
 
-### Returns the flag whether the pleroma should be restarted
+### Returns the flag whether the Akkoma should be restarted
 
 - Params: none
 - Response:
@@ -975,7 +974,7 @@ Status: 404
 
 ### Get list of merged default settings with saved in database.
 
-*If `need_reboot` is `true`, instance must be restarted, so reboot time settings can take effect.*
+*If `need_reboot` is `true`, the instance must be restarted, so reboot time settings can take effect.*
 
 **Only works when configuration from database is enabled.**
 
@@ -1002,7 +1001,7 @@ Status: 404
 
 ### Update config settings
 
-*If `need_reboot` is `true`, instance must be restarted, so reboot time settings can take effect.*
+*If `need_reboot` is `true`, the instance must be restarted, so reboot time settings can take effect.*
 
 **Only works when configuration from database is enabled.**
 
@@ -1045,7 +1044,7 @@ Most of the settings will be applied in `runtime`, this means that you don't nee
     - `delete` - true (*optional*, if setting must be deleted)
     - `subkeys` - array of strings (*optional*, only works when `delete=true` parameter is passed, otherwise will be ignored)
 
-*When a value have several nested settings, you can delete only some nested settings by passing a parameter `subkeys`, without deleting all settings by key.*
+*When a value has several nested settings, you can delete only some nested settings by passing a parameter `subkeys`, without deleting all settings by key.*
 ```
 [subkey: val1, subkey2: val2, subkey3: val3] \\ initial value
 {"group": ":pleroma", "key": "some_key", "delete": true, "subkeys": [":subkey", ":subkey3"]} \\ passing json for deletion
@@ -1132,7 +1131,7 @@ List of settings which support only full update by subkey:
 ## ` GET /api/v1/pleroma/admin/config/descriptions`
 
 ### Get JSON with config descriptions.
-Loads json generated from `config/descriptions.exs`.
+Loads JSON generated from `config/descriptions.exs`.
 
 - Params: none
 - Response:
@@ -1267,7 +1266,6 @@ Loads json generated from `config/descriptions.exs`.
   "page_size": 50
 }
 ```
-
 
 ## `POST /api/v1/pleroma/admin/oauth_app`
 

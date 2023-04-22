@@ -2,12 +2,12 @@
 
 ## Why should you migrate?
 
-aside from actually responsive maintainer(s)? let's lookie here, we've got:
+Aside from actually responsive maintainer(s)? Let's lookie here, we've got:
 
 - custom emoji reactions
-- misskey markdown (MFM) rendering and posting support
-- elasticsearch support (because pleroma search is GARBAGE)
-- latest develop pleroma-fe additions
+- Misskey markdown (MFM) rendering and posting support
+- Elasticsearch support (because pleroma search is GARBAGE)
+- latest develop Pleroma-fe additions
 - local-only posting
 - automatic post translation
 - the mastodon frontend back in all its glory
@@ -24,7 +24,7 @@ on your setup.
 ## From Source
 
 If you're running the source Akkoma install, you'll need to set the
-upstream git URL then just rebuild - that'll be:
+upstream git URL, then just rebuild - that'll be:
 
 ```bash
 git remote set-url origin https://akkoma.dev/AkkomaGang/akkoma.git/
@@ -35,7 +35,7 @@ git pull -r
 ```
 
 ### WARNING - Migrating from Pleroma Develop
-If you are on pleroma develop, and have updated since 2022-08, you may have issues with database migrations.
+If you are on Pleroma develop, and have updated since 2022-08, you may have issues with database migrations.
 
 Please roll back the given migrations:
 
@@ -47,7 +47,7 @@ Then compile, migrate and restart as usual.
 
 ## From OTP
 
-This will just be setting the update URL - find your flavour from the [mapping on the install guide](../otp_en/#detecting-flavour) first.
+This will just be setting the update URL - find your flavour from the [mapping on the installation guide](../otp_en/#detecting-flavour) first.
 
 ```bash
 export FLAVOUR=[the flavour you found above]
@@ -56,7 +56,7 @@ export FLAVOUR=[the flavour you found above]
 ./bin/pleroma_ctl migrate
 ```
 
-Then restart. When updating in the future, you canjust use
+Then restart. When updating in the future, you can just use:
 
 ```bash
 ./bin/pleroma_ctl update --branch stable
@@ -92,7 +92,7 @@ See above for that command.
 ### I compile the JS from source
 
 Your situation will likely be unique - you'll need the changes in the
-[forked pleroma-fe repository](https://akkoma.dev/AkkomaGang/pleroma-fe),
+[forked Pleroma-fe repository](https://akkoma.dev/AkkomaGang/pleroma-fe),
 and either merge or cherry-pick from there depending on how you've got
 things.
 
@@ -102,8 +102,8 @@ things.
 
 This may occur if you are using database configuration.
 
-Sometimes the config in your database will cause akkoma to still report
-that there's no frontend, even when you've run the install.
+Sometimes the config in your database will cause Akkoma to still report
+that there's no frontend, even when you've run the installation.
 
 To fix this, run:
 
@@ -117,4 +117,4 @@ To fix this, run:
     mix pleroma.config delete pleroma frontends
     ```
 
-which will remove the config from the database. Things should work now.
+Which will remove the config from the database. Things should work now.

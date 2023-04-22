@@ -46,7 +46,7 @@ config :pleroma, :emoji,
   ]
 ```
 
-Order of the `groups` matters, so to override default tags just put your group on top of the list. E.g:
+Order of the `groups` matters, so to override default tags, just put your group on top of the list. E.g:
 ```elixir
 config :pleroma, :emoji,
   shortcode_globs: ["/emoji/custom/**/*.png"],
@@ -74,7 +74,7 @@ Managing your emoji can be hard work, and you just want to have the cool emoji y
 
 You can use the `Pleroma.Web.ActivityPub.MRF.StealEmojiPolicy` [Message Rewrite Facility](../configuration/cheatsheet.md#mrf) to automatically add to your instance emoji that messages from specific servers contain. Note that this happens on message processing, so the emoji will be added only after your instance receives some interaction containing emoji _after_ configuring this.
 
-To activate this you have to [configure](../configuration/cheatsheet.md#mrf_steal_emoji) it in your configuration file. For example if you wanted to steal any emoji that is not related to cinnamon and not larger than about 10K from `coolemoji.space` and `spiceenthusiasts.biz`, you would add the following:
+To activate this, you have to [configure](../configuration/cheatsheet.md#mrf_steal_emoji) it in your configuration file. For example if you wanted to steal any emoji that is not related to cinnamon and not larger than about 10K from `coolemoji.space` and `spiceenthusiasts.biz`, you would add the following:
 ```elixir
 config :pleroma, :mrf,
   policies: [

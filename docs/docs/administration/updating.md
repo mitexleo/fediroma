@@ -20,21 +20,21 @@ su -s "$SHELL" akkoma
 # Download latest stable release
 ./bin/pleroma_ctl update --branch stable
 
-# Stop akkoma
+# Stop Akkoma
 ./bin/pleroma stop # or using the system service manager (e.g. systemctl stop akkoma)
 
 # Run database migrations
 ./bin/pleroma_ctl migrate
 
-# Start akkoma
+# Start Akkoma
 ./bin/pleroma daemon # or using the system service manager (e.g. systemctl start akkoma)
 
 # Update frontend(s). See Frontend Configuration doc for more information.
 ./bin/pleroma_ctl frontend install pleroma-fe --ref stable
 ```
 
-If you selected an alternate flavour on installation, 
-you _may_ need to specify `--flavour`, in the same way as 
+If you selected an alternate flavour on installation,
+you _may_ need to specify `--flavour`, in the same way as
 [when installing](../../installation/otp_en#detecting-flavour).
 
 ## For from source installations (using git)
@@ -53,13 +53,13 @@ export MIX_ENV=prod
 mix deps.get
 mix compile
 
-# Stop akkoma (replace with your system service manager's equivalent if different)
+# Stop Akkoma (replace with your system service manager's equivalent if different)
 sudo systemctl stop akkoma
 
 # Run database migrations
 mix ecto.migrate
 
-# Start akkoma (replace with your system service manager's equivalent if different)
+# Start Akkoma (replace with your system service manager's equivalent if different)
 sudo systemctl start akkoma
 
 # Update Pleroma-FE frontend to latest stable. For other Frontends see Frontend Configuration doc for more information.

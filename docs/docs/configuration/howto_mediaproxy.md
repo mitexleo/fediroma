@@ -1,12 +1,12 @@
 # How to activate mediaproxy
 ## Explanation
 
-Without the `mediaproxy` function, Akkoma doesn't store any remote content like pictures, video etc. locally. So every time you open Akkoma, the content is loaded from the source server, from where the post is coming. This can result in slowly loading content or/and increased bandwidth usage on the source server.
-With the `mediaproxy` function you can use nginx to cache this content, so users can access it faster, because it's loaded from your server.
+Without the `mediaproxy` function, Akkoma doesn't store any remote content like pictures, video etc. locally. So, every time you open Akkoma, the content is loaded from the source server, from where the post is coming. This can result in slowly loading content or/and increased bandwidth usage on the source server.
+With the `mediaproxy` function, you can use NGINX to cache this content, so users can access it faster, because it's loaded from your server.
 
 ## Activate it
 
-* Edit your nginx config and add the following location: 
+* Edit your NGINX config and add the following location:
 ```
 location /proxy {
         proxy_cache akkoma_media_cache;
@@ -14,7 +14,7 @@ location /proxy {
         proxy_pass http://localhost:4000;
 }
 ```
-Also add the following on top of the configuration, outside of the `server` block:
+Also add the following on top of the configuration, outside the `server` block:
 ```
 proxy_cache_path /tmp/akkoma-media-cache levels=1:2 keys_zone=akkoma_media_cache:10m max_size=10g inactive=720m use_temp_path=off;
 ```
@@ -29,6 +29,6 @@ config :pleroma, :media_proxy,
       ]
       #base_url: "https://cache.akkoma.social"
 ```
-If you want to use a subdomain to serve the files, uncomment `base_url`, change the url and add a comma after `true` in the previous line.
+If you want to use a subdomain to serve the files, uncomment `base_url`, change the URL and add a comma after `true` in the previous line.
 
-* Restart nginx and Akkoma
+* Restart NGINX and Akkoma

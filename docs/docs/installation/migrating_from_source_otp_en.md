@@ -2,10 +2,10 @@
 
 {! installation/otp_vs_from_source.include !}
 
-In this guide we cover how you can migrate from a from source installation to one using OTP releases.
+In this guide, we cover how you can migrate from a from source installation to one using OTP releases.
 
 ## Pre-requisites
-You will be running commands as root. If you aren't root already, please elevate your priviledges by executing `sudo su`/`su`.
+You will be running commands as root. If you aren't root already, please elevate your privileges by executing `sudo su`/`su`.
 
 The system needs to have `curl` and `unzip` installed for downloading and unpacking release builds.
 
@@ -20,7 +20,7 @@ The system needs to have `curl` and `unzip` installed for downloading and unpack
     ```
 
 ## Moving content out of the application directory
-When using OTP releases the application directory changes with every version so it would be a bother to keep content there (and also dangerous unless `--no-rm` option is used when updating). Fortunately almost all paths in Akkoma are configurable, so it is possible to move them out of there.
+When using OTP releases, the application directory changes with every version, so it would be a bother to keep content there (and also dangerous unless `--no-rm` option is used when updating). Fortunately almost all paths in Akkoma are configurable, so it is possible to move them out of there.
 
 Akkoma should be stopped before proceeding.
 
@@ -51,11 +51,11 @@ mkdir /var/lib/akkoma/static/emoji
 ls -d ~akkoma/priv/static/emoji/*/ | xargs -i sh -c 'mv "{}" "/var/lib/akkoma/static/emoji/$(basename {})"'
 ```
 
-But, if for some reason you have custom emojis in the root directory you should copy the whole directory instead.
+But, if for some reason you have custom emojis in the root directory, you should copy the whole directory instead.
 ```sh
 mv ~akkoma/priv/static/emoji /var/lib/akkoma/static/emoji
 ```
-and then copy custom emojis to `/var/lib/akkoma/static/emoji/custom`. 
+and then copy custom emojis to `/var/lib/akkoma/static/emoji/custom`.
 
 This is needed because storing custom emojis in the root directory is deprecated, but if you just move them to `/var/lib/akkoma/static/emoji/custom` it will break emoji urls on old posts.
 
@@ -109,9 +109,9 @@ su akkoma -s $SHELL -lc "./bin/pleroma stop"
 ```
 
 ## Setting up a system service
-OTP releases have different service files than from-source installs so they need to be copied over again.
+OTP releases have different service files than from-source installs, so they need to be copied over again.
 
-**Warning:** The service files assume akkoma user's home directory is `/opt/akkoma`, please make sure all paths fit your installation.
+**Warning:** The service files assume Akkoma user's home directory is `/opt/akkoma`, please make sure all paths fit your installation.
 
 === "Alpine"
     ```sh

@@ -64,5 +64,5 @@ Apps listed here might not support all of Akkoma's features.
 ### BloatFE
 - Source Code: <https://git.freesoftwareextremist.com/bloat/>
 - Contact: [@r@freesoftwareextremist.com](https://freesoftwareextremist.com/users/r)
-- Features: Does not requires JavaScript
+- Features: Does not require JavaScript
 - Features: MastoAPI

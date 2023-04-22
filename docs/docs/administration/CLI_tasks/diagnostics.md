@@ -2,7 +2,7 @@
 
 A few tasks to help with debugging, troubleshooting, and diagnosing problems.
 
-They mostly relate to common postgres queries. 
+They mostly relate to common PostgreSQL queries.
 
 ## Home timeline query plan
 
@@ -26,5 +26,5 @@ from the perspective of another given user.
     `./bin/pleroma_ctl diagnostics user_timeline <nickname> <viewing_nickname>`
 
 === "From Source"
-    
+
     `mix pleroma.diagnostics user_timeline <nickname> <viewing_nickname>`

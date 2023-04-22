@@ -5,7 +5,7 @@
 * Erlang OTP 24+
 * git
 * file / libmagic
-* gcc (clang might also work)
+* GCC (clang might also work)
 * GNU make
 * CMake
 
@@ -13,4 +13,4 @@
 
 * ImageMagick
 * FFmpeg
-* exiftool
+* ExifTool

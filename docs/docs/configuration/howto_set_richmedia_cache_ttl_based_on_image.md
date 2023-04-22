@@ -1,10 +1,10 @@
-# How to set rich media cache ttl based on image ttl
+# How to set rich media cache TTL based on image TTL
 ## Explanation
 
-Richmedia are cached without the ttl but the rich media may have image which can expire, like aws signed url.
-In such cases the old image url (expired) is returned from the media cache.
+Richmedia are cached without the TTL, but the rich media may have image which can expire, like AWS-signed URL.
+In such cases, the old image URL (expired) is returned from the media cache.
 
-So to avoid such situation we can define a module that will set ttl based on image.
+So, to avoid such situation, we can define a module that will set TTL based on image.
 The module must adopt behaviour `Pleroma.Web.RichMedia.Parser.TTL`
 
 ### Example
@@ -16,8 +16,8 @@ defmodule MyModule do
   @impl Pleroma.Web.RichMedia.Parser.TTL
   def ttl(data, url) do
     image_url = Map.get(data, :image)
-    # do some parsing in the url and get the ttl of the image
-    # return ttl is unix time
+    # do some parsing in the url and get the TTL of the image
+    # return TTL is unix time
     parse_ttl_from_url(image_url)
   end
 end

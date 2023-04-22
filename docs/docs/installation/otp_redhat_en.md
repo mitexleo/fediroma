@@ -1,18 +1,16 @@
-# Installing on RedHat using OTP releases
+# Installing on Red Hat using OTP releases
 
-## OTP releases and Fedora/RedHat
+## OTP releases and Fedora/Red Hat
 
-The current OTP builds available for Linux are unfortunately incompatible with RedHat Linux distributions, like Fedora and Centos Stream. This is due to RedHat maintaining patched versions of certain Erlang libraries, making them incompatible with other Linux distributions.
+The current OTP builds available for Linux are unfortunately incompatible with Red Hat Linux distributions, like Fedora and CentOS Stream. This is due to Red Hat maintaining patched versions of certain Erlang libraries, making them incompatible with other Linux distributions.
 
 However, you may compile your own OTP release from scratch. This is particularly useful if you wish to quickly distribute your OTP build onto multiple systems, without having to worry about compiling code on every system. However, if your goal is to simply set up a single instance for yourself, installing from-source might be a simpler option. To install from-source, please follow [this guide](./fedora_based_en.md).
 
-
 ## Pre-requisites
 
-In order to compile a RedHat-compatible OTP release, you will need to run a RedHat Linux distribution. This guide will assume you run Fedora 36, though it should also work on older Fedora releases and other RedHat distributions. It also assumes that you have administrative rights and sufficient knowledge on how to perform common CLI tasks in Linux. If you want to run this guide with root, ignore the `sudo` at the beginning of the lines.
+In order to compile a RedHat-compatible OTP release, you will need to run a Red Hat Linux distribution. This guide will assume you run Fedora 36, though it should also work on older Fedora releases and other Red Hat distributions. It also assumes that you have administrative rights and sufficient knowledge on how to perform common CLI tasks in Linux. If you want to run this guide with root, ignore the `sudo` at the beginning of the lines.
 
-Important: keep in mind that you must build your OTP release for the specific RedHat distribution you wish to use it on. A build on Fedora will only be compatible with a specific Fedora release version.
-
+Important: keep in mind that you must build your OTP release for the specific Red Hat distribution you wish to use it on. A build on Fedora will only be compatible with a specific Fedora release version.
 
 ## Building an OTP release for Fedora 36
 
@@ -30,7 +28,6 @@ sudo dnf upgrade --refresh
 sudo dnf install git gcc g++ erlang elixir erlang-os_mon erlang-eldap erlang-xmerl erlang-erl_interface erlang-syntax_tools make cmake file-devel
 ```
 
-
 ### Preparing the project files
 
 * Git clone the AkkomaBE repository. This can be done anywhere:
@@ -45,7 +42,6 @@ git clone https://akkoma.dev/AkkomaGang/akkoma.git -b stable
 ```shell
 cd ./akkoma
 ```
-
 
 ### Building the OTP release
 
@@ -65,23 +61,21 @@ Note that compiling the OTP release will take some time. Once it completes, you 
 
 If all went well, you will have built your very own Fedora-compatible OTP release! You can now pack up the files in the `release` directory and deploy them to your other Fedora servers.
 
-
 ## Installing the OTP release
 
 Installing the OTP release from this point onward will be very similar to the regular OTP release. This guide assumes you will want to install your OTP package on other systems, so additional pre-requisites will be listed below.
 
 Please note that running your own OTP release has some minor caveats that you should be aware of. They will be listed below as well.
 
-
 ### Installing required packages
 
-Other than things bundled in the OTP release Akkoma depends on:
+Other than things bundled in the OTP release, Akkoma depends on:
 
 * curl (to download the release build)
 * ncurses (ERTS won't run without it)
 * PostgreSQL (also utilizes extensions in postgresql-contrib)
-* nginx (could be swapped with another reverse proxy but this guide covers only it)
-* certbot (for Let's Encrypt certificates, could be swapped with another ACME client, but this guide covers only it)
+* NGINX (could be swapped with another reverse proxy, but this guide covers only it)
+* Certbot (for Let's Encrypt certificates, could be swapped with another ACME client, but this guide covers only it)
 * libmagic/file
 
 First, update your system, if not already done:
@@ -96,10 +90,9 @@ Then install the required packages:
 sudo dnf install curl ncurses postgresql postgresql-contrib nginx certbot file-devel
 ```
 
-
 ### Optional packages: [`docs/installation/optional/media_graphics_packages.md`](../installation/optional/media_graphics_packages.md)
 
-* Install ffmpeg (requires setting up the RPM-fusion repositories):
+* Install FFmpeg (requires setting up the RPM-fusion repositories):
 
 ```shell
 sudo dnf -y install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
@@ -112,7 +105,6 @@ sudo dnf install ffmpeg
 ```shell
 sudo dnf install Imagemagick perl-Image-ExifTool
 ```
-
 
 ### Configuring PostgreSQL
 #### (Optional) Performance configuration
@@ -150,7 +142,7 @@ sudo chown -R akkoma /etc/akkoma
 # Run the config generator
 sudo -Hu akkoma ./bin/pleroma_ctl instance gen --output /etc/akkoma/config.exs --output-psql /tmp/setup_db.psql
 
-# Create the postgres database
+# Create the PostgreSQL database
 sudo -Hu postgres psql -f /tmp/setup_db.psql
 
 # Create the database schema
@@ -166,8 +158,7 @@ sleep 20 && curl http://localhost:4000/api/v1/instance
 sudo -Hu akkoma ./bin/pleroma stop
 ```
 
-
-### Setting up nginx and getting Let's Encrypt SSL certificaties
+### Setting up NGINX and getting Let's Encrypt SSL certificates
 
 #### Get a Let's Encrypt certificate
 
@@ -175,13 +166,13 @@ sudo -Hu akkoma ./bin/pleroma stop
 certbot certonly --standalone --preferred-challenges http -d yourinstance.tld
 ```
 
-#### Copy Akkoma nginx configuration to the nginx folder
+#### Copy Akkoma NGINX configuration to the NGINX folder
 
 ```shell
 cp /opt/akkoma/installation/nginx/akkoma.nginx /etc/nginx/conf.d/akkoma.conf
 ```
 
-#### Edit the nginx config
+#### Edit the NGINX config
 ```shell
 # Replace example.tld with your (sub)domain (replace $EDITOR with your editor of choice)
 sudo $EDITOR /etc/nginx/conf.d/akkoma.conf
@@ -189,14 +180,13 @@ sudo $EDITOR /etc/nginx/conf.d/akkoma.conf
 # Verify that the config is valid
 sudo nginx -t
 ```
-#### Start nginx
+#### Start NGINX
 
 ```shell
 sudo systemctl start nginx
 ```
 
 At this point if you open your (sub)domain in a browser you should see a 502 error, that's because Akkoma is not started yet.
-
 
 ### Setting up a system service
 
@@ -218,7 +208,7 @@ sudo systemctl enable akkoma
 
 If everything worked, you should see a response from Akkoma-BE when visiting your domain. You may need to install frontends like Akkoma-FE and Admin-FE; refer to [this guide](../administration/CLI_tasks/frontend.md) on how to install them.
 
-If that didn't happen, try reviewing the installation steps, starting Akkoma in the foreground and seeing if there are any errrors.
+If that didn't happen, try reviewing the installation steps, starting Akkoma in the foreground and seeing if there are any errors.
 
 {! support.include !}
 
@@ -236,7 +226,7 @@ sudo $EDITOR /etc/nginx/conf.d/akkoma.conf
 # Verify that the config is valid
 sudo nginx -t
 
-# Restart nginx
+# Restart NGINX
 sudo systemctl restart nginx
 
 # Ensure the webroot menthod and post hook is working
@@ -252,19 +242,18 @@ sudo chmod +x /etc/cron.daily/renew-akkoma-cert
 sudo run-parts --test /etc/cron.daily
 ```
 
-
 ## Create your first user and set as admin
 ```shell
 cd /opt/akkoma
 sudo -Hu akkoma ./bin/pleroma_ctl user new joeuser joeuser@sld.tld --admin
 ```
-This will create an account withe the username of 'joeuser' with the email address of joeuser@sld.tld, and set that user's account as an admin. This will result in a link that you can paste into the browser, which logs you in and enables you to set the password.
+This will create an account with the username of 'joeuser' with the email address of joeuser@sld.tld, and set that user's account as an admin. This will result in a link that you can paste into the browser, which logs you in and enables you to set the password.
 
 ## Further reading
 
 ### Caveats of building your own OTP release
 
-There are some things to take note of when your are running your own OTP builds.
+There are some things to take note of when you are running your own OTP builds.
 
 #### Updating your OTP builds
 
@@ -274,10 +263,9 @@ Instead, you will have to rebuild your OTP release every time there are updates,
 
 After that, run the `pleroma_ctl migrate` command as usual to perform database migrations.
 
+#### Cross-compatibility between Red Hat distributions
 
-#### Cross-compatibility between RedHat distributions
-
-As it currently stands, your OTP build will only be compatible for the specific RedHat distribution you've built it on. Fedora builds only work on Fedora, Centos builds only on Centos, RedHat builds only on RedHat. Secondly, for Fedora, they will also be bound to the specific Fedora release. This is because different releases of Fedora may have significant changes made in some of the required packages and libraries.
+As it currently stands, your OTP build will only be compatible for the specific Red Hat distribution you've built it on. Fedora builds only work on Fedora, Centos builds only on Centos, Red Hat builds only on Red Hat. Secondly, for Fedora, they will also be bound to the specific Fedora release. This is because different releases of Fedora may have significant changes made in some of the required packages and libraries.
 
 {! installation/frontends.include !}
 

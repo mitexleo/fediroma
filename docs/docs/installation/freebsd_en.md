@@ -21,7 +21,7 @@ Setup the required services to automatically start at boot, using `sysrc(8)`.
 # sysrc postgresql_enable=YES
 ```
 
-## Initialize postgres
+## Initialize PostgreSQL
 
 ```
 # service postgresql initdb
@@ -70,11 +70,11 @@ it'll be protecting your database. As root, you can now initialize the database:
 # sudo -Hu postgres -g postgres psql -f config/setup_db.psql
 ```
 
-Postgres allows connections from all users without a password by default. To
+PostgreSQL allows connections from all users without a password by default. To
 fix this, edit `/var/db/postgres/data12/pg_hba.conf`. Change every `trust` to
 `password`.
 
-Once this is done, restart Postgres with:
+Once this is done, restart PostgreSQL with:
 ```
 # service postgresql restart
 ```
@@ -109,7 +109,7 @@ Next, obtain your account fingerprint:
 # sudo -Hu acme -g acme acme.sh --register-account
 ```
 
-You need to add the following to your nginx configuration for the server
+You need to add the following to your NGINX configuration for the server
 running on port 80:
 
 ```
@@ -119,9 +119,9 @@ running on port 80:
   }
 ```
 
-Replace the string after after `$1.` with your fingerprint.
+Replace the string after `$1.` with your fingerprint.
 
-Start nginx:
+Start NGINX:
 
 ```
 # service nginx start
@@ -141,9 +141,9 @@ Let's add auto-renewal to `/etc/crontab`
 /usr/local/bin/sudo -Hu acme -g acme /usr/local/sbin/acme.sh -r -d example.com --stateless
 ```
 
-### Configuring nginx
+### Configuring NGINX
 
-FreeBSD's default nginx configuration does not contain an include directive, which is
+FreeBSD's default NGINX configuration does not contain an include directive, which is
 typically used for multiple sites. Therefore, you will need to first create the required
 directory as follows:
 
@@ -211,7 +211,7 @@ sudo -Hu akkoma MIX_ENV=prod mix pleroma.user new <username> <your@emailaddress>
 
 ## Conclusion
 
-Restart nginx with `# service nginx restart` and you should be up and running.
+Restart NGINX with `# service nginx restart` and you should be up and running.
 
 Make sure your time is in sync, or other instances will receive your posts with
 incorrect timestamps. You should have ntpd running.

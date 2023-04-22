@@ -6,10 +6,10 @@ This guide covers a installation using an OTP release. To install Akkoma from so
 
 ## Pre-requisites
 * A machine running Linux with GNU (e.g. Debian, Ubuntu) or musl (e.g. Alpine) libc and an `x86_64` CPU you have root access to. If you are not sure if it's compatible see [Detecting flavour section](#detecting-flavour) below
-* For installing OTP releases on RedHat-based distros like Fedora and Centos Stream, please follow [this guide](./otp_redhat_en.md) instead.
+* For installing OTP releases on RedHat-based distros like Fedora and CentOS Stream, please follow [this guide](./otp_redhat_en.md) instead.
 * A (sub)domain pointed to the machine
 
-You will be running commands as root. If you aren't root already, please elevate your priviledges by executing `sudo su`/`su`.
+You will be running commands as root. If you aren't root already, please elevate your privileges by executing `sudo su`/`su`.
 
 While in theory OTP releases are possbile to install on any compatible machine, for the sake of simplicity this guide focuses only on Debian/Ubuntu and Alpine.
 
@@ -31,14 +31,14 @@ support.
 
 ### Installing the required packages
 
-Other than things bundled in the OTP release Akkoma depends on:
+Other than things bundled in the OTP release, Akkoma depends on:
 
 * curl (to download the release build)
 * unzip (needed to unpack release builds)
 * ncurses (ERTS won't run without it)
 * PostgreSQL (also utilizes extensions in postgresql-contrib)
-* nginx (could be swapped with another reverse proxy but this guide covers only it)
-* certbot (for Let's Encrypt certificates, could be swapped with another ACME client, but this guide covers only it)
+* NGINX (could be swapped with another reverse proxy, but this guide covers only it)
+* Certbot (for Let's Encrypt certificates, could be swapped with another ACME client, but this guide covers only it)
 * libmagic/file
 
 === "Alpine"
@@ -57,8 +57,8 @@ Other than things bundled in the OTP release Akkoma depends on:
 
 Per [`docs/installation/optional/media_graphics_packages.md`](optional/media_graphics_packages.md):
   * ImageMagick
-  * ffmpeg
-  * exiftool
+  * FFmpeg
+  * ExifTool
 
 === "Alpine"
     ```
@@ -75,7 +75,7 @@ Per [`docs/installation/optional/media_graphics_packages.md`](optional/media_gra
 ### Configuring PostgreSQL
 #### (Optional) Installing RUM indexes
 
-!!! warning
+!!! Warning
     It is recommended to use PostgreSQL v11 or newer. We have seen some minor issues with lower PostgreSQL versions.
 
 RUM indexes are an alternative indexing scheme that is not included in PostgreSQL by default. You can read more about them on the [Configuration page](../configuration/cheatsheet.md#rum-indexing-for-full-text-search). They are completely optional and most of the time are not worth it, especially if you are running a single user instance (unless you absolutely need ordered search results).
@@ -118,7 +118,7 @@ Restart PostgreSQL to apply configuration changes:
 adduser --system --shell  /bin/false --home /opt/akkoma akkoma
 
 # Set the flavour environment variable to the string you got in Detecting flavour section.
-# For example if the flavour is `amd64` the command will be
+# For example, if the flavour is `amd64` the command will be
 export FLAVOUR="amd64"
 
 # Clone the release build into a temporary directory and unpack it
@@ -151,7 +151,7 @@ chown -R akkoma /etc/akkoma
 # Run the config generator
 su akkoma -s $SHELL -lc "./bin/pleroma_ctl instance gen --output /etc/akkoma/config.exs --output-psql /tmp/setup_db.psql"
 
-# Create the postgres database
+# Create the PostgreSQL database
 su postgres -s $SHELL -lc "psql -f /tmp/setup_db.psql"
 
 # Create the database schema
@@ -170,16 +170,16 @@ sleep 20 && curl http://localhost:4000/api/v1/instance
 su akkoma -s $SHELL -lc "./bin/pleroma stop"
 ```
 
-### Setting up nginx and getting Let's Encrypt SSL certificaties
+### Setting up NGINX and getting Let's Encrypt SSL certificates
 
 #### Get a Let's Encrypt certificate
 ```sh
 certbot certonly --standalone --preferred-challenges http -d yourinstance.tld
 ```
 
-#### Copy Akkoma nginx configuration to the nginx folder
+#### Copy Akkoma NGINX configuration to the NGINX folder
 
-The location of nginx configs is dependent on the distro
+The location of NGINX configs is dependent on the distro
 
 === "Alpine"
     ```
@@ -192,12 +192,12 @@ The location of nginx configs is dependent on the distro
     ln -s /etc/nginx/sites-available/akkoma.conf /etc/nginx/sites-enabled/akkoma.conf
     ```
 
-If your distro does not have either of those you can append `include /etc/nginx/akkoma.conf` to the end of the http section in /etc/nginx/nginx.conf and
+If your distro does not have either of those, you can append `include /etc/nginx/akkoma.conf` to the end of the HTTP section in /etc/nginx/nginx.conf and
 ```sh
 cp /opt/akkoma/installation/nginx/akkoma.nginx /etc/nginx/akkoma.conf
 ```
 
-#### Edit the nginx config
+#### Edit the NGINX config
 ```sh
 # Replace example.tld with your (sub)domain
 $EDITOR path-to-nginx-config
@@ -205,7 +205,7 @@ $EDITOR path-to-nginx-config
 # Verify that the config is valid
 nginx -t
 ```
-#### Start nginx
+#### Start NGINX
 
 === "Alpine"
     ```
@@ -241,7 +241,7 @@ At this point if you open your (sub)domain in a browser you should see a 502 err
     systemctl enable akkoma
     ```
 
-If everything worked, you should see Akkoma-FE when visiting your domain. If that didn't happen, try reviewing the installation steps, starting Akkoma in the foreground and seeing if there are any errrors.
+If everything worked, you should see Akkoma-FE when visiting your domain. If that didn't happen, try reviewing the installation steps, starting Akkoma in the foreground and seeing if there are any errors.
 
 {! support.include !}
 
@@ -261,7 +261,7 @@ nginx -t
 
 === "Alpine"
     ```
-    # Restart nginx
+    # Restart NGINX
     rc-service nginx restart
 
     # Start the cron daemon and make it start on boot
@@ -283,7 +283,7 @@ nginx -t
 
 === "Debian/Ubuntu"
     ```
-    # Restart nginx
+    # Restart NGINX
     systemctl restart nginx
 
     # Ensure the webroot menthod and post hook is working
@@ -304,7 +304,7 @@ nginx -t
 cd /opt/akkoma
 su akkoma -s $SHELL -lc "./bin/pleroma_ctl user new joeuser joeuser@sld.tld --admin"
 ```
-This will create an account withe the username of 'joeuser' with the email address of joeuser@sld.tld, and set that user's account as an admin. This will result in a link that you can paste into the browser, which logs you in and enables you to set the password.
+This will create an account with the username of 'joeuser' with the email address of joeuser@sld.tld, and set that user's account as an admin. This will result in a link that you can paste into the browser, which logs you in and enables you to set the password.
 
 {! installation/frontends.include !}
 
