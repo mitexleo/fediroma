@@ -7,7 +7,8 @@ For specific Pleroma functionality (which is disabled by default) some or all of
 
 Please refer to documentation in `docs/installation` on how to install them on specific OS.
 
-Note: the packages are not required with the current default settings of Pleroma.
+!!! note
+    The packages are not required with the current default settings of Pleroma.
 
 ## `ImageMagick`
 

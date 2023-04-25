@@ -1,4 +1,5 @@
-**Note:** Akkoma documentation is still being updated, so you may still see references to Pleroma in many places.
+!!! note
+    Akkoma documentation is still being updated, so you may still see references to Pleroma in many places.
 
 # Introduction to Akkoma
 ## What is Akkoma?

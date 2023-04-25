@@ -35,9 +35,9 @@ pkg_add ffmpeg p5-Image-ExifTool
 Akkoma will be run by a dedicated user, `_akkoma`. Before creating it, insert the following lines in `/etc/login.conf`:
 ```
 akkoma:\
-    :datasize-max=1536M:\
-    :datasize-cur=1536M:\
-    :openfiles-max=4096
+	:datasize-max=1536M:\
+	:datasize-cur=1536M:\
+	:openfiles-max=4096
 ```
 This creates a `akkoma` login class and sets higher values than default for datasize and openfiles (see [login.conf(5)](https://man.openbsd.org/login.conf)), this is required to avoid having akkoma crash some time after starting.
 
@@ -80,20 +80,20 @@ ext_inet="<IPv4 address>"
 ext_inet6="<IPv6 address>"
 
 server "default" {
-    listen on $ext_inet port 80 # Comment to disable listening on IPv4
-    listen on $ext_inet6 port 80 # Comment to disable listening on IPv6
-    listen on 127.0.0.1 port 80 # Do NOT comment this line
+	listen on $ext_inet port 80 # Comment to disable listening on IPv4
+	listen on $ext_inet6 port 80 # Comment to disable listening on IPv6
+	listen on 127.0.0.1 port 80 # Do NOT comment this line
 
-    log syslog
-    directory no index
+	log syslog
+	directory no index
 
-    location "/.well-known/acme-challenge/*" {
-        root "/acme"
-        request strip 2
-    }
+	location "/.well-known/acme-challenge/*" {
+		root "/acme"
+		request strip 2
+	}
 
-    location "/robots.txt" { root "/htdocs/local/" }
-    location "/*" { block return 302 "https://$HTTP_HOST$REQUEST_URI" }
+	location "/robots.txt" { root "/htdocs/local/" }
+	location "/*" { block return 302 "https://$HTTP_HOST$REQUEST_URI" }
 }
 ```
 Do not forget to change *<IPv4/6 address\>* to your server's address(es). If httpd should only listen on one protocol family, comment one of the two first *listen* options.
@@ -114,17 +114,17 @@ Insert the following configuration in `/etc/acme-client.conf`:
 #
 
 authority letsencrypt-<domain name> {
-    #agreement url "https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf"
-    api url "https://acme-v02.api.letsencrypt.org/directory"
-    account key "/etc/acme/letsencrypt-privkey-<domain name>.pem"
+	#agreement url "https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf"
+	api url "https://acme-v02.api.letsencrypt.org/directory"
+	account key "/etc/acme/letsencrypt-privkey-<domain name>.pem"
 }
 
 domain <domain name> {
-    domain key "/etc/ssl/private/<domain name>.key"
-    domain certificate "/etc/ssl/<domain name>.crt"
-    domain full chain certificate "/etc/ssl/<domain name>.fullchain.pem"
-    sign with letsencrypt-<domain name>
-    challengedir "/var/www/acme/"
+	domain key "/etc/ssl/private/<domain name>.key"
+	domain certificate "/etc/ssl/<domain name>.crt"
+	domain full chain certificate "/etc/ssl/<domain name>.fullchain.pem"
+	sign with letsencrypt-<domain name>
+	challengedir "/var/www/acme/"
 }
 ```
 Replace *<domain name\>* by the domain name you'll use for your instance. As root, run `acme-client -n` to check the config, then `acme-client -ADv <domain name>` to create account and domain keys, and request a certificate for the first time.
@@ -137,8 +137,8 @@ ln -s /etc/ssl/private/<domain name>.key /etc/ssl/private/<IP address>.key
 ```
 This will have to be done for each IPv4 and IPv6 address relayd listens on.
 
-#### relayd
-relayd will be used as the reverse proxy sitting in front of Akkoma.
+#### Relayd
+Relayd will be used as the reverse proxy sitting in front of Akkoma.
 Insert the following configuration in `/etc/relayd.conf`:
 ```
 # $OpenBSD: relayd.conf,v 1.4 2018/03/23 09:55:06 claudio Exp $
@@ -150,42 +150,42 @@ table <akkoma_server> { 127.0.0.1 }
 table <httpd_server> { 127.0.0.1 }
 
 http protocol plerup { # Protocol for upstream akkoma server
-    #tcp { nodelay, sack, socket buffer 65536, backlog 128 } # Uncomment and adjust as you see fit
-    tls ciphers "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305"
-    tls ecdhe secp384r1
+	#tcp { nodelay, sack, socket buffer 65536, backlog 128 } # Uncomment and adjust as you see fit
+	tls ciphers "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305"
+	tls ecdhe secp384r1
 
-    # Forward some paths to the local server (as akkoma won't respond to them as you might want)
-    pass request quick path "/robots.txt" forward to <httpd_server>
+	# Forward some paths to the local server (as akkoma won't respond to them as you might want)
+	pass request quick path "/robots.txt" forward to <httpd_server>
 
-    # Append a bunch of headers
-    match request header append "X-Forwarded-For" value "$REMOTE_ADDR" # This two header and the next one are not strictly required by akkoma but adding them won't hurt
-    match request header append "X-Forwarded-By" value "$SERVER_ADDR:$SERVER_PORT"
+	# Append a bunch of headers
+	match request header append "X-Forwarded-For" value "$REMOTE_ADDR" # This two header and the next one are not strictly required by akkoma but adding them won't hurt
+	match request header append "X-Forwarded-By" value "$SERVER_ADDR:$SERVER_PORT"
 
-    match response header append "X-XSS-Protection" value "0"
-    match response header append "X-Permitted-Cross-Domain-Policies" value "none"
-    match response header append "X-Frame-Options" value "DENY"
-    match response header append "X-Content-Type-Options" value "nosniff"
-    match response header append "Referrer-Policy" value "same-origin"
-    match response header append "Content-Security-Policy" value "default-src 'none'; base-uri 'none'; form-action 'self'; img-src 'self' data: https:; media-src 'self' https:; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'; connect-src 'self' wss://CHANGEME.tld; upgrade-insecure-requests;" # Modify "CHANGEME.tld" and set your instance's domain here
-    match request header append "Connection" value "upgrade"
-    #match response header append "Strict-Transport-Security" value "max-age=63072000; includeSubDomains; preload" # Uncomment this only after you get HTTPS working.
+	match response header append "X-XSS-Protection" value "0"
+	match response header append "X-Permitted-Cross-Domain-Policies" value "none"
+	match response header append "X-Frame-Options" value "DENY"
+	match response header append "X-Content-Type-Options" value "nosniff"
+	match response header append "Referrer-Policy" value "same-origin"
+	match response header append "Content-Security-Policy" value "default-src 'none'; base-uri 'none'; form-action 'self'; img-src 'self' data: https:; media-src 'self' https:; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'; connect-src 'self' wss://CHANGEME.tld; upgrade-insecure-requests;" # Modify "CHANGEME.tld" and set your instance's domain here
+	match request header append "Connection" value "upgrade"
+	#match response header append "Strict-Transport-Security" value "max-age=63072000; includeSubDomains; preload" # Uncomment this only after you get HTTPS working.
 
-    # If you do not want remote frontends to be able to access your Akkoma backend server, comment these lines
-    match response header append "Access-Control-Allow-Origin" value "*"
-    match response header append "Access-Control-Allow-Methods" value "POST, PUT, DELETE, GET, PATCH, OPTIONS"
-    match response header append "Access-Control-Allow-Headers" value "Authorization, Content-Type, Idempotency-Key"
-    match response header append "Access-Control-Expose-Headers" value "Link, X-RateLimit-Reset, X-RateLimit-Limit, X-RateLimit-Remaining, X-Request-Id"
-    # Stop commenting lines here
+	# If you do not want remote frontends to be able to access your Akkoma backend server, comment these lines
+	match response header append "Access-Control-Allow-Origin" value "*"
+	match response header append "Access-Control-Allow-Methods" value "POST, PUT, DELETE, GET, PATCH, OPTIONS"
+	match response header append "Access-Control-Allow-Headers" value "Authorization, Content-Type, Idempotency-Key"
+	match response header append "Access-Control-Expose-Headers" value "Link, X-RateLimit-Reset, X-RateLimit-Limit, X-RateLimit-Remaining, X-Request-Id"
+	# Stop commenting lines here
 }
 
 relay wwwtls {
-    listen on $ext_inet port https tls # Comment to disable listening on IPv4
-    listen on $ext_inet6 port https tls # Comment to disable listening on IPv6
+	listen on $ext_inet port https tls # Comment to disable listening on IPv4
+	listen on $ext_inet6 port https tls # Comment to disable listening on IPv6
 
-    protocol plerup
+	protocol plerup
 
-    forward to <akkoma_server> port 4000 check http "/" code 200
-    forward to <httpd_server> port 80 check http "/robots.txt" code 200
+	forward to <akkoma_server> port 4000 check http "/" code 200
+	forward to <httpd_server> port 80 check http "/robots.txt" code 200
 }
 ```
 Again, change *<IPv4/6 address\>* to your server's address(es) and comment one of the two *listen* options if needed. Also change *wss://CHANGEME.tld* to *wss://<your instance's domain name\>*.

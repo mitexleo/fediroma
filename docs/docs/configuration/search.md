@@ -124,7 +124,8 @@ depends on the amount of text in posts.
 
 ## Elasticsearch
 
-**Note: This requires at least Elasticsearch 7**
+!!! note
+    This requires at least Elasticsearch 7
 
 As with Meilisearch, this can be rather memory-hungry, but it is very good at what it does.
 

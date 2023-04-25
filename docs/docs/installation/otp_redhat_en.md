@@ -10,7 +10,8 @@ However, you may compile your own OTP release from scratch. This is particularly
 
 In order to compile a RedHat-compatible OTP release, you will need to run a Red Hat Linux distribution. This guide will assume you run Fedora 36, though it should also work on older Fedora releases and other Red Hat distributions. It also assumes that you have administrative rights and sufficient knowledge on how to perform common CLI tasks in Linux. If you want to run this guide with root, ignore the `sudo` at the beginning of the lines.
 
-Important: keep in mind that you must build your OTP release for the specific Red Hat distribution you wish to use it on. A build on Fedora will only be compatible with a specific Fedora release version.
+!!! important
+    Keep in mind that you must build your OTP release for the specific Red Hat distribution you wish to use it on. A build on Fedora will only be compatible with a specific Fedora release version.
 
 ## Building an OTP release for Fedora 36
 

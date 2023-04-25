@@ -75,7 +75,7 @@ Per [`docs/installation/optional/media_graphics_packages.md`](optional/media_gra
 ### Configuring PostgreSQL
 #### (Optional) Installing RUM indexes
 
-!!! Warning
+!!! warning
     It is recommended to use PostgreSQL v11 or newer. We have seen some minor issues with lower PostgreSQL versions.
 
 RUM indexes are an alternative indexing scheme that is not included in PostgreSQL by default. You can read more about them on the [Configuration page](../configuration/cheatsheet.md#rum-indexing-for-full-text-search). They are completely optional and most of the time are not worth it, especially if you are running a single user instance (unless you absolutely need ordered search results).

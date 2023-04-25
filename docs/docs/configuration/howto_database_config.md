@@ -42,7 +42,8 @@ The configuration of Akkoma (and Pleroma) has traditionally been managed with a 
   config :pleroma, configurable_from_database: true
   ```
 
-4. ⚠️ **THIS IS NOT REQUIRED** ⚠️
+!!! note
+    This step is not required
 
   Now you can edit your config file and strip it down to the only settings which are not possible to control in the database. e.g., the PostgreSQL (Repo) and webserver (Endpoint) settings cannot be controlled in the database because the application needs the settings to start up and access the database.
 

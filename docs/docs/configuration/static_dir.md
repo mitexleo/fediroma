@@ -66,7 +66,7 @@ config :pleroma, :frontend_configurations,
 
 ## Logo
 
-!!! Important
+!!! important
     Note the extra `static` folder for the default logo.png location
 
 If you want to give a brand to your instance, you can change the logo of your instance by uploading it to the static directory `$static_dir/static/logo.png`.
@@ -84,7 +84,7 @@ config :pleroma, :frontend_configurations,
 
 ## Terms of Service
 
-!!! Important
+!!! important
     Note the extra `static` folder for the terms-of-service.html
 
 Terms of Service will be shown to all users on the registration page. It's the best place where to write down the rules for your instance. You can modify the rules by adding and changing `$static_dir/static/terms-of-service.html`.

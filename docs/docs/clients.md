@@ -1,6 +1,6 @@
 # Akkoma Clients
-Note: Additional clients may work, but these are known to work with Akkoma.
-Apps listed here might not support all of Akkoma's features.
+!!! note
+    Additional clients may work, but these are known to work with Akkoma. Apps listed here might not support all of Akkoma's features.
 
 ## Desktop
 ### Whalebird

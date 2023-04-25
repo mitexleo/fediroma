@@ -1,7 +1,7 @@
 # How to set rich media cache TTL based on image TTL
 ## Explanation
 
-Richmedia are cached without the TTL, but the rich media may have image which can expire, like AWS-signed URL.
+Rich media is cached without the TTL, but the rich media may have an image which can expire, like AWS-signed URL.
 In such cases, the old image URL (expired) is returned from the media cache.
 
 So, to avoid such situation, we can define a module that will set TTL based on image.

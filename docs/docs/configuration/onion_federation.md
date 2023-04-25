@@ -12,7 +12,8 @@ To install Tor on Debian / Ubuntu:
 apt -yq install tor
 ```
 
-**WARNING:** Onion instances not using a Tor version supporting V3 addresses will not be able to federate with you.
+!!! warning
+    Onion instances not using a Tor version supporting V3 addresses will not be able to federate with you.
 
 Create the hidden service for your Akkoma instance in `/etc/tor/torrc`, with an HTTP tunnel:
 ```

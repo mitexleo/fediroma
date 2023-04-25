@@ -2,7 +2,7 @@
 
 {! administration/CLI_tasks/general_cli_task_info.include !}
 
-!!! Danger
+!!! danger
     These mix tasks can take a long time to complete. Many of them were written to address specific database issues that happened because of bugs in migrations or other specific scenarios. Do not run these tasks "just in case" if everything is fine your instance.
 
 ## Replace embedded objects with their references
@@ -99,7 +99,7 @@ Can be safely re-run
 
 ## Vacuum the database
 
-!!! Note
+!!! note
     By default, PostgreSQL has an autovacuum daemon running. While the tasks described here can help in some cases, they shouldn't be needed on a regular basis. See [the PostgreSQL docs on vacuuming](https://www.postgresql.org/docs/current/sql-vacuum.html) for more information on this.
 
 ### Analyze

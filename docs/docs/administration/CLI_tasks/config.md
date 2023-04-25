@@ -4,7 +4,7 @@
 
 ## Transfer config from file to DB.
 
-!!! Note
+!!! note
     You need to add the following to your config before executing this command:
 
     ```elixir
@@ -25,7 +25,7 @@
 
 ## Transfer config from DB to `config/env.exported_from_db.secret.exs`
 
-!!! Note
+!!! note
     In-Database configuration will still be applied after executing this command unless you set the following in your config:
 
     ```elixir
@@ -179,8 +179,8 @@ it may be easier to dump the values to JSON and then modify them in a text edito
 
 ## Loading specific configuration values from JSON
 
-**Note:** This will overwrite any existing value in the database, and can
-cause crashes if you do not have exactly the correct formatting.
+!!! note
+    This will overwrite any existing value in the database, and can cause crashes if you do not have exactly the correct formatting.
 
 Once you have modified the JSON file, you can load it back into the database.
 

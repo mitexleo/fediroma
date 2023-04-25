@@ -151,7 +151,8 @@ Backwards-compatibility for admin API endpoints without version prefixes (`/api/
 
 ## `GET /api/v1/pleroma/admin/users/:nickname/permission_group/:permission_group`
 
-Note: Available `:permission_group` is currently moderator and admin. 404 is returned when the permission group doesn’t exist.
+!!! note
+    Available `:permission_group` is currently moderator and admin. 404 is returned when the permission group doesn’t exist.
 
 ### Get user permission groups membership per permission group
 
@@ -363,8 +364,8 @@ Removes the user(s) from follower recommendations.
 
 ### Delete all users and activities from a remote instance
 
-Note: this will trigger a job to remove instance content in the background.
-It may take some time.
+!!! note
+    This will trigger a job to remove instance content in the background. It may take some time.
 
 - Params:
   - `instance`: remote instance host

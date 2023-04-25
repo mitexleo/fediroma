@@ -32,7 +32,8 @@ Check the output of the query, and see if it matches your expectation.
     mix pleroma.database set_text_search_config YOUR.CONFIG
     ```
 
-Note: index update may take a while, and it can be done while the instance is up and running, so you may restart db connection as soon as you see `Recreate index` in task output.
+!!! note
+    Index update may take a while, and it can be done while the instance is up and running, so you may restart db connection as soon as you see `Recreate index` in task output.
 
 ## Restart database connection
 Since some changes above will only apply with a new database connection, you will have to restart either Akkoma or PostgreSQL process, or use `pg_terminate_backend` SQL command without restarting either.

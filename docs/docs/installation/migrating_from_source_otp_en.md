@@ -111,7 +111,8 @@ su akkoma -s $SHELL -lc "./bin/pleroma stop"
 ## Setting up a system service
 OTP releases have different service files than from-source installs, so they need to be copied over again.
 
-**Warning:** The service files assume Akkoma user's home directory is `/opt/akkoma`, please make sure all paths fit your installation.
+!!! warning
+    The service files assume Akkoma user's home directory is `/opt/akkoma`, please make sure all paths fit your installation.
 
 === "Alpine"
     ```sh

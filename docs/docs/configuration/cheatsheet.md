@@ -130,7 +130,7 @@ To add configuration to your config file, you can copy it from the base config. 
 ## Federation
 ### MRF policies
 
-!!! Note
+!!! note
     Configuring MRF policies is not enough for them to take effect. You have to enable them by specifying their module in `policies` under [:mrf](#mrf) section.
 
 #### :mrf_simple
@@ -414,7 +414,7 @@ config :pleroma, Pleroma.Web.MediaProxy.Invalidation.Http,
 ### :rich_media (consumer)
 * `enabled`: if enabled, the instance will parse metadata from attached links to generate link previews.
 * `ignore_hosts`: list of hosts which will be ignored by the metadata parser. For example, `["accounts.google.com", "xss.website"]`, defaults to `[]`.
-* `ignore_tld`: list TLDs (top-level domains) which will ignore to parse metadata. Default is ["local", "localdomain", "lan"].
+* `ignore_tld`: list of TLDs (top-level domains) which will be ignored by the metadata parser. Default is ["local", "localdomain", "lan"].
 * `parsers`: list of Rich Media parsers.
 * `failure_backoff`: Amount of milliseconds after request failure, during which the request will not be retried.
 
@@ -422,7 +422,7 @@ config :pleroma, Pleroma.Web.MediaProxy.Invalidation.Http,
 
 ### Pleroma.Web.Endpoint
 
-!!! Note
+!!! note
     `Phoenix` endpoint configuration, all configuration options can be viewed [here](https://hexdocs.pm/phoenix/Phoenix.Endpoint.html#module-dynamic-configuration), only common options are listed here.
 
 * `http` - a list containing HTTP protocol configuration, all configuration options can be viewed [here](https://hexdocs.pm/plug_cowboy/Plug.Cowboy.html#module-options), only common options are listed here. For deployment using docker, you need to set this to `[ip: {0,0,0,0}, port: 4000]` to make Akkoma accessible from other containers (such as your NGINX server).
@@ -456,7 +456,7 @@ This will make Akkoma listen on `127.0.0.1` port `8080` and generate URLs starti
 
 ### Pleroma.Web.Plugs.RemoteIp
 
-!!! Warning
+!!! warning
     If your instance is not behind at least one reverse proxy, you should not enable this plug.
 
 `Pleroma.Web.Plugs.RemoteIp` is a shim to call [`RemoteIp`](https://git.pleroma.social/pleroma/remote_ip) but with runtime configuration.
@@ -470,7 +470,7 @@ Available options:
 
 ### :rate_limit
 
-!!! Note
+!!! note
    If your instance is behind a reverse proxy, ensure [`Pleroma.Web.Plugs.RemoteIp`](#pleroma-plugs-remoteip) is enabled (it is enabled by default).
 
 A keyword list of rate limiters, where a key is a limiter name and value is the limiter configuration. The basic configuration is a tuple where:
@@ -561,7 +561,7 @@ the source code is here: [kocaptcha](https://github.com/koto-bank/kocaptcha). Th
 * `proxy_opts`: Proxy options, see `Pleroma.ReverseProxy` documentation.
 * `filename_display_max_length`: Set max length of a filename to display. 0 = no limit. Default: 30.
 
-!!! Warning
+!!! warning
     `strip_exif` has been replaced by `Pleroma.Upload.Filter.Mogrify`.
 
 ### Uploaders
@@ -620,9 +620,9 @@ No specific configuration.
 ## Email
 
 ### Pleroma.Emails.Mailer
-* `adapter`: one of the mail adapters listed in [Swoosh README](https://github.com/swoosh/swoosh#adapters), or `Swoosh.Adapters.Local` for in-memory mailbox.
+* `adapter`: One of the mail adapters listed in [Swoosh README](https://github.com/swoosh/swoosh#adapters), or `Swoosh.Adapters.Local` for in-memory mailbox.
 * `api_key` / `password` and / or other adapter-specific settings, per the above documentation.
-* `enabled`: Allows to enable/disable send emails. Default: `false`.
+* `enabled`: Allows your instance to send emails. Default: `false`.
 
 An example for SendGrid adapter:
 
@@ -789,7 +789,7 @@ config :logger, :ex_syslogger,
 
 ### RUM indexing for full text search
 
-!!! Warning
+!!! warning
     It is recommended to use PostgreSQL v11 or newer. We have seen some minor issues with lower PostgreSQL versions.
 
 * `rum_enabled`: If RUM indexes should be used. Defaults to `false`.
@@ -826,7 +826,8 @@ or
 curl -H "X-Admin-Token: somerandomtoken" "http://localhost:4000/api/v1/pleroma/admin/users/invites"
 ```
 
-Warning: it's discouraged to use this feature because of the associated security risk: static / rarely changed instance-wide token is much weaker compared to email-password pair of a real admin user; consider using HTTP Basic Auth or OAuth-based authentication instead.
+!!! warning
+    It's discouraged to use this feature because of the associated security risk: static / rarely changed instance-wide token is much weaker compared to email-password pair of a real admin user; consider using HTTP Basic Auth or OAuth-based authentication instead.
 
 ### :auth
 
@@ -883,13 +884,13 @@ OAuth 2.0 provider and related endpoints:
 OAuth's consumer mode allows sign in / sign up via external OAuth providers (e.g. Twitter, Facebook, Google, Microsoft, etc.).
 Implementation is based on Überauth; see the list of [available strategies](https://github.com/ueberauth/ueberauth/wiki/List-of-Strategies).
 
-!!! Note
+!!! note
     Each strategy is shipped as a separate dependency; in order to get the strategies, run `OAUTH_CONSUMER_STRATEGIES="..." mix deps.get`, e.g. `OAUTH_CONSUMER_STRATEGIES="twitter facebook google microsoft" mix deps.get`.  The server should also be started with `OAUTH_CONSUMER_STRATEGIES="..." mix phx.server` in case you enable any strategies.
 
-!!! Note
+!!! note
     Each strategy requires separate setup (on external provider side and Akkoma side). Below are the guidelines on setting up most popular strategies.
 
-!!! Note
+!!! note
     Make sure that `"SameSite=Lax"` is set in `extra_cookie_attrs` when you have this feature enabled. OAuth's consumer mode will not work with `"SameSite=Strict"`
 
 * For Twitter, [register an app](https://developer.twitter.com/en/apps), configure callback URL to https://<your_host>/oauth/twitter/callback
@@ -1070,7 +1071,7 @@ Control favicons for instances.
 
 ## Pleroma.User.Backup
 
-!!! Note
+!!! note
     Requires enabled email
 
 * `:purge_after_days` an integer, remove backup archives after N days.

@@ -3,7 +3,7 @@
 If you run Akkoma, you may be inclined to collect metrics to ensure your instance is running smoothly,
 and that there's nothing quietly failing in the background.
 
-To facilitate this, Akkoma exposes Prometheus metrics to be scrapped.
+To facilitate this, Akkoma exposes Prometheus metrics to be scraped.
 
 ## Prometheus
 
