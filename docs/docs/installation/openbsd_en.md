@@ -21,9 +21,9 @@ Akkoma requires a reverse proxy, OpenBSD has relayd in base (and is used in this
 #### Optional software
 
 Per [`docs/installation/optional/media_graphics_packages.md`](../installation/optional/media_graphics_packages.md):
-  * ImageMagick
-  * FFmpeg
-  * ExifTool
+  * imagemagick
+  * ffmpeg
+  * exiftool
 
 To install the above:
 

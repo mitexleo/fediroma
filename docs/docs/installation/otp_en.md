@@ -36,9 +36,9 @@ Other than things bundled in the OTP release, Akkoma depends on:
 * curl (to download the release build)
 * unzip (needed to unpack release builds)
 * ncurses (ERTS won't run without it)
-* PostgreSQL (also utilizes extensions in postgresql-contrib)
-* NGINX (could be swapped with another reverse proxy, but this guide covers only it)
-* Certbot (for Let's Encrypt certificates, could be swapped with another ACME client, but this guide covers only it)
+* postgresql (also utilizes extensions in postgresql-contrib)
+* nginx (could be swapped with another reverse proxy, but this guide covers only it)
+* certbot (for Let's Encrypt certificates, could be swapped with another ACME client, but this guide covers only it)
 * libmagic/file
 
 === "Alpine"
@@ -56,9 +56,9 @@ Other than things bundled in the OTP release, Akkoma depends on:
 ### Installing optional packages
 
 Per [`docs/installation/optional/media_graphics_packages.md`](optional/media_graphics_packages.md):
-  * ImageMagick
-  * FFmpeg
-  * ExifTool
+  * `imagemagick`
+  * `ffmpeg`
+  * `exiftool`
 
 === "Alpine"
     ```

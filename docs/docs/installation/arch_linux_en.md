@@ -8,7 +8,7 @@ This guide will assume that you have administrative rights, either as root or a 
 
 ### Required packages
 
-* `PostgreSQL`
+* `postgresql`
 * `elixir`
 * `git`
 * `base-devel`
@@ -17,11 +17,11 @@ This guide will assume that you have administrative rights, either as root or a 
 
 #### Optional packages used in this guide
 
-* `NGINX` (preferred, example configs for other reverse proxies can be found in the repo)
-* `Certbot` (or any other ACME client for Let’s Encrypt certificates)
-* `ImageMagick`
-* `FFmpeg`
-* `ExifTool`
+* `nginx` (preferred, example configs for other reverse proxies can be found in the repo)
+* `certbot` (or any other ACME client for Let’s Encrypt certificates)
+* `imagemagic`
+* `ffmpeg`
+* `exiftool`
 
 ### Prepare the system
 
