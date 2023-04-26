@@ -312,11 +312,11 @@ relates to mascots on the Mastodon frontend
 * `mascots`: KeywordList of mascots, each element __MUST__ contain both a `url` and a
   `mime_type` key.
 * `default_mascot`: An element from `mascots` - This will be used as the default mascot
-  on MastoFE (default: `:pleroma_fox_tan`).
+  on Masto-fe (default: `:pleroma_fox_tan`).
 
 ### :manifest
 
-This section describes PWA manifest instance-specific values. Currently, this option relates only to MastoFE.
+This section describes PWA manifest instance-specific values. Currently, this option relates only to Masto-fe.
 
 * `icons`: Describe the icons of the app, this is a list of maps describing icons in the same way as the
   [spec](https://www.w3.org/TR/appmanifest/#imageresource-and-its-members) describes it.

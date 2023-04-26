@@ -104,7 +104,7 @@ Not only does this make it much easier to deploy changes you make, as you can co
 # emerge --ask media-video/ffmpeg media-gfx/imagemagick media-libs/exiftool
 ```
 
-### Install AkkomaBE
+### Install Akkoma-be
 
 * Add a new system user for the Akkoma service and set up default directories:
 
@@ -118,7 +118,7 @@ Optional: If you are using sudo, review your sudo setup to ensure it works for y
 
 **Note**: To execute a single command as the Akkoma system user, use `sudo -Hu akkoma command`. You can also switch to a shell by using `sudo -Hu akkoma $SHELL`. If you don't have or want `sudo` or would like to use the system as the `akkoma` user for instance maintenance tasks, you can simply use `su - akkoma` to switch to the `akkoma` user.
 
-* Git clone the AkkomaBE repository and make the Akkoma user the owner of the directory:
+* Git clone the akkoma-be repository and make the Akkoma user the owner of the directory:
 
 It is highly recommended you use your own fork for the `https://path/to/repo` part below, however if you foolishly decide to forego using your own fork, the primary repo `https://akkoma.dev/AkkomaGang/akkoma.git` will work here.
 

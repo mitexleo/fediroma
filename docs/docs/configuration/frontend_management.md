@@ -34,9 +34,9 @@ If you choose not to install a frontend for whatever reason, it is recommended t
 
 You can also replace the default "no frontend" page by placing an `index.html` file under your `instance/static/` directory.
 
-## Mastodon-FE
+## Masto-fe
 
-Akkoma supports both [glitchsoc](https://github.com/glitch-soc/mastodon)'s more "vanilla" mastodon frontend,
+Akkoma supports both [glitch-soc](https://github.com/glitch-soc/mastodon)'s more "vanilla" mastodon frontend,
 as well as [fedibird](https://github.com/fedibird/mastodon)'s extended frontend which has near-feature-parity with akkoma (with quoting and reactions).
 
 To enable either one, you must run the `frontend.install` task for either `mastodon-fe` or `fedibird-fe` (both `--ref akkoma`), then make sure

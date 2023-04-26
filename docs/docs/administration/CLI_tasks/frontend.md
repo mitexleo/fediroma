@@ -19,7 +19,7 @@ You can give all the options directly on the command line, but missing informati
 Currently, known `<frontend>` values are:
 
 - [admin-fe](https://akkoma.dev/AkkomaGang/admin-fe)
-- [mastodon-fe](https://akkoma.dev/AkkomaGang/masto-fe)
+- [masto-fe](https://akkoma.dev/AkkomaGang/masto-fe)
 - [pleroma-fe](https://akkoma.dev/AkkomaGang/pleroma-fe)
 
 You can still install frontends that are not configured, see below.

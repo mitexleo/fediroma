@@ -38,7 +38,7 @@ sudo apt install elixir erlang-dev erlang-nox
 sudo apt install imagemagick ffmpeg libimage-exiftool-perl
 ```
 
-### Install AkkomaBE
+### Install Akkoma-be
 
 * Add a new system user for the Akkoma service:
 
@@ -48,7 +48,7 @@ sudo useradd -r -s /bin/false -m -d /var/lib/akkoma -U akkoma
 
 **Note**: To execute a single command as the Akkoma system user, use `sudo -Hu akkoma command`. You can also switch to a shell by using `sudo -Hu akkoma $SHELL`. If you don’t have and want `sudo` on your system, you can use `su` as root user (UID 0) for a single command by using `su -l akkoma -s $SHELL -c 'command'` and `su -l akkoma -s $SHELL` for starting a shell.
 
-* Git clone the AkkomaBE repository from stable-branch and make the Akkoma user the owner of the directory:
+* Git clone the akkoma-be repository from stable-branch and make the Akkoma user the owner of the directory:
 
 ```shell
 sudo mkdir -p /opt/akkoma

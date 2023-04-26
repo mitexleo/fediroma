@@ -73,7 +73,7 @@ doas rc-update add postgresql
 doas apk add ffmpeg imagemagick exiftool
 ```
 
-### Install AkkomaBE
+### Install Akkoma-be
 
 * Add a new system user for the Akkoma service:
 
@@ -84,7 +84,7 @@ doas adduser -S -s /bin/false -h /opt/akkoma -H -G akkoma akkoma
 
 **Note**: To execute a single command as the Akkoma system user, use `doas -u akkoma command`. You can also switch to a shell by using `doas -su akkoma`. If you don’t have and want `doas` on your system, you can use `su` as root user (UID 0) for a single command by using `su -l akkoma -s $SHELL -c 'command'` and `su -l akkoma -s $SHELL` for starting a shell.
 
-* Git clone the AkkomaBE repository from stable-branch and make the Akkoma user the owner of the directory:
+* Git clone the akkoma-be repository from stable-branch and make the Akkoma user the owner of the directory:
 
 ```shell
 doas mkdir -p /opt/akkoma
