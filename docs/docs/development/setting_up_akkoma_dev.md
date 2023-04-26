@@ -9,7 +9,7 @@ Akkoma requires some adjustments from the defaults for running the instance loca
     * You can use your own fork of the repository and add Akkoma as a remote `git remote add akkoma 'https://akkoma.dev/AkkomaGang/akkoma.git'`
     * For domain, you can use `localhost`
     * For the DB, you can still choose a dedicated user. The mix tasks sets it up, so it's no extra work for you
-    * instead of creating a `prod.secret.exs`, create `dev.secret.exs`
+    * Instead of creating a `prod.secret.exs`, create `dev.secret.exs`
     * No need to prefix with `MIX_ENV=prod`. We're using dev and that's the default MIX_ENV
     * You can skip NGINX and systemd
     * For front-end, you'll probably want to install and use the develop branch instead of the stable branch. There's no guarantee that the stable branch of the FE will always work on the develop branch of the BE.

@@ -6,11 +6,11 @@ Akkoma's full text search feature is powered by PostgreSQL's native [text search
 
 In most cases, you would need an extension installed to support parsing CJK text. Here are a few extensions you may choose from, or you are more than welcome to share additional ones you found working for you with the rest of Akkoma community.
 
- * [a generic n-gram parser](https://github.com/huangjimmy/pg_cjk_parser) supports Simplified/Traditional Chinese, Japanese, and Korean
- * [a Korean parser](https://github.com/i0seph/textsearch_ko) based on mecab
- * [a Japanese parser](https://www.amris.co.jp/tsja/index.html) based on mecab
- * [zhparser](https://github.com/amutu/zhparser/) is a PostgreSQL extension base on the Simple Chinese Word Segmentation(SCWS)
- * [another Chinese parser](https://github.com/jaiminpan/pg_jieba) based on Jieba Chinese Word Segmentation
+ * [A generic n-gram parser](https://github.com/huangjimmy/pg_cjk_parser) supports Simplified/Traditional Chinese, Japanese, and Korean
+ * [A Korean parser](https://github.com/i0seph/textsearch_ko) based on mecab
+ * [A Japanese parser](https://www.amris.co.jp/tsja/index.html) based on mecab
+ * [Ahparser](https://github.com/amutu/zhparser/) is a PostgreSQL extension base on the Simple Chinese Word Segmentation(SCWS)
+ * [Another Chinese parser](https://github.com/jaiminpan/pg_jieba) based on Jieba Chinese Word Segmentation
 
 Once you have the new search config, make sure you test it with the `pleroma` user in PostgreSQL (change `YOUR.CONFIG` to your real configuration name)
 ```

@@ -116,7 +116,8 @@ Remove `,wheel` if you do not want this user to be able to use `sudo`, however, 
 
 Optional: If you are using sudo, review your sudo setup to ensure it works for you. The `/etc/sudoers` file has a lot of options and examples to help you, and [the Gentoo sudo guide](https://wiki.gentoo.org/wiki/Sudo) has more information. Finishing this installation will be somewhat easier if you have a way to sudo from the `akkoma` user, but it might be best to not allow that user to sudo during normal operation, and as such there will be a reminder at the end of this guide to double check if you would like to lock down the `akkoma` user after initial setup.
 
-**Note**: To execute a single command as the Akkoma system user, use `sudo -Hu akkoma command`. You can also switch to a shell by using `sudo -Hu akkoma $SHELL`. If you don't have or want `sudo` or would like to use the system as the `akkoma` user for instance maintenance tasks, you can simply use `su - akkoma` to switch to the `akkoma` user.
+!!! note
+    To execute a single command as the Akkoma system user, use `sudo -Hu akkoma command`. You can also switch to a shell by using `sudo -Hu akkoma $SHELL`. If you don't have or want `sudo` or would like to use the system as the `akkoma` user for instance maintenance tasks, you can simply use `su - akkoma` to switch to the `akkoma` user.
 
 * Git clone the akkoma-be repository and make the Akkoma user the owner of the directory:
 

@@ -200,6 +200,5 @@ Once you have modified the JSON file, you can load it back into the database.
     mix pleroma.config load_from_file /tmp/mrf_simple.json
     ```
 
-**NOTE** an instance reboot is needed for many changes to take effect,
-you may want to visit `/api/v1/pleroma/admin/restart` on your instance
-to soft-restart the instance.
+!!! note
+    An instance reboot is needed for many changes to take effect, you may want to visit `/api/v1/pleroma/admin/restart` on your instance to soft-restart the instance.

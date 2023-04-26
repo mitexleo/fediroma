@@ -1057,7 +1057,8 @@ meaning that only authenticated users will be able to access the corresponding r
 
 If you'd like to allow unauthenticated access to specific resources, you can turn these settings to `false`.
 
-**Note**: setting `restrict_unauthenticated/timelines/local` to `true` has no practical sense if `restrict_unauthenticated/timelines/federated` is set to `false` (since local public activities will still be delivered to unauthenticated users as part of federated timeline).
+!!! note
+    Setting `restrict_unauthenticated/timelines/local` to `true` has no practical sense if `restrict_unauthenticated/timelines/federated` is set to `false` (since local public activities will still be delivered to unauthenticated users as part of federated timeline).
 
 ## Pleroma.Web.ApiSpec.CastAndValidate
 

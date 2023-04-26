@@ -68,9 +68,9 @@ To check that it started properly and didn't fail right after starting, you can 
 #### httpd
 httpd will have three functions:
 
-  * redirect requests trying to reach the instance over HTTP to the HTTPS URL
-  * serve a robots.txt file
-  * get Let's Encrypt certificates, with acme-client
+  * Redirect requests trying to reach the instance over HTTP to the HTTPS URL
+  * Serve a robots.txt file
+  * Get Let's Encrypt certificates, with acme-client
 
 Insert the following config in `/etc/httpd.conf`:
 ```
@@ -230,11 +230,11 @@ Enter a shell as `_akkoma` (as root `su _akkoma -`) and enter Akkoma's installat
 
 Then follow the main installation guide:
 
-  * run `mix deps.get`
-  * run `MIX_ENV=prod mix pleroma.instance gen` and enter your instance's information when asked
-  * copy `config/generated_config.exs` to `config/prod.secret.exs`. The default values should be sufficient, but you should edit it and check that everything seems OK.
-  * exit your current shell back to a root one and run `psql -U postgres -f /home/_akkoma/akkoma/config/setup_db.psql` to setup the database.
-  * return to a `_akkoma` shell into Akkoma's installation directory (`su _akkoma -;cd ~/akkoma`) and run `MIX_ENV=prod mix ecto.migrate`
+  * Run `mix deps.get`
+  * Run `MIX_ENV=prod mix pleroma.instance gen` and enter your instance's information when asked
+  * Copy `config/generated_config.exs` to `config/prod.secret.exs`. The default values should be sufficient, but you should edit it and check that everything seems OK.
+  * Exit your current shell back to a root one and run `psql -U postgres -f /home/_akkoma/akkoma/config/setup_db.psql` to setup the database.
+  * Return to a `_akkoma` shell into Akkoma's installation directory (`su _akkoma -;cd ~/akkoma`) and run `MIX_ENV=prod mix ecto.migrate`
 
 As `_akkoma` in `/home/_akkoma/akkoma`, you can now run `LC_ALL=en_US.UTF-8 MIX_ENV=prod mix phx.server` to start your instance.
 In another SSH session/tmux window, check that it is working properly by running `ftp -MVo - http://127.0.0.1:4000/api/v1/instance`, you should get JSON output. Double-check that *uri*'s value is your instance's domain name.
