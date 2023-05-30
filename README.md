@@ -45,7 +45,6 @@ If your platform is not supported, or you just want to be able to edit the sourc
 
 - [Alpine Linux](https://docs.akkoma.dev/stable/installation/alpine_linux_en/)
 - [Arch Linux](https://docs.akkoma.dev/stable/installation/arch_linux_en/)
-- [Debian-based](https://docs.akkoma.dev/stable/installation/debian_based_en/)
 - [FreeBSD](https://docs.akkoma.dev/stable/installation/freebsd_en/)
 - [Gentoo Linux](https://docs.akkoma.dev/stable/installation/gentoo_en/)
 - [NetBSD](https://docs.akkoma.dev/stable/installation/netbsd_en/)
