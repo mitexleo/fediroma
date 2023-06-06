@@ -708,6 +708,16 @@ defmodule Pleroma.Web.ApiSpec.AccountOperation do
           nullable: true,
           description:
             "Number of days after which statuses will be deleted. Set to -1 to disable."
+        },
+        accepts_direct_messages_from: %Schema{
+          type: :string,
+          enum: [
+            "everybody",
+            "nobody",
+            "people_i_follow"
+          ],
+          nullable: true,
+          description: "Who to accept DMs from"
         }
       },
       example: %{
@@ -729,7 +739,8 @@ defmodule Pleroma.Web.ApiSpec.AccountOperation do
         also_known_as: ["https://foo.bar/users/foo"],
         discoverable: false,
         actor_type: "Person",
-        status_ttl_days: 30
+        status_ttl_days: 30,
+        accepts_direct_messages_from: "everybody"
       }
     }
   end
@@ -756,7 +767,7 @@ defmodule Pleroma.Web.ApiSpec.AccountOperation do
           "showing_reblogs" => true,
           "followed_by" => true,
           "blocking" => false,
-          "blocked_by" => true,
+          "blocked_by" => false,
           "muting" => false,
           "muting_notifications" => false,
           "note" => "",
@@ -772,7 +783,7 @@ defmodule Pleroma.Web.ApiSpec.AccountOperation do
           "showing_reblogs" => true,
           "followed_by" => true,
           "blocking" => false,
-          "blocked_by" => true,
+          "blocked_by" => false,
           "muting" => true,
           "muting_notifications" => false,
           "note" => "",
