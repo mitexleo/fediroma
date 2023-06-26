@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## Unreleased
+### Added
+- `OnlyMedia` Upload Filter to simplify restricting uploads to audio, image, and video types
+
 ## 2023.05
 
 ## Added
