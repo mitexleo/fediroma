@@ -90,7 +90,7 @@ defmodule Pleroma.Search.Meilisearch do
       hits = result["hits"] |> Enum.map(& &1["ap"])
 
       try do
-        hits
+        fetched = hits
         |> Activity.create_by_object_ap_id()
         |> Activity.with_preloaded_object()
         |> Activity.with_preloaded_object()
@@ -99,8 +99,13 @@ defmodule Pleroma.Search.Meilisearch do
         |> maybe_restrict_author(author)
         |> maybe_restrict_blocked(user)
         |> maybe_fetch(user, query)
-        |> order_by([object: obj], desc: obj.data["published"])
+        # |> order_by([object: obj], desc: obj.data["published"])
         |> Pleroma.Repo.all()
+
+        for hit <- hits do
+          Enum.find(fetched, fn object -> object.data["object"] == hit end)
+        end
+
       rescue
         _ -> maybe_fetch([], user, query)
       end
