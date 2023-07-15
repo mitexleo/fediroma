@@ -475,6 +475,7 @@ defmodule Pleroma.Web.Router do
 
   scope "/api/v1/akkoma", Pleroma.Web.AkkomaAPI do
     pipe_through(:api)
+    get("/protocol-handler", ProtocolHandlerController, :handle)
 
     get(
       "/preferred_frontend/available",
@@ -852,6 +853,7 @@ defmodule Pleroma.Web.Router do
     get("/host-meta", WebFinger.WebFingerController, :host_meta)
     get("/webfinger", WebFinger.WebFingerController, :webfinger)
     get("/nodeinfo", Nodeinfo.NodeinfoController, :schemas)
+    get("/protocol-handler", AkkomaAPI.ProtocolHandlerController, :reroute)
   end
 
   scope "/nodeinfo", Pleroma.Web do
