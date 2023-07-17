@@ -1,0 +1,61 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Web-based Protocol Registration (web+ap://)</title>
+  <meta name="description" content="Register a web-based protocol to open fediverse web+ap:// links">
+  <meta name="author" content="Akkoma">
+
+  <meta property="og:title" content="Web Protocol Registration (web+ap://)">
+  <meta property="og:type" content="website">
+  <meta property="og:description" content="Register a web-based protocol to open fediverse web+ap:// links">
+
+  <link rel="icon" href="/favicon.ico">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <style>
+    body {
+        margin: 5rem;
+    }
+    main {
+        line-height: 1.5em;
+        max-width: 50rem;
+    }
+    code {
+        background-color: #eee;
+        padding: 0.1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Web-based protocol registration</h1>
+    <p>
+        Web-based protocols are a type of URL protocol that your browser can learn how to open.
+    </p>
+    <p>
+        Like <code>mailto:</code> or <code>magnet:</code> links, they are opened by an application of your choice. Unlike <code>mailto:</code> or <code>magnet:</code>, they are not recognized by the browser by default, and need to be registered. <a href="https://developer.mozilla.org/en-US/docs/Web/API/Navigator/registerProtocolHandler/Web-based_protocol_handlers" target="_blank" rel="noreferrer noopener">See MDN for more information</a>.
+    </p>
+    <p>
+        <code>web+ap://</code> links describe an ActivityPub resource address, so that you can open a user profile or a particular post from a remote server, without visiting that server. They will open directly here on your home server instead.
+    </p>
+    <p>
+        For example, the URL <a href="web+ap://seafoam.space/users/m" target="_blank" rel="noreferrer noopener">web+ap://seafoam.space/users/m</a> would open the profile of @m@seafoam.space, as it is shown locally on this server.
+    </p>
+    <noscript>
+        <p>You will not be able to proceed with registration without enabling JavaScript.</p>
+    </noscript>
+    <p>
+        To register this server application to handle web+ap URLs, click below.
+        <br />You will be prompted to approve - check for a dialog up near your browser URL bar.
+        <br /><button id="register">register Akkoma app to handle web+ap links</button>
+    </p>
+  </main>
+
+  <script type="text/javascript" src="/static/web-protocol-register.js"></script>
+</body>
+</html>
