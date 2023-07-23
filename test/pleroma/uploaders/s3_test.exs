@@ -66,7 +66,11 @@ defmodule Pleroma.Uploaders.S3Test do
     end
 
     test "save file", %{file_upload: file_upload} do
-      with_mock ExAws, request: fn _ -> {:ok, :ok} end do
+      with_mock ExAws, request: (fn _ ->
+        assert op.opts[:acl] == :public_read
+        {:ok, :ok}
+      end)
+      do
         assert S3.put_file(file_upload) == {:ok, {:file, "test_folder/image-tet.jpg"}}
       end
     end
@@ -76,6 +80,16 @@ defmodule Pleroma.Uploaders.S3Test do
         assert capture_log(fn ->
                  assert S3.put_file(file_upload) == {:error, "S3 Upload failed"}
                end) =~ "Elixir.Pleroma.Uploaders.S3: {:error, \"S3 Upload failed\"}"
+      end
+    end
+
+    test "respects acl setting", %{file_upload: file_upload} do
+      clear_config([Pleroma.Uploaders.S3, :acl], :private)
+      with_mock ExAws, request: (fn(op) ->
+        assert op.opts[:acl] == :private
+        {:ok, :ok}
+      end) do
+        assert S3.put_file(file_upload) == {:ok, {:file, "test_folder/image-tet.jpg"}}
       end
     end
   end

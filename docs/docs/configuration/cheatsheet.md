@@ -33,7 +33,7 @@ To add configuration to your config file, you can copy it from the base config. 
 * `federation_incoming_replies_max_depth`: Max. depth of reply-to activities fetching on incoming federation, to prevent out-of-memory situations while fetching very long threads. If set to `nil`, threads of any depth will be fetched. Lower this value if you experience out-of-memory crashes.
 * `federation_reachability_timeout_days`: Timeout (in days) of each external federation target being unreachable prior to pausing federating to it.
 * `allow_relay`: Permits remote instances to subscribe to all public posts of your instance. This may increase the visibility of your instance.
-* `public`: Allows unauthenticated access to public resources on your instance. This is essentially used as the default value for `:restrict_unauthenticated`. 
+* `public`: Allows unauthenticated access to public resources on your instance. This is essentially used as the default value for `:restrict_unauthenticated`.
    See `restrict_unauthenticated` for more details.
 * `quarantined_instances`: *DEPRECATED* ActivityPub instances where activities will not be sent. They can still reach there via other means, we just won't send them.
 * `allowed_post_formats`: MIME-type list of formats allowed to be posted (transformed into HTML).
@@ -576,6 +576,7 @@ the source code is here: [kocaptcha](https://github.com/koto-bank/kocaptcha). Th
 
 Don't forget to configure [Ex AWS S3](#ex-aws-s3-settings)
 
+* `acl`: The ACL the uploaded media will have. By default media will be `:public_read`, and thus directly accessible from the bucket. Set this to `:private` if you have a CDN in front of your media proxy which sends authenticated requests to your S3 provider. On some providers, like Backblaze B2, this needs to match bucket settings!
 * `bucket`: S3 bucket name.
 * `bucket_namespace`: S3 bucket namespace.
 * `truncated_namespace`: If you use S3 compatible service such as Digital Ocean Spaces or CDN, set folder name or "" etc.

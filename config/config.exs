@@ -70,6 +70,7 @@ config :pleroma, Pleroma.Upload,
 config :pleroma, Pleroma.Uploaders.Local, uploads: "uploads"
 
 config :pleroma, Pleroma.Uploaders.S3,
+  acl: :public_read,
   bucket: nil,
   bucket_namespace: nil,
   truncated_namespace: nil,
