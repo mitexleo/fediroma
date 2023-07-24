@@ -8,6 +8,7 @@ defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerController do
   import Pleroma.Web.ControllerHelper, only: [json_response: 3]
 
   alias Pleroma.Activity
+  alias Pleroma.Search.DatabaseSearch
   alias Pleroma.User
   alias Pleroma.Web.Plugs.OAuthScopesPlug
 
@@ -38,23 +39,21 @@ defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerController do
 
   # Should webfinger handles even be accepted? They are not ActivityPub URLs
   defp find_and_redirect(conn, "@" <> identifier) do
-    redirect_to_target(User.get_or_fetch(identifier), conn)
-      || conn |> json_response(:not_found, "Not Found - @#{identifier}")
+    with {:error, _err} <- User.get_or_fetch(identifier) do
+      conn |> json_response(:not_found, "Not Found - @#{identifier}")
+    else
+      {:ok, %User{} = found_user} -> conn |> redirect(to: "/users/#{found_user.id}")
+    end
   end
 
   defp find_and_redirect(%{assigns: %{user: user}} = conn, identifier) do
-    redirect_to_target(User.get_or_fetch("https://" <> identifier), conn)
-      || redirect_to_target(Activity.search(user, "https://" <> identifier, [limit: 1]), conn)
-      || conn |> json_response(:not_found, "Not Found - #{identifier}")
-  end
+    with {:error, _err} <- User.get_or_fetch("https://" <> identifier),
+        [] <- DatabaseSearch.maybe_fetch([], user, "https://" <> identifier) do
+      conn |> json_response(:not_found, "Not Found - #{identifier}")
+    else
+      {:ok, %User{} = found_user} -> conn |> redirect(to: "/users/#{found_user.id}")
 
-  defp redirect_to_target({:error, _err}, _conn), do: nil
-  defp redirect_to_target({:ok, found}, conn) do
-    conn |> redirect(to: "/users/#{found.id}")
-  end
-
-  defp redirect_to_target([], _conn), do: nil
-  defp redirect_to_target([%Activity{} = activity], conn) do
-    conn |> redirect(to: "/notice/#{activity.id}")
+      [%Activity{} = found_activity] -> conn |> redirect(to: "/notice/#{found_activity.id}")
+    end
   end
 end
