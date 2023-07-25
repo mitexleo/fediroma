@@ -69,7 +69,7 @@ defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerControllerTest do
     test "should return redirect for unauthed user when target is local AP ID for user" do
       clear_config([Pleroma.Web.Endpoint, :url, :host], "sub.example.com")
       %{conn: conn} = oauth_access([])
-      remote_user = insert(:user, %{nickname: "akkoma@sub.example.com", local: true, ap_id: "https://sub.example.com/users/akkoma"})
+      local_user = insert(:user, %{nickname: "akkoma@sub.example.com", local: true, ap_id: "https://sub.example.com/users/akkoma"})
 
       resp =
         conn
@@ -77,7 +77,7 @@ defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerControllerTest do
         |> html_response(302)
 
       assert resp =~ "You are being"
-      assert resp =~ "<a href=\"/users/#{remote_user.id}\">"
+      assert resp =~ "<a href=\"/users/#{local_user.id}\">"
     end
 
     test "should return redirect for unauthed user when target is local AP ID for note activity" do
