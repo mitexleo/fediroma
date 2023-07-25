@@ -1,0 +1,12 @@
+body {
+    margin: 5rem;
+}
+main {
+    line-height: 1.5em;
+    margin: auto;
+    max-width: 50rem;
+}
+code {
+    background-color: #eee;
+    padding: 0.1rem;
+}
