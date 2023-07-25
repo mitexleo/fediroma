@@ -21,6 +21,7 @@ defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerController do
   def reroute(conn, %{"target" => target_param}) do
     conn |> redirect(to: "/api/v1/akkoma/protocol-handler?#{URI.encode_query([target: target_param])}")
   end
+  def reroute(conn, _), do: conn |> json_response(:bad_request, "Missing `target` parameter")
 
   def handle(%{assigns: %{user: user}} = conn, %{"target" => "web+ap://" <> identifier}) when is_nil(user) do
     # Unauthenticated, only local records should be searched
