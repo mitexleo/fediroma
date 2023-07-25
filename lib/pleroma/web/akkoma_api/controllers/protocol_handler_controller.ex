@@ -1,5 +1,5 @@
-# Pleroma: A lightweight social networking server
-# Copyright © 2017-2021 Pleroma Authors <https://pleroma.social/>
+# Akkoma: The cooler fediverse server
+# Copyright © 2022- Akkoma Authors <https://akkoma.dev/>
 # SPDX-License-Identifier: AGPL-3.0-only
 
 defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerController do
