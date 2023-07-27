@@ -23,15 +23,15 @@ defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerController do
   end
   def reroute(conn, _), do: conn |> json_response(:bad_request, "Missing `target` parameter")
 
-  def handle(%{assigns: %{user: user}} = conn, %{"target" => "web+ap://" <> identifier}) when is_nil(user) do
+  def handle(%{assigns: %{user: user}} = conn, %{"target" => "web+ap:" <> identifier}) when is_nil(user) do
     # Unauthenticated, only local records should be searched
     cond do
-      String.starts_with?(identifier, Pleroma.Config.get([Pleroma.Web.Endpoint, :url, :host])) -> find_and_redirect(conn, identifier)
+      URI.parse(identifier).host == Pleroma.Config.get([Pleroma.Web.Endpoint, :url, :host]) -> find_and_redirect(conn, identifier)
       true -> conn |> json_response(:forbidden, "Invalid credentials.")
     end
   end
 
-  def handle(%{assigns: %{user: user}} = conn, %{"target" => "web+ap://" <> identifier}) when not is_nil(user) do
+  def handle(%{assigns: %{user: user}} = conn, %{"target" => "web+ap:" <> identifier}) when not is_nil(user) do
     # Authenticated User
     find_and_redirect(conn, identifier)
   end
@@ -40,9 +40,9 @@ defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerController do
 
   defp find_and_redirect(%{assigns: %{user: user}} = conn, identifier) do
     # Remove userinfo if present (username:password@)
-    cleaned = String.replace(identifier, ~r/^[^\/]*?@/, "")
-    with {:error, _err} <- User.get_or_fetch("https://" <> cleaned),
-        [] <- DatabaseSearch.maybe_fetch([], user, "https://" <> cleaned) do
+    cleaned = URI.parse("https:" <> identifier) |> Map.merge(%{ userinfo: nil }) |> URI.to_string()
+    with {:error, _err} <- User.get_or_fetch( cleaned),
+        [] <- DatabaseSearch.maybe_fetch([], user, cleaned) do
       conn |> json_response(:not_found, "Not Found - #{cleaned}")
     else
       {:ok, %User{} = found_user} -> conn |> redirect(to: "/users/#{found_user.id}")
