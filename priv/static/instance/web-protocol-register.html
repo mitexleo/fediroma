@@ -5,13 +5,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Web-based Protocol Registration (web+ap://)</title>
-  <meta name="description" content="Register a web-based protocol to open fediverse web+ap:// links">
+  <title>Fedi Link Handler Registration (web+ap://)</title>
+  <meta name="description" content="Register a web-based protocol to open fediverse links (web+ap://)">
   <meta name="author" content="Akkoma">
 
-  <meta property="og:title" content="Web Protocol Registration (web+ap://)">
+  <meta property="og:title" content="Fedi Link Handler Registration (web+ap://)">
   <meta property="og:type" content="website">
-  <meta property="og:description" content="Register a web-based protocol to open fediverse web+ap:// links">
+  <meta property="og:description" content="Register a web-based protocol to open fediverse links (web+ap://)">
 
   <link rel="icon" href="/favicon.ico">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -21,26 +21,28 @@
 
 <body>
   <main>
-    <h1>Web-based protocol registration</h1>
+    <h1>Fedi Links handler registration</h1>
     <p>
-        Web-based protocols are a type of URL protocol that your browser can learn how to open.
+        Fedi Links (<code>web+ap://</code>) describe an ActivityPub resource address, so that you can open a user profile or a particular post from a remote server, but without visiting that server. They will open directly here on your home server instead.
     </p>
     <p>
-        Like <code>mailto:</code> or <code>magnet:</code> links, they are opened by an application of your choice. Unlike <code>mailto:</code> or <code>magnet:</code>, they are not recognized by the browser by default, and need to be registered. <a href="https://developer.mozilla.org/en-US/docs/Web/API/Navigator/registerProtocolHandler/Web-based_protocol_handlers" target="_blank" rel="noreferrer noopener">See MDN for more information</a>.
+        For example, the URL <a href="web+ap://seafoam.space/users/m" target="_blank" rel="noreferrer noopener">web+ap://seafoam.space/users/m</a> would open the profile of @m@seafoam.space, as it is represented locally on this server, without needing to copy, paste, or search.
     </p>
     <p>
-        <code>web+ap://</code> links describe an ActivityPub resource address, so that you can open a user profile or a particular post from a remote server, without visiting that server. They will open directly here on your home server instead.
+        Fedi Links use web-based protocols &#8212; a type of URL protocol that your browser can learn how to open. Like <code>mailto:</code> or <code>magnet:</code> links, they are opened by an application of your choice. However, they are not recognized by the browser by default, and need to be registered. <a href="https://developer.mozilla.org/en-US/docs/Web/API/Navigator/registerProtocolHandler/Web-based_protocol_handlers" target="_blank" rel="noreferrer noopener">See MDN for more information</a>.
     </p>
     <p>
-        For example, the URL <a href="web+ap://seafoam.space/users/m" target="_blank" rel="noreferrer noopener">web+ap://seafoam.space/users/m</a> would open the profile of @m@seafoam.space, as it is shown locally on this server.
+    <mark>Support for Fedi Links is currently <a href="https://caniuse.com/registerprotocolhandler" target="_blank" rel="noreferrer noopener">limited to desktop browsers</a> Firefox, Chrome, Edge, and Opera. Please reach out to the developer of your favorite fedi native app to ask them to implement them!</mark>
     </p>
     <noscript>
-        <p>You will not be able to proceed with registration without enabling JavaScript.</p>
+        <section class="no-js">You will not be able to proceed with registration without enabling JavaScript.</section>
     </noscript>
     <p>
-        To register this server application to handle web+ap URLs, click below.
+        To register this server application to handle web+ap Fedi Link URLs, click the button below.
         <br />You will be prompted to approve - check for a dialog up near your browser URL bar.
-        <br /><button id="register">register Akkoma app to handle web+ap links</button>
+    </p>
+    <p>
+        <button id="register">Register Akkoma to handle fedi links</button>
     </p>
   </main>
 

@@ -1,10 +1,18 @@
 body {
-    margin: 5rem;
+    line-height: 1.2em;
+    margin: 1rem;
 }
 main {
     line-height: 1.5em;
     margin: auto;
     max-width: 50rem;
+}
+mark {
+    background-color: #ffff80;
+}
+section.no-js {
+    border: 2px solid red;
+    padding: 0.25rem;
 }
 code {
     background-color: #eee;
