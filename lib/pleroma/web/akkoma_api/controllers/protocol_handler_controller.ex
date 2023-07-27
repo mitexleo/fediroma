@@ -38,19 +38,12 @@ defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerController do
 
   def handle(conn, _), do: conn |> json_response(:bad_request, "Could not handle protocol URL")
 
-  # Should webfinger handles even be accepted? They are not ActivityPub URLs
-  defp find_and_redirect(conn, "@" <> identifier) do
-    with {:error, _err} <- User.get_or_fetch(identifier) do
-      conn |> json_response(:not_found, "Not Found - @#{identifier}")
-    else
-      {:ok, %User{} = found_user} -> conn |> redirect(to: "/users/#{found_user.id}")
-    end
-  end
-
   defp find_and_redirect(%{assigns: %{user: user}} = conn, identifier) do
-    with {:error, _err} <- User.get_or_fetch("https://" <> identifier),
-        [] <- DatabaseSearch.maybe_fetch([], user, "https://" <> identifier) do
-      conn |> json_response(:not_found, "Not Found - #{identifier}")
+    # Remove userinfo if present (username:password@)
+    cleaned = String.replace(identifier, ~r/^[^\/]*?@/, "")
+    with {:error, _err} <- User.get_or_fetch("https://" <> cleaned),
+        [] <- DatabaseSearch.maybe_fetch([], user, "https://" <> cleaned) do
+      conn |> json_response(:not_found, "Not Found - #{cleaned}")
     else
       {:ok, %User{} = found_user} -> conn |> redirect(to: "/users/#{found_user.id}")
 

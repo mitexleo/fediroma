@@ -42,18 +42,6 @@ defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerControllerTest do
       assert resp =~ "Could not handle protocol URL"
     end
 
-    test "should return forbidden for unauthed user when target is webfinger handle" do
-      clear_config([Pleroma.Web.Endpoint, :url, :host], "sub.example.com")
-      %{conn: conn} = oauth_access([])
-
-      resp =
-        conn
-        |> get("/api/v1/akkoma/protocol-handler?target=web%2Bap%3A%2F%2F%40akkoma%40ihatebeinga.live")
-        |> json_response(403)
-
-      assert resp =~ "Invalid credentials."
-    end
-
     test "should return forbidden for unauthed user when target is remote" do
       clear_config([Pleroma.Web.Endpoint, :url, :host], "sub.example.com")
       %{conn: conn} = oauth_access([])
@@ -118,19 +106,6 @@ defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerControllerTest do
       assert resp =~ "<a href=\"/notice/#{activity.id}\">"
     end
 
-    test "should return redirect for authed user when target is webfinger handle" do
-      %{conn: conn} = oauth_access(["read:search"])
-      remote_user = insert(:user, %{nickname: "akkoma@ihatebeinga.live", local: false})
-
-      resp =
-        conn
-        |> get("/api/v1/akkoma/protocol-handler?target=web%2Bap%3A%2F%2F%40akkoma%40ihatebeinga.live")
-        |> html_response(302)
-
-      assert resp =~ "You are being"
-      assert resp =~ "<a href=\"/users/#{remote_user.id}\">"
-    end
-
     test "should return redirect for authed user when target is AP ID for user" do
       %{conn: conn} = oauth_access(["read:search"])
       remote_user = insert(:user, %{nickname: "akkoma@ihatebeinga.live", local: false, ap_id: "https://ihatebeinga.live/users/akkoma"})
@@ -138,6 +113,19 @@ defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerControllerTest do
       resp =
         conn
         |> get("/api/v1/akkoma/protocol-handler?target=web%2Bap%3A%2F%2Fihatebeinga.live/users/akkoma")
+        |> html_response(302)
+
+      assert resp =~ "You are being"
+      assert resp =~ "<a href=\"/users/#{remote_user.id}\">"
+    end
+
+    test "should return redirect for authed user when target is AP ID for user, stripping userinfo" do
+      %{conn: conn} = oauth_access(["read:search"])
+      remote_user = insert(:user, %{nickname: "akkoma@ihatebeinga.live", local: false, ap_id: "https://ihatebeinga.live/users/akkoma"})
+
+      resp =
+        conn
+        |> get("/api/v1/akkoma/protocol-handler?target=web%2Bap%3A%2F%2Fusername%3Apassword%40ihatebeinga.live/users/akkoma")
         |> html_response(302)
 
       assert resp =~ "You are being"
