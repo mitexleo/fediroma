@@ -6,6 +6,38 @@ defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerControllerTest do
 
   import Pleroma.Factory
 
+  setup do
+    Tesla.Mock.mock(fn
+      %{method: :get, url: "https://mastodon.social/users/emelie/statuses/101849165031453009"} ->
+        %Tesla.Env{
+          status: 200,
+          headers: [{"content-type", "application/activity+json"}],
+          body: File.read!("test/fixtures/tesla_mock/status.emelie.json")
+        }
+      %{method: :get, url: "https://mastodon.social/users/emelie"} ->
+        %Tesla.Env{
+          status: 200,
+          headers: [{"content-type", "application/activity+json"}],
+          body: File.read!("test/fixtures/tesla_mock/emelie.json")
+        }
+      %{method: :get, url: "https://mastodon.social/@emelie"} ->
+        %Tesla.Env{
+          status: 200,
+          headers: [{"content-type", "application/activity+json"}],
+          body: File.read!("test/fixtures/tesla_mock/emelie.json")
+        }
+      %{method: :get, url: "https://mastodon.social/users/emelie/collections/featured"} ->
+        %Tesla.Env{
+          status: 200,
+          headers: [{"content-type", "application/activity+json"}],
+          body:
+            File.read!("test/fixtures/users_mock/masto_featured.json")
+            |> String.replace("{{domain}}", "mastodon.social")
+            |> String.replace("{{nickname}}", "emelie")
+        }
+    end)
+  end
+
   describe "GET /.well-known/protocol-handler" do
     test "should return bad_request when missing `target`" do
       %{conn: conn} = oauth_access([])
@@ -70,29 +102,7 @@ defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerControllerTest do
 
     test "should return redirect for unauthed user when target is local AP ID for note activity" do
       clear_config([Pleroma.Web.Endpoint, :url, :host], "mastodon.social")
-      Tesla.Mock.mock(fn
-        %{method: :get, url: "https://mastodon.social/users/emelie/statuses/101849165031453009"} ->
-          %Tesla.Env{
-            status: 200,
-            headers: [{"content-type", "application/activity+json"}],
-            body: File.read!("test/fixtures/tesla_mock/status.emelie.json")
-          }
-        %{method: :get, url: "https://mastodon.social/users/emelie"} ->
-          %Tesla.Env{
-            status: 200,
-            headers: [{"content-type", "application/activity+json"}],
-            body: File.read!("test/fixtures/tesla_mock/emelie.json")
-          }
-        %{method: :get, url: "https://mastodon.social/users/emelie/collections/featured"} ->
-          %Tesla.Env{
-            status: 200,
-            headers: [{"content-type", "application/activity+json"}],
-            body:
-              File.read!("test/fixtures/users_mock/masto_featured.json")
-              |> String.replace("{{domain}}", "mastodon.social")
-              |> String.replace("{{nickname}}", "emelie")
-          }
-      end)
+
       clear_config([Pleroma.Web.Endpoint, :url, :host], "sub.example.com")
       %{conn: conn} = oauth_access(["read:search"])
 
@@ -119,6 +129,24 @@ defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerControllerTest do
       assert resp =~ "<a href=\"/users/#{remote_user.id}\">"
     end
 
+    test "should return redirect for authed user when target is URL for user" do
+      %{conn: conn} = oauth_access(["read:search"])
+      remote_user = insert(:user, %{
+        nickname: "emelie@mastodon.social",
+        local: false,
+        ap_id: "https://mastodon.social/users/emelie",
+        uri: "https://mastodon.social/@emelie",
+      })
+
+      resp =
+        conn
+        |> get("/api/v1/akkoma/protocol-handler?target=web%2Bap%3A%2F%2Fmastodon.social/%40emelie")
+        |> html_response(302)
+
+      assert resp =~ "You are being"
+      assert resp =~ "<a href=\"/users/#{remote_user.id}\">"
+    end
+
     test "should return redirect for authed user when target is AP ID for user, stripping userinfo" do
       %{conn: conn} = oauth_access(["read:search"])
       remote_user = insert(:user, %{nickname: "akkoma@ihatebeinga.live", local: false, ap_id: "https://ihatebeinga.live/users/akkoma"})
@@ -133,29 +161,6 @@ defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerControllerTest do
     end
 
     test "should return redirect for authed user when target is AP ID for note activity" do
-      Tesla.Mock.mock(fn
-        %{method: :get, url: "https://mastodon.social/users/emelie/statuses/101849165031453009"} ->
-          %Tesla.Env{
-            status: 200,
-            headers: [{"content-type", "application/activity+json"}],
-            body: File.read!("test/fixtures/tesla_mock/status.emelie.json")
-          }
-        %{method: :get, url: "https://mastodon.social/users/emelie"} ->
-          %Tesla.Env{
-            status: 200,
-            headers: [{"content-type", "application/activity+json"}],
-            body: File.read!("test/fixtures/tesla_mock/emelie.json")
-          }
-        %{method: :get, url: "https://mastodon.social/users/emelie/collections/featured"} ->
-          %Tesla.Env{
-            status: 200,
-            headers: [{"content-type", "application/activity+json"}],
-            body:
-              File.read!("test/fixtures/users_mock/masto_featured.json")
-              |> String.replace("{{domain}}", "mastodon.social")
-              |> String.replace("{{nickname}}", "emelie")
-          }
-      end)
       %{conn: conn} = oauth_access(["read:search"])
 
       resp =

@@ -41,13 +41,24 @@ defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerController do
   defp find_and_redirect(%{assigns: %{user: user}} = conn, identifier) do
     # Remove userinfo if present (username:password@)
     cleaned = URI.parse("https:" <> identifier) |> Map.merge(%{ userinfo: nil }) |> URI.to_string()
-    with {:error, _err} <- User.get_or_fetch( cleaned),
-        [] <- DatabaseSearch.maybe_fetch([], user, cleaned) do
+    with {:error, _err} <- User.get_or_fetch(cleaned),
+        [] <- DatabaseSearch.maybe_fetch([], user, cleaned),
+        [] <- exact_search(cleaned, user) do
       conn |> json_response(:not_found, "Not Found - #{cleaned}")
     else
       {:ok, %User{} = found_user} -> conn |> redirect(to: "/users/#{found_user.id}")
 
+      [%User{} = found_user] -> conn |> redirect(to: "/users/#{found_user.id}")
+
       [%Activity{} = found_activity] -> conn |> redirect(to: "/notice/#{found_activity.id}")
+    end
+  end
+
+  defp exact_search(identifier, user) do
+    case User.search(identifier, limit: 1, for_user: user) do
+      [%User{:ap_id => ^identifier} = found_user] -> [found_user]
+      [%User{:uri => ^identifier} = found_user] -> [found_user]
+      _ -> []
     end
   end
 end
