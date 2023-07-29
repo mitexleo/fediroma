@@ -3,6 +3,11 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerController do
+  @moduledoc """
+  Handles web-based protocol requests, in particular web+ap: which reference ActivityPub URIs.
+  see https://datatracker.ietf.org/doc/draft-soni-protocol-handler-well-known-uri/
+  A web+ap: URI should be handled like an https: URI, redirecting to the local representation of the remote or local object.
+  """
   use Pleroma.Web, :controller
 
   import Pleroma.Web.ControllerHelper, only: [json_response: 3]
@@ -17,7 +22,6 @@ defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerController do
   # Note: (requires read:search)
   plug(OAuthScopesPlug, %{scopes: ["read:search"], fallback: :proceed_unauthenticated} when action in @oauth_search_actions)
 
-  # Protocol definition: https://datatracker.ietf.org/doc/draft-soni-protocol-handler-well-known-uri/
   def reroute(conn, %{"target" => target_param}) do
     conn |> redirect(to: "/api/v1/akkoma/protocol-handler?#{URI.encode_query([target: target_param])}")
   end
@@ -38,12 +42,13 @@ defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerController do
 
   def handle(conn, _), do: conn |> json_response(:bad_request, "Could not handle protocol URL")
 
+  @spec find_and_redirect(Plug.Conn.t(), String.t()) :: Plug.Conn.t()
   defp find_and_redirect(%{assigns: %{user: user}} = conn, identifier) do
     # Remove userinfo if present (username:password@)
     cleaned = URI.parse("https:" <> identifier) |> Map.merge(%{ userinfo: nil }) |> URI.to_string()
     with {:error, _err} <- User.get_or_fetch(cleaned),
         [] <- DatabaseSearch.maybe_fetch([], user, cleaned),
-        [] <- exact_search(cleaned, user) do
+        [] <- exact_user_search(cleaned, user) do
       conn |> json_response(:not_found, "Not Found - #{cleaned}")
     else
       {:ok, %User{} = found_user} -> conn |> redirect(to: "/users/#{found_user.id}")
@@ -54,7 +59,7 @@ defmodule Pleroma.Web.AkkomaAPI.ProtocolHandlerController do
     end
   end
 
-  defp exact_search(identifier, user) do
+  defp exact_user_search(identifier, user) do
     case User.search(identifier, limit: 1, for_user: user) do
       [%User{:ap_id => ^identifier} = found_user] -> [found_user]
       [%User{:uri => ^identifier} = found_user] -> [found_user]
