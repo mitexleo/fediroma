@@ -123,7 +123,7 @@ defmodule Pleroma.Mixfile do
       {:ecto_enum, "~> 1.4"},
       {:ecto_sql, "~> 3.10.0"},
       {:postgrex, "~> 0.17.2"},
-      {:oban, "~> 2.12.1"},
+      {:oban, "~> 2.15.2"},
       {:gettext, "~> 0.20.0"},
       {:bcrypt_elixir, "~> 2.2"},
       {:fast_sanitize, "~> 0.2.3"},

@@ -96,4 +96,4 @@ pipeline:
     - mix ecto.drop -f -q
     - mix ecto.create
     - mix ecto.migrate
-    - mix test --preload-modules --exclude erratic --exclude federated --max-cases 4
+    - mix test --preload-modules --exclude erratic --exclude federated --max-cases 1

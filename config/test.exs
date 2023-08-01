@@ -82,9 +82,7 @@ config :web_push_encryption, :vapid_details,
   private_key: "_-XZ0iebPrRfZ_o0-IatTdszYa8VCH1yLN-JauK7HHA"
 
 config :pleroma, Oban,
-  queues: false,
-  crontab: false,
-  plugins: false
+  testing: :manual
 
 config :pleroma, Pleroma.ScheduledActivity,
   daily_user_limit: 2,

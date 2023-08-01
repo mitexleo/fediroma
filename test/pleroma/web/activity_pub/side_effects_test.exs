@@ -512,10 +512,11 @@ defmodule Pleroma.Web.ActivityPub.SideEffectsTest do
     test "enqueues the poll end", %{activity: activity, meta: meta} do
       {:ok, activity, meta} = SideEffects.handle(activity, meta)
 
+      {:ok, time, _} = DateTime.from_iso8601(meta[:object_data]["closed"])
       assert_enqueued(
         worker: Pleroma.Workers.PollWorker,
         args: %{op: "poll_end", activity_id: activity.id},
-        scheduled_at: NaiveDateTime.from_iso8601!(meta[:object_data]["closed"])
+        scheduled_at: time
       )
     end
   end
