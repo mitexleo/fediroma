@@ -1,8 +1,8 @@
-<%= if Phoenix.Flash.get(@flash, :info) do %>
-  <p class="alert alert-info" role="alert"><%= Phoenix.Flash.get(@flash, :info) %></p>
+<%= if get_flash(@conn, :info) do %>
+  <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
 <% end %>
-<%= if Phoenix.Flash.get(@flash, :error) do %>
-  <p class="alert alert-danger" role="alert"><%= Phoenix.Flash.get(@flash, :error) %></p>
+<%= if get_flash(@conn, :error) do %>
+  <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
 <% end %>
 
 <h2><%= Gettext.dpgettext("static_pages", "oauth register page title", "Registration Details") %></h2>

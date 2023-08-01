@@ -428,13 +428,13 @@ defmodule Pleroma.ConfigDBTest do
 
     test "common keyword" do
       assert ConfigDB.to_elixir_types([
-               %{"tuple" => [":level", ":warning"]},
+               %{"tuple" => [":level", ":warn"]},
                %{"tuple" => [":meta", [":all"]]},
                %{"tuple" => [":path", ""]},
                %{"tuple" => [":val", nil]},
                %{"tuple" => [":webhook_url", "https://hooks.slack.com/services/YOUR-KEY-HERE"]}
              ]) == [
-               level: :warning,
+               level: :warn,
                meta: [:all],
                path: "",
                val: nil,

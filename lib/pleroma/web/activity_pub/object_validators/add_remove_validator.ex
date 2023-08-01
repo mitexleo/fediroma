@@ -4,7 +4,7 @@
 
 defmodule Pleroma.Web.ActivityPub.ObjectValidators.AddRemoveValidator do
   use Ecto.Schema
-  require Pleroma.Web.ActivityPub.Transmogrifier
+
   import Ecto.Changeset
   import Pleroma.Web.ActivityPub.ObjectValidators.CommonValidations
 

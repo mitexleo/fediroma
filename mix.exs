@@ -7,7 +7,7 @@ defmodule Pleroma.Mixfile do
       version: version("3.9.3"),
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: Mix.compilers(),
+      compilers: [:phoenix] ++ Mix.compilers(),
       elixirc_options: [warnings_as_errors: warnings_as_errors()],
       xref: [exclude: [:eldap]],
       start_permanent: Mix.env() == :prod,
@@ -114,8 +114,7 @@ defmodule Pleroma.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.7.7"},
-      {:phoenix_view, "~> 2.0"},
+      {:phoenix, "~> 1.6.15"},
       {:tzdata, "~> 1.1.1"},
       {:plug_cowboy, "~> 2.6"},
       {:phoenix_pubsub, "~> 2.1"},
@@ -124,7 +123,7 @@ defmodule Pleroma.Mixfile do
       {:ecto_enum, "~> 1.4"},
       {:ecto_sql, "~> 3.10.0"},
       {:postgrex, "~> 0.17.2"},
-      {:oban, "~> 2.15.2"},
+      {:oban, "~> 2.12.1"},
       {:gettext, "~> 0.20.0"},
       {:bcrypt_elixir, "~> 2.2"},
       {:fast_sanitize, "~> 0.2.3"},
@@ -136,7 +135,7 @@ defmodule Pleroma.Mixfile do
       {:castore, "~> 0.1"},
       {:cowlib, "~> 2.9"},
       {:finch, "~> 0.16.0"},
-      {:jason, "~> 1.4.1"},
+      {:jason, "~> 1.2"},
       {:trailing_format_plug, "~> 0.0.7"},
       {:mogrify, "~> 0.9.1"},
       {:ex_aws, "~> 2.1.6"},

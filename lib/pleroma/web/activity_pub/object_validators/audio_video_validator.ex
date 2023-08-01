@@ -7,7 +7,6 @@ defmodule Pleroma.Web.ActivityPub.ObjectValidators.AudioVideoValidator do
 
   alias Pleroma.Web.ActivityPub.ObjectValidators.CommonFixes
   alias Pleroma.Web.ActivityPub.ObjectValidators.CommonValidations
-  require Pleroma.Web.ActivityPub.Transmogrifier
   alias Pleroma.Web.ActivityPub.Transmogrifier
 
   import Ecto.Changeset

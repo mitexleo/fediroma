@@ -9,7 +9,6 @@ defmodule Pleroma.Web.ActivityPub.ObjectValidators.ArticleNotePageValidator do
   alias Pleroma.Web.CommonAPI.Utils
   alias Pleroma.Web.ActivityPub.ObjectValidators.CommonFixes
   alias Pleroma.Web.ActivityPub.ObjectValidators.CommonValidations
-  require Pleroma.Web.ActivityPub.Transmogrifier
   alias Pleroma.Web.ActivityPub.Transmogrifier
 
   import Ecto.Changeset

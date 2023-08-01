@@ -225,8 +225,6 @@ defmodule Pleroma.Upload do
     uploader = Config.get([Pleroma.Upload, :uploader])
     upload_base_url = Config.get([Pleroma.Upload, :base_url])
     public_endpoint = Config.get([uploader, :public_endpoint])
-    IO.inspect(uploader)
-    IO.inspect(Pleroma.Web.Endpoint.url())
 
     case uploader do
       Pleroma.Uploaders.Local ->
