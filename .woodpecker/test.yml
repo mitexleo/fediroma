@@ -1,3 +1,8 @@
+matrix:
+  ELIXIR_VERSION:
+    - 1.14
+    - 1.15
+
 platform: linux/amd64
 
 variables:
@@ -55,14 +60,14 @@ services:
 pipeline:
   lint:
     <<: *on-pr-open
-    image: akkoma/ci-base:1.14
+    image: akkoma/ci-base:1.15
     commands:
     - mix local.hex --force
     - mix local.rebar --force
     - mix format --check-formatted
 
   build:
-    image: akkoma/ci-base:1.14
+    image: akkoma/ci-base:${ELIXIR_VERSION}
     <<: *on-pr-open
     environment:
       MIX_ENV: test
@@ -77,7 +82,7 @@ pipeline:
       - mix compile
 
   test:
-    image: akkoma/ci-base:1.14
+    image: akkoma/ci-base:${ELIXIR_VERSION}
     <<: *on-pr-open
     environment:
       MIX_ENV: test
