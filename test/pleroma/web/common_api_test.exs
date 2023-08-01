@@ -51,6 +51,7 @@ defmodule Pleroma.Web.CommonAPITest do
       assert object.data["oneOf"] |> length() == 2
 
       {:ok, time, _} = DateTime.from_iso8601(object.data["closed"])
+
       assert_enqueued(
         worker: PollWorker,
         args: %{op: "poll_end", activity_id: activity.id},
