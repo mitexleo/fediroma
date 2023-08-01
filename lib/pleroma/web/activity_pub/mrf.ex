@@ -70,6 +70,8 @@ defmodule Pleroma.Web.ActivityPub.MRF do
   end
 
   def filter_one(policy, message) do
+    Code.ensure_loaded!(policy)
+
     should_plug_history? =
       if function_exported?(policy, :history_awareness, 0) do
         policy.history_awareness()
