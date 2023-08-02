@@ -108,4 +108,9 @@ pipeline:
     - mix ecto.drop -f -q
     - mix ecto.create
     - mix ecto.migrate
-    - /bin/sh -c 'for i in $(seq 1 10); do; echo "PARTITION $i" && MIX_TEST_PARTITION=$i mix test --preload-modules --exclude erratic --exclude federated --partitions 10; done;'
+    - |
+      for i in $(seq 1 10)
+      do
+        echo "PARTITION $i"
+        MIX_TEST_PARTITION=$i mix test --preload-modules --exclude erratic --exclude federated --partitions 10
+      done
