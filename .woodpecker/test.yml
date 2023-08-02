@@ -63,7 +63,7 @@ services:
       event:
         - pull_request
     environment:
-      POSTGRES_DB: pleroma_test
+      POSTGRES_DB: pleroma_test_${ELIXIR_VERSION}_${OTP_VERSION}
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
 
@@ -77,11 +77,11 @@ pipeline:
     - mix format --check-formatted
 
   build:
-    image: akkoma/ci-base:${ELIXIR_VERSION}-${OTP_VERSION}
+    image: akkoma/ci-base:${ELIXIR_VERSION}-otp${OTP_VERSION}
     <<: *on-pr-open
     environment:
       MIX_ENV: test
-      POSTGRES_DB: pleroma_test
+      POSTGRES_DB: pleroma_test_${ELIXIR_VERSION}_${OTP_VERSION}
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       DB_HOST: postgres
@@ -92,11 +92,11 @@ pipeline:
       - mix compile
 
   test:
-    image: akkoma/ci-base:${ELIXIR_VERSION}-${OTP_VERSION}
+    image: akkoma/ci-base:${ELIXIR_VERSION}-otp${OTP_VERSION}
     <<: *on-pr-open
     environment:
       MIX_ENV: test
-      POSTGRES_DB: pleroma_test
+      POSTGRES_DB: pleroma_test_${ELIXIR_VERSION}_${OTP_VERSION}
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       DB_HOST: postgres
