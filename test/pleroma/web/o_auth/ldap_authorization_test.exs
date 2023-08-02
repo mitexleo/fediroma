@@ -50,7 +50,7 @@ defmodule Pleroma.Web.OAuth.LDAPAuthorizationTest do
       token = Repo.get_by(Token, token: token)
 
       assert token.user_id == user.id
-      assert_received :close_connection
+      assert_receive :close_connection
     end
   end
 
@@ -94,7 +94,7 @@ defmodule Pleroma.Web.OAuth.LDAPAuthorizationTest do
       token = Repo.get_by(Token, token: token) |> Repo.preload(:user)
 
       assert token.user.nickname == user.nickname
-      assert_received :close_connection
+      assert_receive :close_connection
     end
   end
 
@@ -129,7 +129,7 @@ defmodule Pleroma.Web.OAuth.LDAPAuthorizationTest do
         })
 
       assert %{"error" => "Invalid credentials"} = json_response(conn, 400)
-      assert_received :close_connection
+      assert_receive :close_connection
     end
   end
 end

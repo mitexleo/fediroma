@@ -49,7 +49,7 @@ defmodule Pleroma.Web.FederatorTest do
         ObanHelpers.perform(all_enqueued(worker: PublisherWorker))
       end
 
-      assert_received :relay_publish
+      assert_receive :relay_publish
     end
 
     test "with relays deactivated, it does not publish to the relay", %{
