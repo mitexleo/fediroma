@@ -4,6 +4,16 @@ matrix:
   ELIXIR_VERSION:
     - 1.14
     - 1.15
+  OTP_VERSION:
+    - 25
+    - 26
+  include:
+    - ELIXIR_VERSION: 1.14
+      OTP_VERSION: 25
+    - ELIXIR_VERSION: 1.15
+      OTP_VERSION: 25
+    - ELIXIR_VERSION: 1.15
+      OTP_VERSION: 26
 
 variables:
   - &scw-secrets
