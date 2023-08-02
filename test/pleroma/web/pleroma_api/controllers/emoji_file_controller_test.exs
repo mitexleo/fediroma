@@ -16,7 +16,7 @@ defmodule Pleroma.Web.PleromaAPI.EmojiFileControllerTest do
   setup do: clear_config([:instance, :public], true)
 
   setup do
-    File.mkdir_p! @emoji_path
+    File.mkdir_p!(@emoji_path)
     admin = insert(:user, is_admin: true)
     token = insert(:oauth_admin_token, user: admin)
 
