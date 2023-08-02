@@ -8,12 +8,12 @@ matrix:
     - 25
     - 26
   include:
-    #- ELIXIR_VERSION: 1.14
-    #  OTP_VERSION: 25
+    - ELIXIR_VERSION: 1.14
+      OTP_VERSION: 25
     - ELIXIR_VERSION: 1.15
       OTP_VERSION: 25
-    #- ELIXIR_VERSION: 1.15
-    #  OTP_VERSION: 26
+    - ELIXIR_VERSION: 1.15
+      OTP_VERSION: 26
 
 variables:
   - &scw-secrets
@@ -108,4 +108,4 @@ pipeline:
     - mix ecto.drop -f -q
     - mix ecto.create
     - mix ecto.migrate
-    - mix test --preload-modules --exclude erratic --exclude federated --max-cases 1
+    - for i in $(seq 1 10); do; echo "PARTITION $i" && MIX_TEST_PARTITION=$i mix test --preload-modules --exclude erratic --exclude federated --partitions 10; done;
