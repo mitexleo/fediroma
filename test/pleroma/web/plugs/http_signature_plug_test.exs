@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 defmodule Pleroma.Web.Plugs.HTTPSignaturePlugTest do
-  use Pleroma.Web.ConnCase, async: false
+  use Pleroma.Web.ConnCase
   import Pleroma.Factory
   alias Pleroma.Web.Plugs.HTTPSignaturePlug
   alias Pleroma.Instances.Instance

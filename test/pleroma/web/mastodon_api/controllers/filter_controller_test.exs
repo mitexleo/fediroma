@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 defmodule Pleroma.Web.MastodonAPI.FilterControllerTest do
-  use Pleroma.Web.ConnCase, async: false
+  use Pleroma.Web.ConnCase
   use Oban.Testing, repo: Pleroma.Repo
 
   import Mock
