@@ -72,12 +72,12 @@ Please note that running your own OTP release has some minor caveats that you sh
 
 Other than things bundled in the OTP release, Akkoma depends on:
 
-* curl (to download the release build)
-* ncurses (ERTS won't run without it)
-* postgresql (also utilizes extensions in postgresql-contrib)
-* nginx (could be swapped with another reverse proxy, but this guide covers only it)
-* certbot (for Let's Encrypt certificates, could be swapped with another ACME client, but this guide covers only it)
-* libmagic/file
+* `curl` (to download the release build)
+* `ncurses` (ERTS won't run without it)
+* `postgresql` (also utilizes extensions in `postgresql-contrib`)
+* `nginx` (could be swapped with another reverse proxy, but this guide covers only it)
+* `certbot` (for Let's Encrypt certificates, could be swapped with another ACME client, but this guide covers only it)
+* `libmagic`/`file`
 
 First, update your system, if not already done:
 
@@ -260,7 +260,7 @@ There are some things to take note of when you are running your own OTP builds.
 
 Using your custom OTP build, you will not be able to update the installation using the `pleroma_ctl update` command. Running this command would overwrite your install with an OTP release from the main Akkoma repository, which will break your install.
 
-Instead, you will have to rebuild your OTP release every time there are updates, then manually move it to where your Akkoma installation is running, overwriting the old OTP release files. Make sure to stop the Akkoma-BE server before overwriting any files!
+Instead, you will have to rebuild your OTP release every time there are updates, then manually move it to where your Akkoma installation is running, overwriting the old OTP release files. Make sure to stop the Akkoma-be server before overwriting any files!
 
 After that, run the `pleroma_ctl migrate` command as usual to perform database migrations.
 

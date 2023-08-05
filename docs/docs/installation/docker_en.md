@@ -2,17 +2,17 @@
 
 ## Installation
 
-This guide will show you how to get Akkoma working in a docker container,
+This guide will show you how to get Akkoma working in a Docker container,
 if you want isolation, or if you run a distribution not supported by the OTP
 releases.
 
-If you want to migrate from or OTP to docker, check out [the migration guide](./migrating_to_docker_en.md).
+If you want to migrate from or OTP to Docker, check out [the migration guide](./migrating_to_docker_en.md).
 
 ### Prepare the system
 
-* Install docker and docker compose
+* Install Docker and Docker Compose
   * [Docker](https://docs.docker.com/engine/install/)
-  * [Docker-compose](https://docs.docker.com/compose/install/)
+  * [Docker Compose](https://docs.docker.com/compose/install/)
   * This will usually just be a repository installation and a package manager invocation.
 * Clone the Akkoma repository
   * `git clone https://akkoma.dev/AkkomaGang/akkoma.git -b stable`
@@ -26,7 +26,7 @@ echo "DOCKER_USER=$(id -u):$(id -g)" >> .env
 ```
 
 This probably won't need to be changed, it's only there to set basic environment
-variables for the docker compose file.
+variables for the Docker Compose file.
 
 ### Building the container
 
@@ -39,7 +39,7 @@ and debugging if required.
 ```
 
 This will generate a container called `akkoma` which we can use
-in our compose environment.
+in our Compose environment.
 
 ### Generating your instance
 
@@ -89,7 +89,7 @@ docker compose up
 
 If everything went well, you should be able to access your instance at http://localhost:4000
 
-You can `ctrl-c` out of the docker compose now to shutdown the server.
+You can `ctrl-c` out of the Docker Compose now to shutdown the server.
 
 ### Running in the background
 
@@ -109,7 +109,7 @@ And follow the prompts
 
 ### Reverse proxies
 
-This is a tad more complex in docker than on the host itself. It
+This is a tad more complex in Docker than on the host itself. It
 
 You've got two options.
 
@@ -125,7 +125,7 @@ cp docker-resources/Caddyfile.example docker-resources/Caddyfile
 
 Then edit the TLD in your caddyfile to the domain you're serving on.
 
-Uncomment the `caddy` section in the docker compose file,
+Uncomment the `caddy` section in the Docker Compose file,
 then run `docker compose up -d` again.
 
 #### Running a reverse proxy on the host

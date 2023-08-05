@@ -19,7 +19,7 @@ This guide will assume that you have administrative rights, either as root or a 
 
 * `nginx` (preferred, example configs for other reverse proxies can be found in the repo)
 * `certbot` (or any other ACME client for Let’s Encrypt certificates)
-* `imagemagic`
+* `imagemagick`
 * `ffmpeg`
 * `exiftool`
 

@@ -94,7 +94,7 @@ sudo apt install imagemagick ffmpeg libimage-exiftool-perl
 
 ### Install Akkoma-be
 
-* Log into the `akkoma` user and clone the AkkomaBE repository from the stable branch and make the Akkoma user the owner of the directory:
+* Log into the `akkoma` user and clone the Akkoma-be repository from the stable branch and make the Akkoma user the owner of the directory:
 
 ```shell
 sudo mkdir -p /opt/akkoma

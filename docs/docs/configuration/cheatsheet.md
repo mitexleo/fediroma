@@ -35,7 +35,7 @@ To add configuration to your config file, you can copy it from the base config. 
 * `allow_relay`: Permits remote instances to subscribe to all public posts of your instance. This may increase the visibility of your instance.
 * `public`: Allows unauthenticated access to public resources on your instance. This is essentially used as the default value for `:restrict_unauthenticated`.
    See `restrict_unauthenticated` for more details.
-* `quarantined_instances`: *DEPRECATED* ActivityPub instances where activities will not be sent. They can still reach there via other means; we just won't send them.
+* `quarantined_instances`: *DEPRECATED* ActivityPub instances where activities will not be sent. They can still reach them via other means; we just won't send them.
 * `allowed_post_formats`: MIME-type list of formats allowed to be posted (transformed into HTML).
 * `extended_nickname_format`: Set to `true` to use extended local nicknames format (allows underscores/dashes). This will break federation with older software for these nicknames.
 * `max_pinned_statuses`: The maximum number of pinned statuses. `0` will disable the feature.
@@ -79,7 +79,7 @@ To add configuration to your config file, you can copy it from the base config. 
   * `enabled`: Enables to send a welcome email to a newly registered user. Defaults to `false`.
   * `sender`: The email address or tuple with `{nickname, email}` that will use as sender to the welcome email.
   * `subject`: A subject of welcome email.
-  * `html`: A HTML that will be sent to a newly registered users as an email.
+  * `html`: HTML that will be sent to a newly registered users as an email.
   * `text`: A text that will be sent to a newly registered users as an email.
 
     Example:
@@ -360,7 +360,7 @@ This section describes PWA manifest instance-specific values. Currently, this op
 * `whitelist`: List of hosts with scheme to bypass the media proxy (e.g. `https://example.com`)
 * `invalidation`: options for remove media from cache after delete object:
   * `enabled`: Enables purge cache
-  * `provider`: Which one of the [purge cache strategy](#purge-cache-strategy) to use.
+  * `provider`: Which one of the [purge cache strategies](#purge-cache-strategy) to use.
 
 ## :media_preview_proxy
 
@@ -374,7 +374,7 @@ This section describes PWA manifest instance-specific values. Currently, this op
 
 #### Pleroma.Web.MediaProxy.Invalidation.Script
 
-This strategy allows to perform external shell script to purge cache.
+This strategy allows performing an external shell script to purge cache.
 URLs of attachments are passed to the script as arguments.
 
 * `script_path`: Path to the external script.
@@ -389,7 +389,7 @@ config :pleroma, Pleroma.Web.MediaProxy.Invalidation.Script,
 
 #### Pleroma.Web.MediaProxy.Invalidation.Http
 
-This strategy allows to perform custom HTTP request to purge cache.
+This strategy allows performing a custom HTTP request to purge cache.
 
 * `method`: HTTP method. Default is `purge`
 * `headers`: HTTP headers.
@@ -425,7 +425,7 @@ config :pleroma, Pleroma.Web.MediaProxy.Invalidation.Http,
 !!! note
     `Phoenix` endpoint configuration, all configuration options can be viewed [here](https://hexdocs.pm/phoenix/Phoenix.Endpoint.html#module-dynamic-configuration), only common options are listed here.
 
-* `http` - a list containing HTTP protocol configuration, all configuration options can be viewed [here](https://hexdocs.pm/plug_cowboy/Plug.Cowboy.html#module-options), only common options are listed here. For deployment using docker, you need to set this to `[ip: {0,0,0,0}, port: 4000]` to make Akkoma accessible from other containers (such as your NGINX server).
+* `http` - a list containing HTTP protocol configuration, all configuration options can be viewed [here](https://hexdocs.pm/plug_cowboy/Plug.Cowboy.html#module-options), only common options are listed here. For deployment using Docker, you need to set this to `[ip: {0,0,0,0}, port: 4000]` to make Akkoma accessible from other containers (such as your NGINX server).
   - `ip` - a tuple consisting of 4 integers
   - `port`
 * `url` - a list containing the configuration for generating URLs, accepts
