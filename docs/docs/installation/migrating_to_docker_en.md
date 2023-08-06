@@ -28,6 +28,11 @@ git clone https://akkoma.dev/AkkomaGang/akkoma.git -b stable
 cd akkoma
 ```
 
+Copy `docker-compose.yml` over to the root directory
+```bash
+cp docker-resources/docker-compose.yml docker-compose.yml
+```
+
 ### Back up your old database
 
 Change the database name as needed

@@ -28,6 +28,11 @@ echo "DOCKER_USER=$(id -u):$(id -g)" >> .env
 This probably won't need to be changed, it's only there to set basic environment
 variables for the docker compose file.
 
+Next, copy over the `docker-compose.yml` file to the main directory:
+```bash
+cp docker-resources/docker-compose.yml docker-compose.yml
+```
+
 ### Building the container
 
 The container provided is a thin wrapper around akkoma's dependencies, 
