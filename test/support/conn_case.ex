@@ -33,6 +33,7 @@ defmodule Pleroma.Web.ConnCase do
 
       # The default endpoint for testing
       @endpoint Pleroma.Web.Endpoint
+      use Pleroma.Web, :verified_routes
 
       # Sets up OAuth access with specified scopes
       defp oauth_access(scopes, opts \\ []) do
