@@ -88,5 +88,6 @@ pipeline:
       - mix ecto.drop -f -q
       - mix ecto.create
       - mix ecto.migrate
+      - mkdir -p test/tmp
       - mix test --preload-modules --exclude erratic --exclude federated --exclude mocked
       - mix test --preload-modules --only mocked
