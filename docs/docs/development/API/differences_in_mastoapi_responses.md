@@ -384,3 +384,9 @@ Akkoma is generally compatible with the Mastodon 2.7.2 API, but some newer featu
 *Added in Mastodon 3.0.0*
 
 - `GET /api/v1/featured_tags`: Returns HTTP 404
+
+### Preferences
+
+*Added in Mastodon 2.8.0*
+
+- `GET /api/v1/preferences`: Returns HTTP 404
