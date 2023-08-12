@@ -68,6 +68,18 @@ services:
       POSTGRES_PASSWORD: postgres
 
 pipeline:
+  lint:
+    image: akkoma/ci-base:1.15-otp26
+    <<: *on-pr-open
+    environment:
+      MIX_ENV: test
+    commands:
+      - mix local.hex --force
+      - mix local.rebar --force
+      - mix deps.get
+      - mix compile
+      - mix format --check-formatted
+
   build:
     image: akkoma/ci-base:${ELIXIR_VERSION}-otp${OTP_VERSION}
     <<: *on-pr-open
@@ -82,7 +94,6 @@ pipeline:
       - mix local.rebar --force
       - mix deps.get
       - mix compile
-      - mix format --check-formatted
 
   test:
     image: akkoma/ci-base:${ELIXIR_VERSION}-otp${OTP_VERSION}
