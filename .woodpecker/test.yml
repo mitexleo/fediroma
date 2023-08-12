@@ -1,5 +1,8 @@
 platform: linux/amd64
 
+depends_on:
+  - lint
+
 matrix:
   ELIXIR_VERSION:
     - 1.14
