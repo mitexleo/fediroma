@@ -9,7 +9,7 @@
       <%= Gettext.dpgettext("static_pages", "mfa auth page title", "Two-factor authentication") %>
   </div>
   <div class="panel-content">
-      <%= form_for @conn, Routes.mfa_verify_path(@conn, :verify), [as: "mfa"], fn f -> %>
+      <%= form_for @conn, ~p"/oauth/mfa/verify", [as: "mfa"], fn f -> %>
       <div class="input">
         <%= label f, :code, Gettext.dpgettext("static_pages", "mfa auth code prompt", "Authentication code") %>
         <%= text_input f, :code, [autocomplete: "one-time-code", autocorrect: "off", autocapitalize: "off", autofocus: true, pattern: "[0-9]*", spellcheck: false] %>
@@ -21,7 +21,7 @@
 
       <%= submit Gettext.dpgettext("static_pages", "mfa auth verify code button", "Verify") %>
       <% end %>
-      <a href="<%= Routes.mfa_path(@conn, :show, %{challenge_type: "recovery", mfa_token: @mfa_token, state: @state, redirect_uri: @redirect_uri}) %>">
+      <a href="<%= ~p"/oauth/mfa?#{[%{challenge_type: "recovery", mfa_token: @mfa_token, state: @state, redirect_uri: @redirect_uri}]}" %>">
         <%= Gettext.dpgettext("static_pages", "mfa auth page use recovery code link", "Enter a two-factor recovery code") %>
       </a>
   </div>

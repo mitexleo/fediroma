@@ -8,7 +8,7 @@
 <h2><%= Gettext.dpgettext("static_pages", "oauth register page title", "Registration Details") %></h2>
 
 <p><%= Gettext.dpgettext("static_pages", "oauth register page fill form prompt", "If you'd like to register a new account, please provide the details below.") %></p>
-<%= form_for @conn, Routes.o_auth_path(@conn, :register), [as: "authorization"], fn f -> %>
+<%= form_for @conn, ~p"/oauth/register", [as: "authorization"], fn f -> %>
 
 <div class="input">
   <%= label f, :nickname, Gettext.dpgettext("static_pages", "oauth register page nickname prompt", "Nickname") %>
