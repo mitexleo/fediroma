@@ -54,12 +54,7 @@ defmodule Pleroma.Web.MastodonAPI.AuthController do
   defp redirect_to_oauth_form(conn, _params) do
     with {:ok, app} <- local_mastofe_app() do
       path =
-        Routes.o_auth_path(conn, :authorize,
-          response_type: "code",
-          client_id: app.client_id,
-          redirect_uri: ".",
-          scope: Enum.join(app.scopes, " ")
-        )
+        ~p[/oauth/authorize?#{[response_type: "code", client_id: app.client_id, redirect_uri: ".", scope: Enum.join(app.scopes, " ")]}]
 
       redirect(conn, to: path)
     end

@@ -57,7 +57,7 @@ defmodule Pleroma.Web.OAuth.OAuthControllerTest do
 
       assert response = html_response(conn, 200)
       assert response =~ "Sign in with Twitter"
-      assert response =~ o_auth_path(conn, :prepare_request)
+      assert response =~ ~p"/prepare_request"
     end
 
     test "GET /oauth/prepare_request encodes parameters as `state` and redirects", %{

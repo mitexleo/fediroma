@@ -27,7 +27,6 @@ defmodule Pleroma.Web.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       use Pleroma.Tests.Helpers
-      import Pleroma.Web.Router.Helpers
 
       alias Pleroma.Config
 

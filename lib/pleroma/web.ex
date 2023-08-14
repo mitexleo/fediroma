@@ -38,8 +38,6 @@ defmodule Pleroma.Web do
       import Pleroma.Web.Gettext
       import Pleroma.Web.TranslationHelpers
 
-      alias Pleroma.Web.Router.Helpers, as: Routes
-
       unquote(verified_routes())
 
       plug(:set_put_layout)
@@ -224,7 +222,7 @@ defmodule Pleroma.Web do
 
   def router do
     quote do
-      use Phoenix.Router
+      use Phoenix.Router, helpers: false
 
       import Plug.Conn
       import Phoenix.Controller
@@ -252,7 +250,6 @@ defmodule Pleroma.Web do
 
       import Pleroma.Web.ErrorHelpers
       import Pleroma.Web.Gettext
-      alias Pleroma.Web.Router.Helpers, as: Routes
       unquote(verified_routes())
     end
   end
@@ -265,6 +262,12 @@ defmodule Pleroma.Web do
         endpoint: Pleroma.Web.Endpoint,
         router: Pleroma.Web.Router,
         statics: Pleroma.Web.static_paths()
+    end
+  end
+
+  def mailer do
+    quote do
+      unquote(verified_routes())
     end
   end
 
