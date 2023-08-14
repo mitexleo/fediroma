@@ -453,10 +453,6 @@ config :pleroma, :media_preview_proxy,
   image_quality: 85,
   min_content_length: 100 * 1024
 
-config :pleroma, :shout,
-  enabled: true,
-  limit: 5_000
-
 config :phoenix, :format_encoders, json: Jason, "activity+json": Jason
 
 config :phoenix, :json_library, Jason
@@ -796,6 +792,13 @@ config :pleroma, :web_cache_ttl,
 config :pleroma, :modules, runtime_dir: "instance/modules"
 
 config :pleroma, configurable_from_database: false
+# Don't allow arbitrary module config here, you can only
+# adjust our own config.
+config :pleroma,
+  database_config_whitelist: [
+    {:pleroma},
+    {:logger}
+  ]
 
 config :pleroma, Pleroma.Repo,
   parameters: [gin_fuzzy_search_limit: "500"],

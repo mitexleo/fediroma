@@ -9,6 +9,14 @@ defmodule Pleroma.Web.AdminAPI.ConfigController do
   alias Pleroma.ConfigDB
   alias Pleroma.Web.Plugs.OAuthScopesPlug
 
+  @banned_in_db [
+    # this would make no sense if you could change it in the db
+    {:pleroma, :database_config_whitelist},
+    # called with System.cmd
+    {:pleroma, Pleroma.Web.MediaProxy.Invalidation.Script},
+    {:pleroma, :argos_translate}
+  ]
+
   plug(Pleroma.Web.ApiSpec.CastAndValidate)
   plug(OAuthScopesPlug, %{scopes: ["admin:write"]} when action == :update)
 
@@ -175,17 +183,18 @@ defmodule Pleroma.Web.AdminAPI.ConfigController do
   end
 
   defp whitelisted_config?(group, key) do
-    if whitelisted_configs = Config.get(:database_config_whitelist) do
-      Enum.any?(whitelisted_configs, fn
+    whitelisted =
+      :database_config_whitelist
+      |> Config.get([{:pleroma}])
+      |> Enum.any?(fn
         {whitelisted_group} ->
           group == inspect(whitelisted_group)
 
         {whitelisted_group, whitelisted_key} ->
           group == inspect(whitelisted_group) && key == inspect(whitelisted_key)
       end)
-    else
-      true
-    end
+
+    whitelisted && !disallowed_config?(group, key)
   end
 
   defp whitelisted_config?(%{group: group, key: key}) do
@@ -194,5 +203,15 @@ defmodule Pleroma.Web.AdminAPI.ConfigController do
 
   defp whitelisted_config?(%{group: group} = config) do
     whitelisted_config?(group, config[:key])
+  end
+
+  defp disallowed_config?(group, key) do
+    Enum.any?(@banned_in_db, fn
+      {disallowed_group} ->
+        group == inspect(disallowed_group)
+
+      {disallowed_group, disallowed_key} ->
+        group == inspect(disallowed_group) && key == inspect(disallowed_key)
+    end)
   end
 end

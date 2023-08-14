@@ -375,6 +375,11 @@ This section describe PWA manifest instance-specific values. Currently this opti
 
 #### Pleroma.Web.MediaProxy.Invalidation.Script
 
+!!! warning
+    Invalidation script options cannot be set in the database due to the ability to
+    set the command options to arbitrary paths. The following options **MUST** be
+    set in your `.exs` file instead.
+
 This strategy allow perform external shell script to purge cache.
 Urls of attachments are passed to the script as arguments.
 
@@ -1147,6 +1152,11 @@ Translations are available at `/api/v1/statuses/:id/translations/:language`, whe
 - `:api_key` - API key for LibreTranslate
 
 ### `:argos_translate`
+
+!!! warning
+    Argos Translate options cannot be set in the database due to the ability to
+    set the command options to arbitrary paths. The following options **MUST** be
+    set in your `.exs` file instead.
 
 - `:command_argos_translate` - command for `argos-translate`. Can be the command if it's in your PATH, or the full path to the file  (default: `argos-translate`).
 - `:command_argospm` - command for `argospm`. Can be the command if it's in your PATH, or the full path to the file (default: `argospm`).
