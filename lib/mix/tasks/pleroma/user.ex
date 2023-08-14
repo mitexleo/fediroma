@@ -300,7 +300,7 @@ defmodule Mix.Tasks.Pleroma.User do
          {:ok, invite} <- UserInviteToken.create_invite(options) do
       shell_info("Generated user invite token " <> String.replace(invite.invite_type, "_", " "))
 
-      url = ~p[/registration/#{invite.token}]
+      url = url(~p[/registration/#{invite.token}])
       IO.puts(url)
     else
       error ->

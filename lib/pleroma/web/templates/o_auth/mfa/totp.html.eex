@@ -21,7 +21,7 @@
 
       <%= submit Gettext.dpgettext("static_pages", "mfa auth verify code button", "Verify") %>
       <% end %>
-      <a href="<%= ~p"/oauth/mfa?#{[%{challenge_type: "recovery", mfa_token: @mfa_token, state: @state, redirect_uri: @redirect_uri}]}" %>">
+      <a href="<%= ~p"/oauth/mfa?#{[challenge_type: "recovery", mfa_token: @mfa_token, state: @state, redirect_uri: @redirect_uri]}" %>">
         <%= Gettext.dpgettext("static_pages", "mfa auth page use recovery code link", "Enter a two-factor recovery code") %>
       </a>
   </div>

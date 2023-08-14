@@ -33,10 +33,10 @@ defmodule Pleroma.Web.Plugs.HTTPSignaturePlug do
   end
 
   def route_aliases(%{path_info: ["objects", id], query_string: query_string}) do
-    ap_id = ~p[/objects/#{id}]
+    ap_id = url(~p[/objects/#{id}])
 
     with %Activity{} = activity <- Activity.get_by_object_ap_id_with_object(ap_id) do
-      ["/notice/#{activity.id}", "/notice/#{activity.id}?#{query_string}"]
+      [~p"/notice/#{activity.id}", "/notice/#{activity.id}?#{query_string}"]
     else
       _ -> []
     end

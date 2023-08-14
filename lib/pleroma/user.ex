@@ -2449,7 +2449,7 @@ defmodule Pleroma.User do
           end
 
         if is_url(raw_value) do
-          frontend_url = ~p[/#{nickname}]
+          frontend_url = url(~p[/#{nickname}])
 
           possible_urls = [ap_id, frontend_url]
 

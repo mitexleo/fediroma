@@ -110,7 +110,7 @@ defmodule Pleroma.Web.StaticFE.StaticFEController do
   end
 
   def show(%{assigns: %{object_id: _}} = conn, _params) do
-    url = conn.url <> conn.request_path
+    url = unverified_url(conn, conn.request_path)
 
     case Activity.get_create_by_object_ap_id_with_object(url) do
       %Activity{} = activity ->
@@ -123,7 +123,7 @@ defmodule Pleroma.Web.StaticFE.StaticFEController do
   end
 
   def show(%{assigns: %{activity_id: _}} = conn, _params) do
-    url = conn.url <> conn.request_path
+    url = unverified_url(conn, conn.request_path)
 
     case Activity.get_by_ap_id(url) do
       %Activity{} = activity ->
