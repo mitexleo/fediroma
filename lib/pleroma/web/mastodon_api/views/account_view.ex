@@ -190,6 +190,17 @@ defmodule Pleroma.Web.MastodonAPI.AccountView do
 
   def render("instance.json", _), do: nil
 
+  def render("preferences.json", %{user: user} = _opts) do
+    # TODO: Do we expose more settings that make sense to plug in here?
+    %{
+      "posting:default:visibility": user.default_scope,
+      "posting:default:sensitive": false,
+      "posting:default:language": nil,
+      "reading:expand:media": "default",
+      "reading:expand:spoilers": false
+    }
+  end
+
   defp do_render("show.json", %{user: user} = opts) do
     user = User.sanitize_html(user, User.html_filter_policy(opts[:for]))
     display_name = user.name || user.nickname
