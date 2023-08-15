@@ -48,7 +48,6 @@ defmodule Pleroma.Application do
     # due to protocol consolidation warnings
     Code.compiler_options(warnings_as_errors: false)
     Config.Holder.save_default()
-    Pleroma.HTML.compile_scrubbers()
     Pleroma.Config.Oban.warn()
     Config.DeprecationWarnings.warn()
     Pleroma.Web.Plugs.HTTPSecurityPlug.warn_if_disabled()

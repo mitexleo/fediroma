@@ -39,6 +39,8 @@ defmodule Mix.Pleroma do
 
     Enum.each(@apps, &Application.ensure_all_started/1)
 
+    Pleroma.Application.load_all_pleroma_modules()
+
     oban_config = [
       crontab: [],
       repo: Pleroma.Repo,

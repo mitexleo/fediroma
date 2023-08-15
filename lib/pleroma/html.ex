@@ -8,20 +8,6 @@ defmodule Pleroma.HTML do
 
   @cachex Pleroma.Config.get([:cachex, :provider], Cachex)
 
-  def compile_scrubbers do
-    dir = Path.join(:code.priv_dir(:pleroma), "scrubbers")
-
-    dir
-    |> Pleroma.Utils.compile_dir()
-    |> case do
-      {:error, _errors, _warnings} ->
-        raise "Compiling scrubbers failed"
-
-      {:ok, _modules, _warnings} ->
-        :ok
-    end
-  end
-
   defp get_scrubbers(scrubber) when is_atom(scrubber), do: [scrubber]
   defp get_scrubbers(scrubbers) when is_list(scrubbers), do: scrubbers
   defp get_scrubbers(_), do: [Pleroma.HTML.Scrubber.Default]
