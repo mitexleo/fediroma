@@ -1,4 +1,6 @@
 defmodule Pleroma.Config.ConfigurableFromDatabase do
+  alias Pleroma.Config
+
   # Basically it's silly to let this be configurable
   # set a list of things that we can set in the database
   # this is mostly our stuff, with some extra in there
@@ -9,6 +11,7 @@ defmodule Pleroma.Config.ConfigurableFromDatabase do
     {:pleroma, Pleroma.Upload},
     {:pleroma, Pleroma.Uploaders.Local},
     {:pleroma, Pleroma.Uploaders.S3},
+    {:pleroma, :auth},
     {:pleroma, :emoji},
     {:pleroma, :http},
     {:pleroma, :instance},
@@ -70,9 +73,34 @@ defmodule Pleroma.Config.ConfigurableFromDatabase do
     {:pleroma, Pleroma.Search.Elasticsearch.Cluster},
     {:pleroma, :translator},
     {:pleroma, :deepl},
-    {:pleroma, :libre_translate}
+    {:pleroma, :libre_translate},
     # But not argostranslate, because executables!
+    {:pleroma, Pleroma.Upload.Filter.AnonymizeFilename},
+    {:pleroma, Pleroma.Upload.Filter.Mogrify},
+    {:pleroma, Pleroma.Workers.PurgeExpiredActivity},
+    {:pleroma, :rate_limit}
   ]
 
   def allowed_groups, do: @allowed_groups
+
+  def enabled, do: Config.get(:configurable_from_database)
+
+  def whitelisted_config?(group, key) do
+    allowed_groups()
+    |> Enum.any?(fn
+      {whitelisted_group} ->
+        group == inspect(whitelisted_group)
+
+      {whitelisted_group, whitelisted_key} ->
+        group == inspect(whitelisted_group) && key == inspect(whitelisted_key)
+    end)
+  end
+
+  def whitelisted_config?(%{group: group, key: key}) do
+    whitelisted_config?(group, key)
+  end
+
+  def whitelisted_config?(%{group: group} = config) do
+    whitelisted_config?(group, config[:key])
+  end
 end

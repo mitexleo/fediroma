@@ -10,6 +10,7 @@ defmodule Mix.Tasks.Pleroma.Config do
 
   alias Pleroma.ConfigDB
   alias Pleroma.Repo
+  alias Pleroma.Config.ConfigurableFromDatabase
 
   @shortdoc "Manages the location of the config"
   @moduledoc File.read!("docs/docs/administration/CLI_tasks/config.md")
@@ -242,6 +243,28 @@ defmodule Mix.Tasks.Pleroma.Config do
     else
       _ -> shell_error("No settings in ConfigDB for #{inspect(group)}. Aborting.")
     end
+  end
+
+  # Primarily a developer tool to check nothing was missed from
+  # db configwhitelist
+  def run(["check-allowed"]) do
+    start_pleroma()
+    Pleroma.Docs.JSON.compile()
+    raw = Pleroma.Docs.JSON.compiled_descriptions()
+    whitelisted = Enum.filter(raw, &ConfigurableFromDatabase.whitelisted_config?/1)
+    raw_map = MapSet.new(raw)
+    whitelisted_map = MapSet.new(whitelisted)
+    IO.puts("Config keys defined in description.exs but not listed as explicitly allowed in the db")
+    IO.puts("  Please check that standard admins should not need to touch the listed settings whilst the server is live.")
+    IO.puts("  !! Please remember that admins are not neccesarily sysadmins nor are they immune to oauth/password leakage.")
+    IO.puts("-------------")
+
+    MapSet.difference(raw_map, whitelisted_map)
+    |> Enum.each(fn map ->
+      IO.puts("#{map[:group]}, #{map[:key]} (#{map[:label]})")
+      IO.puts(map[:db_exclusion_reason] || "No exclusion reason set")
+      IO.puts("++")
+    end)
   end
 
   @spec migrate_to_db(Path.t() | nil) :: any()

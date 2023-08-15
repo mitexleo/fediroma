@@ -8,6 +8,7 @@ defmodule Pleroma.Web.AdminAPI.ConfigController do
   alias Pleroma.Config
   alias Pleroma.ConfigDB
   alias Pleroma.Web.Plugs.OAuthScopesPlug
+  alias Pleroma.Config.ConfigurableFromDatabase
 
   plug(Pleroma.Web.ApiSpec.CastAndValidate)
   plug(OAuthScopesPlug, %{scopes: ["admin:write"]} when action == :update)
@@ -71,7 +72,11 @@ defmodule Pleroma.Web.AdminAPI.ConfigController do
   end
 
   def descriptions(conn, _params) do
-    descriptions = Enum.filter(Pleroma.Docs.JSON.compiled_descriptions(), &whitelisted_config?/1)
+    descriptions =
+      Enum.filter(
+        Pleroma.Docs.JSON.compiled_descriptions(),
+        &ConfigurableFromDatabase.whitelisted_config?/1
+      )
 
     json(conn, translate_descriptions(descriptions))
   end
@@ -132,7 +137,7 @@ defmodule Pleroma.Web.AdminAPI.ConfigController do
     with :ok <- configurable_from_database() do
       results =
         configs
-        |> Enum.filter(&whitelisted_config?/1)
+        |> Enum.filter(&ConfigurableFromDatabase.whitelisted_config?/1)
         |> Enum.map(fn
           %{group: group, key: key, delete: true} = params ->
             ConfigDB.delete(%{group: group, key: key, subkeys: params[:subkeys]})
@@ -167,29 +172,10 @@ defmodule Pleroma.Web.AdminAPI.ConfigController do
   end
 
   defp configurable_from_database do
-    if Config.get(:configurable_from_database) do
+    if ConfigurableFromDatabase.enabled() do
       :ok
     else
       {:error, "You must enable configurable_from_database in your config file."}
     end
-  end
-
-  defp whitelisted_config?(group, key) do
-    Pleroma.Config.ConfigurableFromDatabase.allowed_groups()
-    |> Enum.any?(fn
-      {whitelisted_group} ->
-        group == inspect(whitelisted_group)
-
-      {whitelisted_group, whitelisted_key} ->
-        group == inspect(whitelisted_group) && key == inspect(whitelisted_key)
-    end)
-  end
-
-  defp whitelisted_config?(%{group: group, key: key}) do
-    whitelisted_config?(group, key)
-  end
-
-  defp whitelisted_config?(%{group: group} = config) do
-    whitelisted_config?(group, config[:key])
   end
 end

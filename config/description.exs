@@ -423,6 +423,7 @@ config :pleroma, :config_description, [
     label: "URI Schemes",
     type: :group,
     description: "URI schemes related settings",
+    db_exclusion_reasons: "Does not make sense to configure dynamically",
     children: [
       %{
         key: :valid_schemes,
@@ -1638,6 +1639,7 @@ config :pleroma, :config_description, [
     key: Pleroma.Web.MediaProxy.Invalidation.Script,
     type: :group,
     description: "Invalidation script settings",
+    db_exclusion_reason: "Provides an arbitrary execution path",
     children: [
       %{
         key: :script_path,
@@ -1751,6 +1753,7 @@ config :pleroma, :config_description, [
   %{
     group: :web_push_encryption,
     key: :vapid_details,
+    db_exclusion_reason: "Webserver secret keys",
     label: "Vapid Details",
     type: :group,
     description:
@@ -1822,19 +1825,13 @@ config :pleroma, :config_description, [
   %{
     group: :pleroma,
     label: "Pleroma Admin Token",
-    type: :group,
     description:
       "Allows setting a token that can be used to authenticate requests with admin privileges without a normal user account token. Append the `admin_token` parameter to requests to utilize it. (Please reconsider using HTTP Basic Auth or OAuth-based authentication if possible)",
-    children: [
-      %{
-        key: :admin_token,
-        type: :string,
-        description: "Admin token",
-        suggestions: [
-          "Please use a high entropy string or UUID"
-        ]
-      }
-    ]
+    type: :string,
+    suggestions: [
+      "Please use a high entropy string or UUID"
+    ],
+    db_exclusion_reason: "Can provide passwordless admin access"
   },
   %{
     group: :pleroma,
@@ -2178,6 +2175,7 @@ config :pleroma, :config_description, [
     label: "Pleroma Authenticator",
     type: :group,
     description: "Authenticator",
+    db_exclusion_reason: "Should be provided at boot-time",
     children: [
       %{
         key: Pleroma.Web.Auth.Authenticator,
@@ -2191,6 +2189,7 @@ config :pleroma, :config_description, [
     key: :ldap,
     label: "LDAP",
     type: :group,
+    db_exclusion_reason: "Provides access to another service",
     description:
       "Use LDAP for user authentication. When a user logs in to the Pleroma instance, the name and password" <>
         " will be verified by trying to authenticate (bind) to a LDAP server." <>
@@ -2590,6 +2589,7 @@ config :pleroma, :config_description, [
     label: "Mime Types",
     type: :group,
     description: "Mime Types settings",
+    db_exclusion_reason: "Should be provided at compile-time",
     children: [
       %{
         key: :types,
@@ -2796,6 +2796,7 @@ config :pleroma, :config_description, [
     group: :cors_plug,
     label: "CORS plug config",
     type: :group,
+    db_exclusion_reason: "Should be provided at compile-time",
     children: [
       %{
         key: :max_age,
@@ -2953,6 +2954,7 @@ config :pleroma, :config_description, [
     key: :modules,
     type: :group,
     description: "Custom Runtime Modules",
+    db_exclusion_reason: "Allows for custom elixir execution",
     children: [
       %{
         key: :runtime_dir,
@@ -3089,6 +3091,7 @@ config :pleroma, :config_description, [
     group: :ex_aws,
     key: :s3,
     type: :group,
+    db_exclusion_reason: "Provides access to another service",
     descriptions: "S3 service related settings",
     children: [
       %{
@@ -3468,6 +3471,7 @@ config :pleroma, :config_description, [
     key: :argos_translate,
     type: :group,
     description: "ArgosTranslate Settings.",
+    db_exclusion_reason: "Excluded for being able to set arbitrary paths to executables",
     children: [
       %{
         key: :command_argos_translate,
