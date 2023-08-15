@@ -93,6 +93,31 @@ defmodule Pleroma.Config.TransferTaskTest do
     assert assets_env[:mascots] == [a: 1, b: 2]
   end
 
+  test "transfer config values that are not explicitly whitelisted" do
+    insert(:config, key: :whoops, value: [not_allowed: true])
+
+    log =
+      capture_log(fn ->
+        TransferTask.start_link([])
+      end)
+
+    assert log =~ "config :pleroma, :whoops is set in the database"
+    assert log =~ "Consider removing it"
+    assert log =~ "mix pleroma.config delete pleroma whoops"
+  end
+
+  test "transferring whitelisted values should not warn" do
+    insert(:config, key: :emoji, value: [allowed: true])
+    insert(:config, key: Pleroma.Workers.PurgeExpiredActivity, value: [allowed: true])
+
+    log =
+      capture_log(fn ->
+        TransferTask.start_link([])
+      end)
+
+    refute log =~ "Consider removing it"
+  end
+
   describe "pleroma restart" do
     setup do
       on_exit(fn ->

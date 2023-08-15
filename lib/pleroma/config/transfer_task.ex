@@ -8,6 +8,7 @@ defmodule Pleroma.Config.TransferTask do
   alias Pleroma.Config
   alias Pleroma.ConfigDB
   alias Pleroma.Repo
+  alias Pleroma.Config.ConfigurableFromDatabase
 
   require Logger
 
@@ -91,6 +92,17 @@ defmodule Pleroma.Config.TransferTask do
   defp invalid_key_or_group(_), do: false
 
   defp merge_with_default(%{group: group, key: key, value: value} = setting) do
+    if !ConfigurableFromDatabase.whitelisted_config?(setting) do
+      Logger.warning(~s[
+        config #{inspect(group)}, #{inspect(key)} is set in the database,
+        but it is not explicitly allowed to be there. Consider removing it
+        with
+          MIX: mix pleroma.config delete #{group} #{key}
+          OTP: ./bin/pleroma_ctl config delete #{group} #{key}
+        and setting it in your .exs file instead
+      ])
+    end
+
     default =
       if group == :pleroma do
         Config.get([key], Config.Holder.default_config(group, key))

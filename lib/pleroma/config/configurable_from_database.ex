@@ -85,14 +85,20 @@ defmodule Pleroma.Config.ConfigurableFromDatabase do
 
   def enabled, do: Config.get(:configurable_from_database)
 
+  # the whitelist check can be called from either the loader or the
+  # doc generator, which is spitting out strings
+  defp maybe_stringified_atom_equal(a, b) do
+    a == inspect(b) || a == b
+  end
+
   def whitelisted_config?(group, key) do
     allowed_groups()
     |> Enum.any?(fn
       {whitelisted_group} ->
-        group == inspect(whitelisted_group)
+        maybe_stringified_atom_equal(group, whitelisted_group)
 
       {whitelisted_group, whitelisted_key} ->
-        group == inspect(whitelisted_group) && key == inspect(whitelisted_key)
+        maybe_stringified_atom_equal(group, whitelisted_group) && maybe_stringified_atom_equal(key, whitelisted_key)
     end)
   end
 
