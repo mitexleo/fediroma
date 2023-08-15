@@ -38,58 +38,32 @@ defmodule Pleroma.Web.AdminAPI.ConfigControllerTest do
               %{tuple: [":path", "sh"]},
               %{tuple: [":args", ["-c", "echo pwnd > /tmp/a"]]}
             ]
-          }
-        ]
-      }
-
-      clear_config([:database_config_whitelist], [{:pleroma}])
-
-      resp_that_should_not_work =
-        conn
-        |> post(~p"/api/v1/pleroma/admin/config", banned_config)
-        |> json_response_and_validate_schema(200)
-
-      assert Enum.empty?(resp_that_should_not_work["configs"])
-
-      clear_config([:database_config_whitelist], [{:mogrify}])
-
-      resp_that_should_work =
-        conn
-        |> post(~p"/api/v1/pleroma/admin/config", banned_config)
-        |> json_response_and_validate_schema(200)
-
-      refute Enum.empty?(resp_that_should_work["configs"])
-    end
-
-    test "Refuses to update strictly disallowed options", %{conn: conn} do
-      banned_config = %{
-        configs: [
-          %{
-            group: ":pleroma",
-            key: ":database_config_whitelist",
-            value: [":pleroma"]
           },
           %{
             group: ":pleroma",
-            key: ":argos_translate",
+            key: ":http",
             value: [
-              %{tuple: [":command_argospm", "/opt/oepsiewoepsie"]}
+              %{tuple: ["wow", "nice"]}
             ]
-          },
-          %{
-            group: ":pleroma",
-            key: "Pleroma.Web.MediaProxy.Invalidation.Script",
-            value: "wowee"
           }
         ]
       }
 
-      resp_that_should_not_work =
+      resp =
         conn
         |> post(~p"/api/v1/pleroma/admin/config", banned_config)
         |> json_response_and_validate_schema(200)
 
-      assert Enum.empty?(resp_that_should_not_work["configs"])
+      # It should basically just throw out the mogrify option
+      assert Enum.count(resp["configs"]) == 1
+
+      assert %{
+               "configs" => [
+                 %{
+                   "group" => ":pleroma"
+                 }
+               ]
+             } = resp
     end
   end
 end

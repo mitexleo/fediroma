@@ -49,7 +49,9 @@ config :pleroma, ecto_repos: [Pleroma.Repo]
 config :pleroma, Pleroma.Repo,
   telemetry_event: [Pleroma.Repo.Instrumenter],
   queue_target: 20_000,
-  migration_lock: nil
+  migration_lock: nil,
+  parameters: [gin_fuzzy_search_limit: "500"],
+  prepare: :unnamed
 
 config :pleroma, Pleroma.Captcha,
   enabled: true,
@@ -75,6 +77,7 @@ config :pleroma, Pleroma.Uploaders.S3,
   truncated_namespace: nil,
   streaming_enabled: true
 
+# This cannot be configured in the database!
 config :ex_aws, :s3,
   # host: "s3.wasabisys.com", # required if not Amazon AWS
   access_key_id: nil,
@@ -792,17 +795,6 @@ config :pleroma, :web_cache_ttl,
 config :pleroma, :modules, runtime_dir: "instance/modules"
 
 config :pleroma, configurable_from_database: false
-# Don't allow arbitrary module config here, you can only
-# adjust our own config.
-config :pleroma,
-  database_config_whitelist: [
-    {:pleroma},
-    {:logger}
-  ]
-
-config :pleroma, Pleroma.Repo,
-  parameters: [gin_fuzzy_search_limit: "500"],
-  prepare: :unnamed
 
 config :pleroma, :majic_pool, size: 2
 
