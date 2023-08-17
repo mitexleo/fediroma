@@ -18,16 +18,16 @@ defmodule Pleroma.Web.ActivityPub.UserView do
   import Ecto.Query
 
   def render("endpoints.json", %{user: %User{nickname: nil, local: true} = _user}) do
-    %{"sharedInbox" => ~p"/inbox"}
+    %{"sharedInbox" => url(~p"/inbox")}
   end
 
   def render("endpoints.json", %{user: %User{local: true} = _user}) do
     %{
-      "oauthAuthorizationEndpoint" => ~p"/oauth/authorize",
-      "oauthRegistrationEndpoint" => ~p"/api/v1/apps",
-      "oauthTokenEndpoint" => ~p"/oauth/token",
-      "sharedInbox" => ~p"/inbox",
-      "uploadMedia" => ~p"/api/ap/upload_media"
+      "oauthAuthorizationEndpoint" => url(~p"/oauth/authorize"),
+      "oauthRegistrationEndpoint" => url(~p"/api/v1/apps"),
+      "oauthTokenEndpoint" => url(~p"/oauth/token"),
+      "sharedInbox" => url(~p"/inbox"),
+      "uploadMedia" => url(~p"/api/ap/upload_media")
     }
   end
 
