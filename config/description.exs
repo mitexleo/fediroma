@@ -423,7 +423,7 @@ config :pleroma, :config_description, [
     label: "URI Schemes",
     type: :group,
     description: "URI schemes related settings",
-    db_exclusion_reasons: "Does not make sense to configure dynamically",
+    db_exclusion_reason: "Does not make sense to configure dynamically",
     children: [
       %{
         key: :valid_schemes,
@@ -454,6 +454,7 @@ config :pleroma, :config_description, [
     key: :features,
     type: :group,
     description: "Customizable features",
+    db_exclusion_reason: "Should be provided at boot-time",
     children: [
       %{
         key: :improved_hashtag_timeline,
@@ -469,6 +470,7 @@ config :pleroma, :config_description, [
     key: :populate_hashtags_table,
     type: :group,
     description: "`populate_hashtags_table` background migration settings",
+    db_exclusion_reason: "Should be provided at boot-time",
     children: [
       %{
         key: :fault_rate_allowance,
