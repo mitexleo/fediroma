@@ -100,6 +100,7 @@ defmodule Pleroma.Config.TransferTask do
           MIX: mix pleroma.config delete #{group} #{key}
           OTP: ./bin/pleroma_ctl config delete #{group} #{key}
         and setting it in your .exs file instead
+          config #{inspect(group)}, #{inspect(key)}, #{inspect(value)}
       ])
     end
 

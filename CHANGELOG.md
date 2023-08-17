@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## Added
 - Full compatibility with Erlang OTP26
 - handling of GET /api/v1/preferences
+- Explicit listing of config keys that are allowed to be set by the database
+  - Previously set config keys will still be loaded, but you will get a warning
+    that they probably should not be dynamically configured.
 
 ## Changed
 - OTP builds are now built on erlang OTP26

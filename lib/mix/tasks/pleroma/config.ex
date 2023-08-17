@@ -319,6 +319,9 @@ defmodule Mix.Tasks.Pleroma.Config do
   defp create(group, settings) do
     group
     |> Pleroma.Config.Loader.filter_group(settings)
+    |> Enum.filter(fn {key, _value} ->
+      Pleroma.Config.ConfigurableFromDatabase.whitelisted_config?(group, key)
+    end)
     |> Enum.each(fn {key, value} ->
       {:ok, _} = ConfigDB.update_or_create(%{group: group, key: key, value: value})
 
