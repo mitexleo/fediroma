@@ -37,6 +37,10 @@ defmodule Pleroma.Activity.Queries do
     from(a in query, where: a.actor == ^ap_id)
   end
 
+  def before_time(query \\ Activity, time) do
+    from(a in query, where: a.inserted_at < ^time)
+  end
+
   def find_by_object_ap_id(activities, object_ap_id) do
     Enum.find(
       activities,

@@ -1920,7 +1920,7 @@ defmodule Pleroma.User do
     |> Stream.run()
   end
 
-  defp delete_activity(%{data: %{"type" => "Create", "object" => object}} = activity, user) do
+  def delete_activity(%{data: %{"type" => "Create", "object" => object}} = activity, user) do
     with {_, %Object{}} <- {:find_object, Object.get_by_ap_id(object)},
          {:ok, delete_data, _} <- Builder.delete(user, object) do
       Pipeline.common_pipeline(delete_data, local: user.local)
@@ -1939,13 +1939,13 @@ defmodule Pleroma.User do
     end
   end
 
-  defp delete_activity(%{data: %{"type" => type}} = activity, user)
-       when type in ["Like", "Announce"] do
+  def delete_activity(%{data: %{"type" => type}} = activity, user)
+      when type in ["Like", "Announce"] do
     {:ok, undo, _} = Builder.undo(user, activity)
     Pipeline.common_pipeline(undo, local: user.local)
   end
 
-  defp delete_activity(_activity, _user), do: "Doing nothing"
+  def delete_activity(_activity, _user), do: "Doing nothing"
 
   defp delete_outgoing_pending_follow_requests(user) do
     user

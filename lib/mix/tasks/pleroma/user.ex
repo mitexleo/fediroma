@@ -342,6 +342,34 @@ defmodule Mix.Tasks.Pleroma.User do
     end
   end
 
+  def run(["backfill_expiry", nickname]) do
+    start_pleroma()
+
+    with %User{ap_id: ap_id, local: true, status_ttl_days: days} = user <-
+           User.get_cached_by_nickname(nickname),
+         false <- is_nil(days) do
+      last_time =
+        Timex.now()
+        |> Timex.shift(days: -days)
+
+      ap_id
+      |> Pleroma.Activity.Queries.by_actor()
+      |> Pleroma.Activity.Queries.by_type("Create")
+      |> Pleroma.Activity.Queries.before_time(last_time)
+      |> Pleroma.Repo.chunk_stream(50, :batches)
+      |> Stream.each(fn activities ->
+        Enum.each(activities, fn activity ->
+          IO.inspect(activity.id)
+          User.delete_activity(activity, user)
+        end)
+      end)
+      |> Stream.run()
+    else
+      _ ->
+        shell_error("No local user #{nickname}")
+    end
+  end
+
   def run(["delete_activities", nickname]) do
     start_pleroma()
 
