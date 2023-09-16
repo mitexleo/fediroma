@@ -280,6 +280,7 @@ config :pleroma, :markup,
   allow_headings: false,
   allow_tables: false,
   allow_fonts: false,
+  allow_math: false,
   scrub_policy: [
     Pleroma.HTML.Scrubber.Default,
     Pleroma.HTML.Transform.MediaProxy
