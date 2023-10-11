@@ -79,7 +79,8 @@ defmodule Pleroma.Web.Nodeinfo.Nodeinfo do
           local: !Config.restrict_unauthenticated_access?(:timelines, :local),
           bubble: !Config.restrict_unauthenticated_access?(:timelines, :bubble)
         },
-        federatedTimelineAvailable: Config.get([:instance, :federated_timeline_available], true)
+        federatedTimelineAvailable: Config.get([:instance, :federated_timeline_available], true),
+        themeColor: "#ffebf1",
       }
     }
   end
