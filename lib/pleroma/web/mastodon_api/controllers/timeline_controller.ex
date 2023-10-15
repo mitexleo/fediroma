@@ -1,6 +1,7 @@
 # Pleroma: A lightweight social networking server
 # Copyright © 2017-2021 Pleroma Authors <https://pleroma.social/>
 # SPDX-License-Identifier: AGPL-3.0-only
+# メモ：タイムライン取得系です
 
 defmodule Pleroma.Web.MastodonAPI.TimelineController do
   use Pleroma.Web, :controller
@@ -176,7 +177,7 @@ defmodule Pleroma.Web.MastodonAPI.TimelineController do
 
       Logger.debug("TimelineController.bubble: fetching activities")
 
-      activities =
+      activities_from_bubble =
         params
         |> Map.put(:type, ["Create"])
         |> Map.put(:blocking_user, user)
@@ -186,6 +187,35 @@ defmodule Pleroma.Web.MastodonAPI.TimelineController do
         |> ActivityPub.fetch_public_activities()
 
       Logger.debug("TimelineController.bubble: rendering")
+
+      #ここからホーム取得の追加
+      followed_hashtags =
+        user
+        |> User.followed_hashtags()
+        |> Enum.map(& &1.id)
+
+      params =
+        params
+        |> Map.put(:type, ["Create", "Announce"])
+        |> Map.put(:blocking_user, user)
+        |> Map.put(:muting_user, user)
+        |> Map.put(:reply_filtering_user, user)
+        |> Map.put(:announce_filtering_user, user)
+        |> Map.put(:user, user)
+        |> Map.put(:local_only, params[:local])
+        |> Map.put(:followed_hashtags, followed_hashtags)
+        |> Map.delete(:local)
+
+      %{nickname: nickname} = user
+      Logger.debug("TimelineController.home: #{nickname} - fetching activities")
+
+      activities_from_user_following =
+        [user.ap_id | User.following(user)]
+        |> ActivityPub.fetch_activities(params)
+        |> Enum.reverse()
+
+      #取得結果を結合
+      activities = activities_from_bubble ++ activities_from_user_following
 
       conn
       |> add_link_headers(activities)
