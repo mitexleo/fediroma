@@ -35,17 +35,55 @@ defmodule Pleroma.Web.Fallback.RedirectController do
   def redirector_with_meta(conn, params) do
     {:ok, index_content} = File.read(index_file_path(conn))
 
-    tags = build_tags(conn, params)
-    preloads = preload_data(conn, params)
-    title = "<title>#{Pleroma.Config.get([:instance, :name])}</title>"
+    if get_in(params, [:object]) do
+      tags = build_tags(conn, params)
+      preloads = preload_data(conn, params)
+      title = "<title>#{Pleroma.Config.get([:instance, :name])}</title>"
+      title2 = "<meta property=\"og:title\" content=\"#{params.user.name} の投稿\">"
+      description = "<meta property=\"og:description\" content=\"#{params.object.data["content"]}\">"
+      type = "<meta property=\"og:type\" content=\"article\" />"
+      site_name = "<meta property=\"og:site_name\" content=\"flyerdonut\" />"
+      image =
+      case params.object.data["attachment"] do
+        [] ->
+          # attachmentが空のリストの場合の処理
+          "<meta property=\"og:image\" content=#{List.first(params.user.avatar["url"])["href"]} />"
+        _ ->
+          # attachmentが空のリストでない場合の処理
+          "<meta property=\"og:image\" content=#{List.first(List.first(params.object.data["attachment"])["url"])["href"]} /><meta name=\"note:card\" content=\"summary_large_image\">"
+      end
+      #datas = "<!-- datas #{inspect(params.object)} -->"
+      twitter = "<meta name=\"twitter:card\" content=\"summary\" />"
 
-    response =
-      index_content
-      |> String.replace("<!--server-generated-meta-->", tags <> preloads <> title)
+      response =
+        index_content
+        |> String.replace("<!--server-generated-meta-->", tags <> preloads <> title <> title2 <> description <> type <> site_name <> image <> twitter)
 
-    conn
-    |> put_resp_content_type("text/html")
-    |> send_resp(200, response)
+      conn
+      |> put_resp_content_type("text/html")
+      |> send_resp(200, response)
+
+
+    else
+      #Objectが存在しない場合（Userページ）
+      tags = build_tags(conn, params)
+      preloads = preload_data(conn, params)
+      title = "<title>#{Pleroma.Config.get([:instance, :name])}</title>"
+      title2 = "<meta property=\"og:title\" content=\"#{params.user.name} のページ\">"
+      description = "<meta property=\"og:description\" content=\"#{params.user.bio}\">"
+      type = "<meta property=\"og:type\" content=\"article\" />"
+      site_name = "<meta property=\"og:site_name\" content=\"flyerdonut\" />"
+      image = "<meta property=\"og:image\" content=#{List.first(params.user.avatar["url"])["href"]} />"
+      twitter = "<meta name=\"twitter:card\" content=\"summary\" />"
+
+      response =
+        index_content
+        |> String.replace("<!--server-generated-meta-->", tags <> preloads <> title <> title2 <> description <> type <> site_name <> image <> twitter)
+
+      conn
+      |> put_resp_content_type("text/html")
+      |> send_resp(200, response)
+    end
   end
 
   def redirector_with_preload(conn, %{"path" => ["pleroma", "admin"]}) do
