@@ -1,0 +1,16 @@
+#!/bin/bash
+
+mkdir -p ./uploads ./instance
+
+podman run \
+    -v ./config:/opt/akkoma/config/:Z \
+    -v ./uploads:/opt/akkoma/uploads/:Z \
+    -v ./instance:/opt/akkoma/instance/:Z \
+    -it akkoma ./bin/pleroma_ctl instance gen \
+        --dbhost db \
+        --dbname akkoma \
+        --dbpass akkoma \
+        --dbuser akkoma \
+        --static-dir /opt/akkoma/instance/ \
+        --uploads-dir /opt/akkoma/uploads/ \
+        --listen-ip 0.0.0.0 $@

@@ -2,11 +2,9 @@ version: "3.7"
 
 services:
   db:
-    image: akkoma-db:latest
-    build: ./docker-resources/database
+    image: postgres:14
     shm_size: 4gb
     restart: unless-stopped
-    user: ${DOCKER_USER}
     environment: {
       # This might seem insecure but is usually not a problem.
       # You should leave this at the "akkoma" default.
@@ -21,16 +19,17 @@ services:
     env_file:
       - .env 
     volumes:
-      - type: bind
-        source: ./pgdata
-        target: /var/lib/postgresql/data
+      - ./pgdata:/var/lib/postgresql/data:Z
+        
 
   akkoma:
     image: akkoma:latest
-    build: .
     restart: unless-stopped
     env_file:
       - .env
+    environment: {
+      "AKKOMA_CONFIG_PATH": "/opt/akkoma/config/docker-config.exs"
+    }
     links:
       - db
     ports: [
@@ -44,7 +43,9 @@ services:
       "127.0.0.1:4000:4000",
     ]
     volumes:
-      - .:/opt/akkoma
+    - ./uploads:/opt/akkoma/uploads:Z
+    - ./instance:/opt/akkoma/instance:Z
+    - ./config/docker-config.exs:/opt/akkoma/config/docker-config.exs:Z
 
   # Uncomment the following if you want to use a reverse proxy
   #proxy:
@@ -60,3 +61,6 @@ services:
   #    - ./docker-resources/Caddyfile:/etc/caddy/Caddyfile
   #    - ./caddy-data:/data
   #    - ./caddy-config:/config
+
+volumes:
+  db-data:
