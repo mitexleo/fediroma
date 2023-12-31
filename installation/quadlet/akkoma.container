@@ -1,0 +1,26 @@
+# Put me at either:
+# /usr/share/containers/systemd/akkoma.container
+# /etc/containers/systemd/akkoma.container
+# $HOME/.config/containers/systemd/akkoma.container (Recommended, for rootless podman!)
+
+[Unit]
+Description=The main Akkoma container
+After=local-fs.target akkoma-postgresql.container
+
+[Container]
+Image=akkoma:latest
+ExposeHostPort=4000
+# Comment the next line if you intend to use containerized caddy!
+PublishPort=4000:4000
+Volume=/opt/akkoma/uploads:/opt/akkoma/uploads:Z
+Volume=/opt/akkoma/instance:/opt/akkoma/instance:Z
+Volume=/opt/akkoma/config.exs:/opt/akkoma/config/config.exs:Z
+#AutoUpdate=registry
+NoNewPrivileges=true
+Environment=AKKOMA_CONFIG_PATH=/opt/akkoma/config/config.exs
+ContainerName=akkoma
+Network=systemd-akkoma
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target default.target

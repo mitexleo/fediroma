@@ -1,0 +1,23 @@
+# Put me at either:
+# /usr/share/containers/systemd/akkoma-postgresql.container
+# /etc/containers/systemd/akkoma-postgresql.container
+# $HOME/.config/containers/systemd/akkoma-postgresql.container (for rootless podman!)
+
+[Unit]
+Description=Akkoma's postgres database
+After=local-fs.target
+
+[Container]
+Image=docker.io/postgres:14
+PublishPort=4000
+Volume=/opt/akkoma/pgdata:/var/lib/postgresql/data:Z
+AutoUpdate=registry
+Environment=POSTGRES_DB=akkoma
+Environment=POSTGRES_USER=akkoma
+Environment=POSTGRES_PASSWORD=akkoma
+ContainerName=db
+Network=systemd-akkoma
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target default.target

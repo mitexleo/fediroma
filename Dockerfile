@@ -44,6 +44,11 @@ RUN apk add ffmpeg imagemagick exiftool ncurses postgresql-client file-dev libma
 COPY --from=BUILD /release /opt/akkoma/
 ADD ./docker-entrypoint.sh /opt/akkoma/
 EXPOSE 4000
+
+VOLUME /opt/akkoma/uploads/
+VOLUME /opt/akkoma/instance/
+VOLUME /opt/akkoma/config/docker-config.exs
+
 WORKDIR /opt/akkoma
 
 CMD [ "/opt/akkoma/docker-entrypoint.sh" ]

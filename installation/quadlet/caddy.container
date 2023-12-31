@@ -1,0 +1,27 @@
+# Put me at either:
+# /usr/share/containers/systemd/caddy.container
+# /etc/containers/systemd/caddy.container
+# !!!! PLEASE NOTE !!!!
+# Caddy cannot run containerised in rootless podman, since it wants access
+# to privileged ports 80 and 443!
+# run caddy on your host if you're rootless!
+
+[Unit]
+Description=Akkoma's postgres database
+After=local-fs.target
+
+[Container]
+Image=docker.io/caddy:2-alpine
+PublishPort=80:80
+PublishPort=443:443
+ExposeHostPort=80
+ExposeHostPort=443
+Volume=/opt/akkoma/Caddyfile:/etc/caddy/Caddyfile
+Volume=/opt/akkoma/caddy-data:/data
+Volume=/opt/akkoma/caddy-config:/config
+AutoUpdate=registry
+Network=systemd-akkoma
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target default.target
