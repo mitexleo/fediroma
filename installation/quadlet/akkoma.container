@@ -8,7 +8,7 @@ Description=The main Akkoma container
 After=local-fs.target akkoma-postgresql.container
 
 [Container]
-Image=akkoma:latest
+Image=docker.io/akkoma/akkoma:test
 ExposeHostPort=4000
 # Comment the next line if you intend to use containerized caddy!
 PublishPort=4000:4000
