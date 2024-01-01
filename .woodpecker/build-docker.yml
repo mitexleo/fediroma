@@ -1,0 +1,29 @@
+platform: linux/amd64
+
+
+variables:
+  - &on-release
+    when:
+      event:
+        - push
+        - tag
+      branch:
+        - docker
+  - &on-stable
+    when:
+      event:
+        - push
+        - tag
+      branch:
+        - stable
+        
+pipeline:
+  build:
+    image: woodpeckerci/plugin-docker-buildx
+    secrets: [docker_username, docker_password]
+  <<: *on-release
+  settings:
+    repo: akkoma/akkoma
+    dockerfile: Dockerfile
+    platforms: linux/amd64
+    tag: test
