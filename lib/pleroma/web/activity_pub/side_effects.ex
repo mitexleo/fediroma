@@ -187,6 +187,13 @@ defmodule Pleroma.Web.ActivityPub.SideEffects do
   end
 
   # Tasks this handles
+  # - Set up bite notification
+  def handle(%{data: %{"type" => "Bite"}} = object, meta) do
+    Notification.create_notifications(object)
+    {:ok, object, meta}
+  end
+
+  # Tasks this handles
   # - Actually create object
   # - Rollback if we couldn't create it
   # - Increase the user note count

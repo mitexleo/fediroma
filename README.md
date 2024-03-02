@@ -1,4 +1,6 @@
-## akkoma
+## snaccoma: akkoma with bites
+
+this is a silly little fork which can receive [Bite](https://ns.mia.jetzt/as/) activities
 
 *a smallish microblogging platform, aka the cooler pleroma*
 
