@@ -58,6 +58,7 @@ server {
     ssl_stapling on;
     ssl_stapling_verify on;
 
+    gzip on;
     gzip_vary on;
     gzip_proxied any;
     gzip_comp_level 6;
