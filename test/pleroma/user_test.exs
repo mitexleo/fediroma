@@ -326,9 +326,9 @@ defmodule Pleroma.UserTest do
         insert(:user, %{
           local: false,
           nickname: "fuser2",
-          ap_id: "http://localhost:4001/users/fuser2",
-          follower_address: "http://localhost:4001/users/fuser2/followers",
-          following_address: "http://localhost:4001/users/fuser2/following"
+          ap_id: "http://remote.org/users/fuser2",
+          follower_address: "http://remote.org/users/fuser2/followers",
+          following_address: "http://remote.org/users/fuser2/following"
         })
 
       {:ok, user, followed} = User.follow(user, followed, :follow_accept)
@@ -1004,23 +1004,13 @@ defmodule Pleroma.UserTest do
   test "returns an ap_id for a user" do
     user = insert(:user)
 
-    assert User.ap_id(user) ==
-             Pleroma.Web.Router.Helpers.user_feed_url(
-               Pleroma.Web.Endpoint,
-               :feed_redirect,
-               user.nickname
-             )
+    assert User.ap_id(user) == url(@endpoint, ~p[/users/#{user.nickname}])
   end
 
   test "returns an ap_followers link for a user" do
     user = insert(:user)
 
-    assert User.ap_followers(user) ==
-             Pleroma.Web.Router.Helpers.user_feed_url(
-               Pleroma.Web.Endpoint,
-               :feed_redirect,
-               user.nickname
-             ) <> "/followers"
+    assert User.ap_followers(user) == url(@endpoint, ~p[/users/#{user.nickname}/followers])
   end
 
   describe "remote user changeset" do
@@ -1363,25 +1353,27 @@ defmodule Pleroma.UserTest do
       refute User.blocks?(user, collateral_user)
     end
 
-    test "blocks domain with wildcard for subdomain" do
-      user = insert(:user)
-
-      user_from_subdomain =
-        insert(:user, %{ap_id: "https://subdomain.awful-and-rude-instance.com/user/bully"})
-
-      user_with_two_subdomains =
-        insert(:user, %{
-          ap_id: "https://subdomain.second_subdomain.awful-and-rude-instance.com/user/bully"
-        })
-
-      user_domain = insert(:user, %{ap_id: "https://awful-and-rude-instance.com/user/bully"})
-
-      {:ok, user} = User.block_domain(user, "awful-and-rude-instance.com")
-
-      assert User.blocks?(user, user_from_subdomain)
-      assert User.blocks?(user, user_with_two_subdomains)
-      assert User.blocks?(user, user_domain)
-    end
+    # This behaviour is not honoured by the timeline query
+    # re-add at a later date when UX is established
+    # test "blocks domain with wildcard for subdomain" do
+    #  user = insert(:user)
+    #
+    #  user_from_subdomain =
+    #    insert(:user, %{ap_id: "https://subdomain.awful-and-rude-instance.com/user/bully"})
+    #
+    #  user_with_two_subdomains =
+    #    insert(:user, %{
+    #      ap_id: "https://subdomain.second_subdomain.awful-and-rude-instance.com/user/bully"
+    #    })
+    #
+    #  user_domain = insert(:user, %{ap_id: "https://awful-and-rude-instance.com/user/bully"})
+    #
+    #  {:ok, user} = User.block_domain(user, "awful-and-rude-instance.com")
+    #
+    #  assert User.blocks?(user, user_from_subdomain)
+    #  assert User.blocks?(user, user_with_two_subdomains)
+    #  assert User.blocks?(user, user_domain)
+    # end
 
     test "unblocks domains" do
       user = insert(:user)
@@ -2185,8 +2177,8 @@ defmodule Pleroma.UserTest do
 
   describe "sync followers count" do
     setup do
-      user1 = insert(:user, local: false, ap_id: "http://localhost:4001/users/masto_closed")
-      user2 = insert(:user, local: false, ap_id: "http://localhost:4001/users/fuser2")
+      user1 = insert(:user, local: false, ap_id: "http://remote.org/users/masto_closed")
+      user2 = insert(:user, local: false, ap_id: "http://remote.org/users/fuser2")
       insert(:user, local: true)
       insert(:user, local: false, is_active: false)
       {:ok, user1: user1, user2: user2}
@@ -2280,8 +2272,8 @@ defmodule Pleroma.UserTest do
       other_user =
         insert(:user,
           local: false,
-          follower_address: "http://localhost:4001/users/masto_closed/followers",
-          following_address: "http://localhost:4001/users/masto_closed/following",
+          follower_address: "http://remote.org/users/masto_closed/followers",
+          following_address: "http://remote.org/users/masto_closed/following",
           ap_enabled: true
         )
 
@@ -2302,8 +2294,8 @@ defmodule Pleroma.UserTest do
       other_user =
         insert(:user,
           local: false,
-          follower_address: "http://localhost:4001/users/masto_closed/followers",
-          following_address: "http://localhost:4001/users/masto_closed/following",
+          follower_address: "http://remote.org/users/masto_closed/followers",
+          following_address: "http://remote.org/users/masto_closed/following",
           ap_enabled: true
         )
 
@@ -2324,8 +2316,8 @@ defmodule Pleroma.UserTest do
       other_user =
         insert(:user,
           local: false,
-          follower_address: "http://localhost:4001/users/masto_closed/followers",
-          following_address: "http://localhost:4001/users/masto_closed/following",
+          follower_address: "http://remote.org/users/masto_closed/followers",
+          following_address: "http://remote.org/users/masto_closed/following",
           ap_enabled: true
         )
 

@@ -61,11 +61,12 @@ config :pleroma, Pleroma.Captcha.Kocaptcha, endpoint: "https://captcha.kotobank.
 # Upload configuration
 config :pleroma, Pleroma.Upload,
   uploader: Pleroma.Uploaders.Local,
-  filters: [Pleroma.Upload.Filter.Dedupe],
+  filters: [],
   link_name: false,
   proxy_remote: false,
   filename_display_max_length: 30,
-  base_url: nil
+  base_url: nil,
+  allowed_mime_types: ["image", "audio", "video"]
 
 config :pleroma, Pleroma.Uploaders.Local, uploads: "uploads"
 
@@ -110,17 +111,6 @@ config :pleroma, :uri_schemes,
     "xmpp"
   ]
 
-websocket_config = [
-  path: "/websocket",
-  serializer: [
-    {Phoenix.Socket.V1.JSONSerializer, "~> 1.0.0"},
-    {Phoenix.Socket.V2.JSONSerializer, "~> 2.0.0"}
-  ],
-  timeout: 60_000,
-  transport_log: false,
-  compress: false
-]
-
 # Configures the endpoint
 config :pleroma, Pleroma.Web.Endpoint,
   url: [host: "localhost"],
@@ -130,10 +120,7 @@ config :pleroma, Pleroma.Web.Endpoint,
       {:_,
        [
          {"/api/v1/streaming", Pleroma.Web.MastodonAPI.WebsocketHandler, []},
-         {"/websocket", Phoenix.Endpoint.CowboyWebSocket,
-          {Phoenix.Transports.WebSocket,
-           {Pleroma.Web.Endpoint, Pleroma.Web.UserSocket, websocket_config}}},
-         {:_, Phoenix.Endpoint.Cowboy2Handler, {Pleroma.Web.Endpoint, []}}
+         {:_, Plug.Cowboy.Handler, {Pleroma.Web.Endpoint, []}}
        ]}
     ]
   ],
@@ -162,13 +149,37 @@ config :logger, :ex_syslogger,
   format: "$metadata[$level] $message",
   metadata: [:request_id]
 
+# ———————————————————————————————————————————————————————————————
+#                       W  A  R  N  I  N  G
+# ———————————————————————————————————————————————————————————————
+#
+#  Whenever adding a privileged new custom type for e.g.
+#  ActivityPub objects, ALWAYS map their extension back
+#  to "application/octet-stream".
+#  Else files served by us can automatically end up with
+#  those privileged types causing severe security hazards.
+#  (We need those mappings so Phoenix can assoiate its format
+#   (the "extension") to incoming requests of those MIME types)
+#
+# ———————————————————————————————————————————————————————————————
 config :mime, :types, %{
   "application/xml" => ["xml"],
   "application/xrd+xml" => ["xrd+xml"],
   "application/jrd+json" => ["jrd+json"],
   "application/activity+json" => ["activity+json"],
-  "application/ld+json" => ["activity+json"]
+  "application/ld+json" => ["activity+json"],
+  # Can be removed when bumping MIME past 2.0.5
+  # see https://akkoma.dev/AkkomaGang/akkoma/issues/657
+  "image/apng" => ["apng"]
 }
+
+config :mime, :extensions, %{
+  "xrd+xml" => "text/plain",
+  "jrd+json" => "text/plain",
+  "activity+json" => "text/plain"
+}
+
+# ———————————————————————————————————————————————————————————————
 
 config :tesla, :adapter, {Tesla.Adapter.Finch, name: MyFinch}
 
@@ -300,7 +311,6 @@ config :pleroma, :frontend_configurations,
     alwaysShowSubjectInput: true,
     background: "/images/city.jpg",
     collapseMessageWithSubject: false,
-    disableChat: false,
     greentext: false,
     hideFilteredStatuses: false,
     hideMutedPosts: false,
@@ -388,6 +398,7 @@ config :pleroma, :mrf_simple,
   accept: [],
   avatar_removal: [],
   banner_removal: [],
+  background_removal: [],
   reject_deletes: [],
   handle_threads: true
 
@@ -415,8 +426,6 @@ config :pleroma, :mrf_inline_quote, prefix: "RE"
 config :pleroma, :mrf_object_age,
   threshold: 604_800,
   actions: [:delist, :strip_followers]
-
-config :pleroma, :mrf_follow_bot, follower_nickname: nil
 
 config :pleroma, :mrf_reject_newly_created_account_notes, age: 86_400
 
@@ -462,10 +471,6 @@ config :pleroma, :media_preview_proxy,
   thumbnail_max_height: 600,
   image_quality: 85,
   min_content_length: 100 * 1024
-
-config :pleroma, :shout,
-  enabled: true,
-  limit: 5_000
 
 config :phoenix, :format_encoders, json: Jason, "activity+json": Jason
 

@@ -4,10 +4,61 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## Unreleased
+## 2024.03
+
+## Added
+- CLI tasks best-effort checking for past abuse of the recent spoofing exploit
+- new `:mrf_steal_emoji, :download_unknown_size` option; defaults to `false`
+
+## Changed
+- `Pleroma.Upload, :base_url` now MUST be configured explicitly if used;
+  use of the same domain as the instance is **strongly** discouraged
+- `:media_proxy, :base_url` now MUST be configured explicitly if used;
+  use of the same domain as the instance is **strongly** discouraged
+- StealEmoji:
+  - now uses the pack.json format;
+    existing users must migrate with an out-of-band script (check release notes)
+  - only steals shortcodes recognised as valid
+  - URLs of stolen emoji is no longer predictable
+- The `Dedupe` upload filter is now always active;
+  `AnonymizeFilenames` is again opt-in
+- received AP data is sanity checked before we attempt to parse it as a user
+- Uploads, emoji and media proxy now restrict Content-Type headers to a safe subset
+- Akkoma will no longer fetch and parse objects hosted on the same domain
 
 ## Fixed
+- Critical security issue allowing Akkoma to be used as a vector for
+  (depending on configuration) impersonation of other users or creation
+  of bogus users and posts on the upload domain
+- Critical security issue letting Akkoma fall for the above impersonation
+  payloads due to lack of strict id checking
+- Critical security issue allowing domains redirect to to pose as the initial domain
+  (e.g. with media proxy's fallback redirects)
+- refetched objects can no longer attribute themselves to third-party actors
+  (this had no externally visible effect since actor info is read from the Create activity)
+- our litepub JSON-LD schema is now served with the correct content type
+- remote APNG attachments are now recognised as images
+
+## 2024.02
+
+## Added
+- Full compatibility with Erlang OTP26
+- handling of GET /api/v1/preferences
+- Akkoma API is now documented
+- ability to auto-approve follow requests from users you are already following
+- The SimplePolicy MRF can now strip user backgrounds from selected remote hosts
+
+## Changed
+- OTP builds are now built on erlang OTP26
+- The base Phoenix framework is now updated to 1.7
+- An `outbox` field has been added to actor profiles to comply with AP spec
+- User profile backgrounds do now federate with other Akkoma instances and Sharkey
+
+## Fixed
+- Documentation issue in which a non-existing nginx file was referenced
 - Issue where a bad inbox URL could break federation
+- Issue where hashtag rel values would be scrubbed
+- Issue where short domains listed in `transparency_obfuscate_domains` were not actually obfuscated
 
 ## 2023.08
 
