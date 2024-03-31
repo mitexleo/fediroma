@@ -1,6 +1,7 @@
 # Pleroma: A lightweight social networking server
 # Copyright © 2017-2021 Pleroma Authors <https://pleroma.social/>
 # SPDX-License-Identifier: AGPL-3.0-only
+# メモ：ルーターです
 
 defmodule Pleroma.Web.Router do
   use Pleroma.Web, :router
