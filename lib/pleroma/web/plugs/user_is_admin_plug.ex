@@ -18,6 +18,7 @@ defmodule Pleroma.Web.Plugs.UserIsAdminPlug do
 
   def call(conn, _) do
     conn
+    |> IO.inspect()
     |> render_error(:forbidden, "User is not an admin.")
     |> halt()
   end

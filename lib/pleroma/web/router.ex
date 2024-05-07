@@ -101,6 +101,15 @@ defmodule Pleroma.Web.Router do
     plug(Pleroma.Web.Plugs.IdempotencyPlug)
   end
 
+  pipeline :admin_interface do
+    plug(:browser)
+    plug(:fetch_session)
+    plug(:authenticate)
+    plug(:fetch_flash)
+    plug(Pleroma.Web.Plugs.EnsureUserTokenAssignsPlug)
+    plug(Pleroma.Web.Plugs.UserIsAdminPlug)
+  end
+
   pipeline :require_privileged_staff do
     plug(Pleroma.Web.Plugs.EnsureStaffPrivilegedPlug)
   end
@@ -471,6 +480,12 @@ defmodule Pleroma.Web.Router do
 
     get("/frontend", FrontendSwitcherController, :switch)
     post("/frontend", FrontendSwitcherController, :do_switch)
+  end
+
+  scope "/akkoma/admin/", Pleroma.Web.AdminControl do
+    pipe_through(:admin_interface)
+
+    get("/", AdminControlController, :index)
   end
 
   scope "/api/v1/akkoma", Pleroma.Web.AkkomaAPI do
