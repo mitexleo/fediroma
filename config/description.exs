@@ -2525,6 +2525,7 @@ config :pleroma, :config_description, [
     group: :pleroma,
     key: :emoji,
     type: :group,
+    description: "Configuration options related to emoji",
     children: [
       %{
         key: :shortcode_globs,
@@ -2561,7 +2562,7 @@ config :pleroma, :config_description, [
         key: :shared_pack_cache_seconds_per_file,
         label: "Shared pack cache s/file",
         type: :integer,
-        descpiption:
+        description:
           "When an emoji pack is shared, the archive is created and cached in memory" <>
             " for this amount of seconds multiplied by the number of files.",
         suggestions: [60]

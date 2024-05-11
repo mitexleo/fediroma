@@ -1,7 +1,7 @@
 defmodule Pleroma.Web.AdminControl.AdminControlController do
   use Pleroma.Web, :controller
 
-  @descriptions Pleroma.Docs.JSON.compiled_descriptions()
+
 
   plug(:put_root_layout, {Pleroma.Web.AdminControl.AdminControlView, :layout})
   plug(:put_layout, false)
@@ -9,8 +9,9 @@ defmodule Pleroma.Web.AdminControl.AdminControlController do
   defp label_for(%{label: label}), do: label
   defp label_for(_), do: "Unknown"
 
+  defp descriptions, do: Pleroma.Docs.JSON.compiled_descriptions()
   def config_headings do
-    @descriptions
+    descriptions()
     |> Enum.map(&label_for(&1))
     |> Enum.sort()
   end
@@ -19,7 +20,7 @@ defmodule Pleroma.Web.AdminControl.AdminControlController do
     IO.inspect(heading)
 
     possible_values =
-      @descriptions
+      descriptions()
       |> Enum.filter(fn section -> label_for(section) == heading end)
 
     possible_values

@@ -1,5 +1,6 @@
 defmodule Pleroma.Web.AdminControl.AdminControlView do
   use Pleroma.Web, :html
+  require Logger
 
   embed_templates "admin_control_html/*"
 
@@ -29,33 +30,65 @@ defmodule Pleroma.Web.AdminControl.AdminControlView do
     """
   end
 
-  def config_value(%{config_value: %{type: :integer} = value} = assigns) do
+  def config_value(%{config_value: %{type: :integer, key: key} = value} = assigns) do
     value = value_of(assigns)
-    assigns = assign(assigns, value: value)
+    assigns = assign(assigns, value: value, key: key)
 
     ~H"""
-    <div class="config-group">
-      <h3 class="config-group-title"><%= @config_value.label %></h3>
-      <p class="ml-2"><%= @config_value.description %></p>
-      <input type="number" value={@value} class="form-input text-black rounded" />
+    <div>
+      <label for={@key} class="block text-sm font-medium leading-6 text-white"><%= @config_value.label %></label>
+      <div class="mt-2">
+        <input type="number" name={@key} id={@key} value={@value} class="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+      </div>
+      <p class="mt-2 text-sm text-gray-500"><%= @config_value.description %></p>
     </div>
     """
   end
 
 
-  def config_value(%{config_value: %{type: :boolean} = value} = assigns) do
+  def config_value(%{config_value: %{type: :string, key: key} = value} = assigns) do
+    value = value_of(assigns)
+    assigns = assign(assigns, value: value, key: key)
+    ~H"""
+    <div>
+      <label for={@key} class="block text-sm font-medium leading-6 text-white"><%= @config_value.label %></label>
+      <div class="mt-2">
+        <input type="text" name={@key} id={@key} value={@value} class="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+      </div>
+      <p class="mt-2 text-sm text-gray-500"><%= @config_value.description %></p>
+    </div>
+    """
+  end
+
+  def config_value(%{config_value: %{type: :boolean, key: key} = value} = assigns) do
     value = value_of(assigns) == "true"
+    assigns = assign(assigns, value: value, key: key)
+    ~H"""
+    <div>
+      <label for={@key} class="block text-sm font-medium leading-6 text-white"><%= @config_value.label %></label>
+
+      <div class="mt-2">
+
+        <p class="mt-2 text-sm text-gray-500"><input type="checkbox" name={@key} id={@key} checked={@value} class="rounded-md px-2"> <%= @config_value.description %></p>
+
+      </div>
+    </div>
+    """
+  end
+  def config_value(%{config_value: %{type: {:list, :string}} = value} = assigns) do
+    value = value_of(assigns)
     assigns = assign(assigns, value: value)
     ~H"""
     <div class="config-group">
       <h3 class="config-group-title"><%= @config_value.label %></h3>
       <span class="ml-2"><%= @config_value.description %></span>
-      <input type="checkbox" checked={@value} class="form-input" />
+      <%= @value %>
     </div>
     """
   end
 
   def config_value(assigns) do
+    Logger.info("Cannot render config!")
     IO.inspect(assigns)
     ~H"""
     Cannot render
