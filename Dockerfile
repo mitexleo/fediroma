@@ -1,9 +1,37 @@
-FROM hexpm/elixir:1.15.4-erlang-26.0.2-alpine-3.18.2
+####################################
+# BUILD CONTAINER
+####################################
+
+FROM hexpm/elixir:1.16.3-erlang-26.2.5-alpine-3.19.1 AS BUILD
 
 ENV MIX_ENV=prod
-ENV ERL_EPMD_ADDRESS=127.0.0.1
 
-ARG HOME=/opt/akkoma
+RUN mkdir /src
+WORKDIR /src
+RUN apk add git gcc g++ musl-dev make cmake file-dev exiftool ffmpeg imagemagick libmagic ncurses postgresql-client
+RUN mix local.hex --force &&\
+    mix local.rebar --force
+
+ADD mix.exs /src/mix.exs
+ADD mix.lock /src/mix.lock
+ADD lib/ /src/lib/
+ADD priv/ /src/priv/
+ADD config/ /src/config/
+ADD rel/ /src/rel/
+ADD restarter/ /src/restarter/
+ADD docs/ /src/docs/
+ADD installation/ /src/installation/
+
+RUN mix deps.get --only=prod
+RUN mix release --path docker-release
+
+#################################
+# RUNTIME CONTAINER
+#################################
+
+FROM alpine:3.19.1
+
+RUN apk add file-dev exiftool ffmpeg imagemagick libmagic postgresql-client
 
 LABEL org.opencontainers.image.title="akkoma" \
     org.opencontainers.image.description="Akkoma for Docker" \
@@ -14,8 +42,7 @@ LABEL org.opencontainers.image.title="akkoma" \
     org.opencontainers.image.revision=$VCS_REF \
     org.opencontainers.image.created=$BUILD_DATE
 
-RUN apk add git gcc g++ musl-dev make cmake file-dev exiftool ffmpeg imagemagick libmagic ncurses postgresql-client
-
+ARG HOME=/opt/akkoma
 EXPOSE 4000
 
 ARG UID=1000
@@ -27,8 +54,15 @@ RUN adduser -u $UID -G $UNAME -D -h $HOME $UNAME
 
 WORKDIR /opt/akkoma
 
+COPY --from=BUILD /src/docker-release/ $HOME
+RUN ln -s $HOME/bin/pleroma /bin/pleroma
+# it's nice you know
+RUN ln -s $HOME/bin/pleroma /bin/akkoma
+RUN ln -s $HOME/bin/pleroma_ctl /bin/pleroma_ctl
+RUN ln -s $HOME/bin/pleroma_ctl /bin/akkoma_ctl
+
+ADD docker-entrypoint.sh $HOME/docker-entrypoint.sh
+
 USER $UNAME
-RUN mix local.hex --force &&\
-    mix local.rebar --force
 
 CMD ["/opt/akkoma/docker-entrypoint.sh"]

@@ -1,0 +1,32 @@
+labels:
+  platform: linux/amd64
+
+variables:
+  - &on-release
+    when:
+      event:
+        - push
+        - tag
+      branch:
+        - develop
+        - stable
+  - &on-stable
+    when:
+      event:
+        - push
+        - tag
+      branch:
+        - stable
+
+steps:
+  build:
+    image: woodpeckerci/plugin-docker-buildx:latest
+    secrets: [docker_username, docker_password]
+    settings:
+      repo: woodpeckerci/woodpecker-agent
+      dockerfile: docker/Dockerfile.agent.multiarch
+      platforms: linux/amd64
+      tag: next
+    when:
+      branch: customizable-docker-db
+      event: push
