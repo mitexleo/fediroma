@@ -1,12 +1,11 @@
-version: "3.7"
-
 services:
   db:
     image: akkoma-db:latest
     build: ./docker-resources/database
     shm_size: 4gb
     restart: unless-stopped
-    user: ${DOCKER_USER}
+    env_file:
+      - .env
     environment: {
       # This might seem insecure but is usually not a problem.
       # You should leave this at the "akkoma" default.
@@ -18,8 +17,6 @@ services:
       POSTGRES_USER: akkoma,
       POSTGRES_PASSWORD: akkoma,
     }
-    env_file:
-      - .env 
     volumes:
       - type: bind
         source: ./pgdata
@@ -27,7 +24,6 @@ services:
 
   akkoma:
     image: akkoma:latest
-    build: .
     restart: unless-stopped
     env_file:
       - .env
