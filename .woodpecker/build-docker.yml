@@ -23,7 +23,7 @@ steps:
     image: woodpeckerci/plugin-docker-buildx:latest
     secrets: [docker_username, docker_password]
     settings:
-      repo: woodpeckerci/woodpecker-agent
+      repo: akkoma/akkoma
       dockerfile: Dockerfile
       platforms: linux/amd64
       tag: next
