@@ -68,4 +68,8 @@ ADD docker-entrypoint.sh $HOME/docker-entrypoint.sh
 
 USER $UNAME
 
+VOLUME uploads /opt/akkoma/uploads
+VOLUME instance /opt/akkoma/instance
+VOLUME config /etc/akkoma/config.exs
+
 CMD ["/opt/akkoma/docker-entrypoint.sh"]

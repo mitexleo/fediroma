@@ -36,6 +36,8 @@ services:
     ]
     volumes:
       - ./config/prod.secret.exs:/etc/akkoma/config.exs
+      - ./uploads:/opt/akkoma/uploads
+      - ./instance:/opt/akkoma/instance
 
   # Copy this into docker-compose.override.yml and uncomment there if you want to use a reverse proxy
   #proxy:
