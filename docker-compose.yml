@@ -22,7 +22,7 @@ services:
         target: /var/lib/postgresql/data
 
   akkoma:
-    image: akkoma:latest
+    image: akkoma/akkoma:latest
     restart: unless-stopped
     env_file:
       - .env
@@ -39,7 +39,7 @@ services:
       "127.0.0.1:4000:4000",
     ]
     volumes:
-      - .:/opt/akkoma
+      - ./config/prod.secret.exs:/opt/akkoma/config.exs
 
   # Copy this into docker-compose.override.yml and uncomment there if you want to use a reverse proxy
   #proxy:
