@@ -3,8 +3,6 @@ services:
     image: postgres:16-alpine
     shm_size: 4gb
     restart: unless-stopped
-    env_file:
-      - .env
     environment: {
       # This might seem insecure but is usually not a problem.
       # You should leave this at the "akkoma" default.
@@ -24,8 +22,6 @@ services:
   akkoma:
     image: akkoma/akkoma:latest
     restart: unless-stopped
-    env_file:
-      - .env
     links:
       - db
     ports: [
