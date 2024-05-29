@@ -1,5 +1,8 @@
 services:
   db:
+    # If you use a config generator, use the value below for your
+    # "ram" size
+    shm_size: 4gb
     command:
       - "postgres"
       - "-c"
