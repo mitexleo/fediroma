@@ -20,7 +20,7 @@ services:
         target: /var/lib/postgresql/data
 
   akkoma:
-    image: akkoma/akkoma:latest
+    image: akkoma/akkoma:next
     restart: unless-stopped
     links:
       - db
