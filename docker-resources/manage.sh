@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker compose run --rm akkoma ./bin/pleroma $@
+docker compose run --rm akkoma ./bin/pleroma_ctl $@
