@@ -14,7 +14,7 @@ old_version=$2
 new_version=$3
 
 # Start a PostgreSQL 14 container
-docker run --rm -d --name pg14 -v $(pwd)/$data_directory:/var/lib/postgresql/data postgres:$old_version
+docker run --rm -d --name pg14 -v $(pwd)/$data_directory:/var/lib/postgresql/data postgres:$old_version-alpine
 
 # Dump the db from the old container
 docker exec pg14 pg_dumpall -U postgres > dump.sql
@@ -26,7 +26,7 @@ docker stop pg14
 mv $data_directory $data_directory.bak
 
 # Start a PostgreSQL 16 container
-docker run --rm -d --name pg16 -v $(pwd)/$data_directory:/var/lib/postgresql/data postgres:$new_version
+docker run --rm -d --name pg16 -v $(pwd)/$data_directory:/var/lib/postgresql/data postgres:$new_version-alpine
 
 # Load the db into the new container
 docker exec -i pg16 psql -U postgres < dump.sql
