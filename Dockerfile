@@ -61,6 +61,9 @@ RUN ln -s $HOME/bin/pleroma /bin/akkoma
 RUN ln -s $HOME/bin/pleroma_ctl /bin/pleroma_ctl
 RUN ln -s $HOME/bin/pleroma_ctl /bin/akkoma_ctl
 
+RUN mkdir -p /etc/akkoma
+ENV AKKOMA_CONFIG_PATH=/etc/akkoma/config.exs
+
 ADD docker-entrypoint.sh $HOME/docker-entrypoint.sh
 
 USER $UNAME
