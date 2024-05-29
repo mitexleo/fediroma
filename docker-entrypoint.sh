@@ -8,7 +8,7 @@ while ! pg_isready -U ${DB_USER:-pleroma} -d postgres://${DB_HOST:-db}:5432/${DB
 done
 
 echo "-- Running migrations..."
-mix ecto.migrate
+/opt/akkoma/bin/akkoma_ctl migrate
 
 echo "-- Starting!"
-mix phx.server
+/opt/akkoma/bin/akkoma start
