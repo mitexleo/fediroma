@@ -146,6 +146,17 @@ defmodule Pleroma.Web.ActivityPub.TransmogrifierTest do
       # It fetched the quoted post
       assert Object.normalize("https://misskey.io/notes/8vs6wxufd0")
     end
+
+    test "it does not explode if it cannot process the user behind a post" do
+      # this will break the nickname ascii check
+      user_ap_data = "test/fixtures/users_mock/user.json"
+      |> File.read!()
+      |> String.replace("{{nickname}}", "あっこ")
+
+      Tesla.Mock.mock_global(fn %{url: "https://example.com/users/あっこ"} ->
+        %Tesla.Env{status: 200, body: user_ap_data}
+      end)
+    end
   end
 
   describe "prepare outgoing" do

@@ -399,6 +399,31 @@ defmodule Pleroma.Web.ActivityPub.Transmogrifier.NoteHandlingTest do
 
       assert all_enqueued(worker: Pleroma.Workers.RemoteFetcherWorker) == []
     end
+
+    test "it does not explode if it cannot process the user behind a post" do
+      # this will break the nickname ascii check
+      user_ap_data = "test/fixtures/users_mock/user.json"
+      |> File.read!()
+      |> String.replace("{{nickname}}", "あっこ")
+      |> Jason.decode!()
+      |> Map.delete("featured")
+
+      user_ap_id = user_ap_data["id"]
+
+      Tesla.Mock.mock_global(fn %{url: ^user_ap_id} ->
+        %Tesla.Env{status: 200, body: Jason.encode!(user_ap_data),
+                   headers: HttpRequestMock.activitypub_object_headers()}
+      end)
+
+      data =
+        File.read!("test/fixtures/mastodon-post-activity.json")
+        |> Jason.decode!()
+        |> Map.put("actor", user_ap_id)
+        |> Map.put("to", ["https://www.w3.org/ns/activitystreams#Public"])
+        |> Map.put("cc", [])
+
+      assert {:error, :not_found} = Transmogrifier.handle_incoming(data)
+    end
   end
 
   describe "`handle_incoming/2`, Pleroma format `replies` handling" do
