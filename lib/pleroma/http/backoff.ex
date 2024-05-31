@@ -114,7 +114,7 @@ defmodule Pleroma.HTTP.Backoff do
         |> HTTP.get(headers, options)
         |> check_backoff(host)
 
-      e ->
+      _ ->
         {:error, :ratelimit}
     end
   end
