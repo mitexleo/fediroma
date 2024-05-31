@@ -1825,7 +1825,6 @@ defmodule Pleroma.Web.ActivityPub.ActivityPub do
   end
 
   def enqueue_pin_fetches(%{pinned_objects: pins}) do
-    IO.puts("Fetching pinned objects: #{inspect(pins)}")
     # enqueue a task to fetch all pinned objects
     Enum.each(pins, fn {ap_id, _} ->
       unless %{} = Object.get_cached_by_ap_id(ap_id) do
