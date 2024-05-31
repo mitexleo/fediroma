@@ -1836,6 +1836,8 @@ defmodule Pleroma.Web.ActivityPub.ActivityPub do
     end)
   end
 
+  def enqueue_pin_fetches(_), do: nil
+
   def make_user_from_ap_id(ap_id, additional \\ []) do
     user = User.get_cached_by_ap_id(ap_id)
 
