@@ -1824,18 +1824,19 @@ defmodule Pleroma.Web.ActivityPub.ActivityPub do
     end
   end
 
-  def pinned_fetch_task(nil), do: nil
-
-  def pinned_fetch_task(%{pinned_objects: pins}) do
-    if Enum.all?(pins, fn {ap_id, _} ->
-         Object.get_cached_by_ap_id(ap_id) ||
-           match?({:ok, _object}, Fetcher.fetch_object_from_id(ap_id))
-       end) do
-      :ok
-    else
-      :error
-    end
+  def enqueue_pin_fetches(%{pinned_objects: pins}) do
+    # enqueue a task to fetch all pinned objects
+    Enum.each(pins, fn {ap_id, _} ->
+      if is_nil(Object.get_cached_by_ap_id(ap_id)) do
+        Pleroma.Workers.RemoteFetcherWorker.enqueue("fetch_remote", %{
+          "id" => ap_id,
+          "depth" => 1
+        })
+      end
+    end)
   end
+
+  def enqueue_pin_fetches(_), do: nil
 
   def make_user_from_ap_id(ap_id, additional \\ []) do
     user = User.get_cached_by_ap_id(ap_id)
@@ -1844,8 +1845,6 @@ defmodule Pleroma.Web.ActivityPub.ActivityPub do
       Transmogrifier.upgrade_user_from_ap_id(ap_id)
     else
       with {:ok, data} <- fetch_and_prepare_user_from_ap_id(ap_id, additional) do
-        {:ok, _pid} = Task.start(fn -> pinned_fetch_task(data) end)
-
         user =
           if data.ap_id != ap_id do
             User.get_cached_by_ap_id(data.ap_id)
@@ -1857,6 +1856,7 @@ defmodule Pleroma.Web.ActivityPub.ActivityPub do
           user
           |> User.remote_user_changeset(data)
           |> User.update_and_set_cache()
+          |> tap(fn _ -> enqueue_pin_fetches(data) end)
         else
           maybe_handle_clashing_nickname(data)
 
@@ -1864,6 +1864,7 @@ defmodule Pleroma.Web.ActivityPub.ActivityPub do
           |> User.remote_user_changeset()
           |> Repo.insert()
           |> User.set_cache()
+          |> tap(fn _ -> enqueue_pin_fetches(data) end)
         end
       end
     end
