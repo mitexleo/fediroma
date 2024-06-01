@@ -1,5 +1,9 @@
+<%= unless no_sql_user do %>
 CREATE USER <%= dbuser %> WITH ENCRYPTED PASSWORD '<%= dbpass %>';
-CREATE DATABASE <%= dbname %> OWNER <%= dbuser %>;
+<% end %>
+<%= unless no_db_creation do %>
+CREATE DATABASE IF NOT EXISTS <%= dbname %> OWNER <%= dbuser %>;
+<% end %>
 \c <%= dbname %>;
 --Extensions made by ecto.migrate that need superuser access
 CREATE EXTENSION IF NOT EXISTS citext;

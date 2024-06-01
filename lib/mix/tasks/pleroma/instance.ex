@@ -37,7 +37,9 @@ defmodule Mix.Tasks.Pleroma.Instance do
           listen_port: :string,
           strip_uploads_metadata: :string,
           read_uploads_description: :string,
-          anonymize_uploads: :string
+          anonymize_uploads: :string,
+          no_sql_user: :boolean,
+          no_db_creation: :boolean
         ],
         aliases: [
           o: :output,
@@ -260,7 +262,9 @@ defmodule Mix.Tasks.Pleroma.Instance do
           dbname: dbname,
           dbuser: dbuser,
           dbpass: dbpass,
-          rum_enabled: rum_enabled
+          rum_enabled: rum_enabled,
+          no_sql_user: Keyword.get(options, :no_sql_user, false),
+          no_db_creation: Keyword.get(options, :no_db_creation, false)
         )
 
       config_dir = Path.dirname(config_path)
