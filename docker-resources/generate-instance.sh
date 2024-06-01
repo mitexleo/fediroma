@@ -10,7 +10,7 @@ mkdir -p docker-setup-tmp
 docker compose run \
     --rm \
     -e "PLEROMA_CTL_RPC_DISABLED=true" \
-    -v ./docker-setup-tmp:/opt/akkoma/config/\
+    -v $(pwd)/docker-setup-tmp:/opt/akkoma/config/ \
     akkoma ./bin/pleroma_ctl instance gen --no-sql-user --no-db-creation --dbhost db --dbname akkoma --dbuser akkoma --dbpass akkoma --listen-ip 0.0.0.0 --listen-port 4000 --static-dir /opt/akkoma/instance/ --uploads-dir /opt/akkoma/uploads/ --db-configurable true
 
 echo ""
