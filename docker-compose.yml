@@ -15,9 +15,8 @@ services:
       POSTGRES_PASSWORD: akkoma,
     }
     volumes:
-      - type: bind
-        source: ./pgdata
-        target: /var/lib/postgresql/data
+      - ./pgdata:/var/lib/postgresql/data:z
+
 
   akkoma:
     image: akkoma/akkoma:next
@@ -35,9 +34,9 @@ services:
       "127.0.0.1:4000:4000",
     ]
     volumes:
-      - ./config/prod.secret.exs:/etc/akkoma/config.exs
-      - ./uploads:/opt/akkoma/uploads
-      - ./instance:/opt/akkoma/instance
+      - ./config/prod.secret.exs:/etc/akkoma/config.exs:z
+      - ./uploads:/opt/akkoma/uploads:z
+      - ./instance:/opt/akkoma/instance:z
 
   # Copy this into docker-compose.override.yml and uncomment there if you want to use a reverse proxy
   #proxy:
