@@ -34,7 +34,7 @@ services:
       "127.0.0.1:4000:4000",
     ]
     volumes:
-      - ./config/prod.secret.exs:/etc/akkoma/config.exs:z
+      - ./config:/etc/akkoma/config:z
       - ./uploads:/opt/akkoma/uploads:z
       - ./instance:/opt/akkoma/instance:z
 
