@@ -4,7 +4,6 @@ set -euo pipefail
 
 mkdir -p pgdata
 mkdir -p docker-setup-tmp
-chmod a+w docker-setup-tmp
 
 # This is sorta special in that we need the generated_config.exs to make it onto the host
 # We can also automate the DB setup here!
