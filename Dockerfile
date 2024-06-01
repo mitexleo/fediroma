@@ -45,13 +45,6 @@ LABEL org.opencontainers.image.title="akkoma" \
 ARG HOME=/opt/akkoma
 EXPOSE 4000
 
-ARG UID=1000
-ARG GID=1000
-ARG UNAME=akkoma
-
-RUN addgroup -g $GID $UNAME
-RUN adduser -u $UID -G $UNAME -D -h $HOME $UNAME
-
 WORKDIR /opt/akkoma
 
 COPY --from=BUILD /src/docker-release/ $HOME
@@ -66,7 +59,8 @@ ENV AKKOMA_CONFIG_PATH=/etc/akkoma/config.exs
 
 ADD docker-entrypoint.sh $HOME/docker-entrypoint.sh
 
-USER $UNAME
+RUN adduser --system --home /opt/akkoma akkoma
+USER akkoma
 
 VOLUME uploads /opt/akkoma/uploads
 VOLUME instance /opt/akkoma/instance
