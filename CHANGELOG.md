@@ -13,10 +13,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Implement [FEP-67ff](https://codeberg.org/fediverse/fep/src/branch/main/fep/67ff/fep-67ff.md) (federation documentation)
 - Meilisearch: it is now possible to use separate keys for search and admin actions
 - New config option `:instance, :cleanup_attachments_delay`
+- New config option `Pleroma.Upload, :all_base_urls`
 
 ## Fixed
 - Meilisearch: order of results returned from our REST API now actually matches how Meilisearch ranks results
 - Fix “Delete & Redraft” often losing attachments if attachment cleanup was enabled
+- If `Pleroma.Upload, :all_base_urls` is set accordingly, uploaded files can now be deleted after a domain migration.
 
 ## 2024.04.1 (Security)
 

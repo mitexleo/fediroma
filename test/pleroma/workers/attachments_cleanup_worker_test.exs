@@ -14,6 +14,7 @@ defmodule Pleroma.Workers.AttachmentsCleanupWorkerTest do
 
   setup do
     clear_config([:instance, :cleanup_attachments], true)
+    clear_config([Pleroma.Upload, :all_base_urls])
 
     file = %Plug.Upload{
       content_type: "image/jpeg",
@@ -82,5 +83,25 @@ defmodule Pleroma.Workers.AttachmentsCleanupWorkerTest do
     assert Object.get_by_id(note.id).data["deleted"]
     assert Object.get_by_id(attachment.id) == nil
     refute File.exists?(path)
+  end
+
+  test "skips localpost with unmappable URLs", %{attachment: attachment, user: user} do
+    local_url = Pleroma.Web.Endpoint.url()
+
+    attach_data =
+      attachment.data
+      |> Map.update!("url", fn
+        [%{"href" => _} = url | _] ->
+          [%{url | "href" => "https://oldmedia.example/files/123.png"}]
+      end)
+
+    local_data = %{
+      "id" => local_url <> "/obj/123",
+      "actor" => user.ap_id,
+      "content" => "content",
+      "attachment" => [attach_data]
+    }
+
+    assert {:ok, :skip} = AttachmentsCleanupWorker.enqueue_if_needed(local_data)
   end
 end

@@ -22,6 +22,7 @@ defmodule Pleroma.Workers.AttachmentsCleanupWorker do
       }) do
     with true <- Config.get([:instance, :cleanup_attachments]),
          true <- URI.parse(actor).host == Pleroma.Web.Endpoint.host(),
+         attachments <- Enum.filter(attachments, &deletable_attachment/1),
          [_ | _] <- attachments do
       enqueue(
         "cleanup_attachments",
@@ -34,6 +35,18 @@ defmodule Pleroma.Workers.AttachmentsCleanupWorker do
   end
 
   def enqueue_if_needed(_), do: {:ok, :skip}
+
+  defp base_urls() do
+    Config.get([Pleroma.Upload, :all_base_urls]) ||
+      [Config.get!([Pleroma.Upload, :base_url])]
+  end
+
+  defp deletable_attachment(%{"id" => _id, "url" => [%{"href" => href} | _]}) do
+    # We can't delete files later if we can't strip the prefix
+    Enum.any?(base_urls(), fn url -> String.starts_with?(href, url) end)
+  end
+
+  defp deletable_attachment(_), do: false
 
   @impl Oban.Worker
   def perform(%Job{
@@ -66,18 +79,28 @@ defmodule Pleroma.Workers.AttachmentsCleanupWorker do
 
   def perform(%Job{args: %{"op" => "cleanup_attachments", "object" => _object}}), do: {:ok, :skip}
 
+  defp trim_first_leading(string, []), do: string
+
+  defp trim_first_leading(string, [prefix | rest]) do
+    trimmed = String.trim_leading(string, prefix)
+
+    if trimmed != string do
+      trimmed
+    else
+      trim_first_leading(string, rest)
+    end
+  end
+
   defp do_clean({object_ids, attachment_urls}) do
     uploader = Pleroma.Config.get([Pleroma.Upload, :uploader])
 
-    base_url =
-      String.trim_trailing(
-        Pleroma.Upload.base_url(),
-        "/"
-      )
+    base_urls =
+      base_urls()
+      |> Enum.map(fn url -> String.trim_trailing(url, "/") end)
 
     Enum.each(attachment_urls, fn href ->
       href
-      |> String.trim_leading("#{base_url}")
+      |> trim_first_leading(base_urls)
       |> uploader.delete_file()
     end)
 
