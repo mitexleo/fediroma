@@ -22,8 +22,8 @@ services:
         source: ./pgdata
         target: /var/lib/postgresql/data
       - type: bind
-        source: ./config/setup_db.psql
-        target: /docker-entrypoint-initdb.d/setup_db.sql
+        source: ./config
+        target: /docker-entrypoint-initdb.d
 
   akkoma:
     image: akkoma/akkoma:next
