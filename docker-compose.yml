@@ -18,8 +18,12 @@ services:
     }
     user: ${DOCKER_USER}
     volumes:
-      - ./pgdata:/var/lib/postgresql/data:z
-      - ./config/setup_db.psql:/docker-entrypoint-initdb.d/setup_db.sql
+      - type: bind
+        source: ./pgdata
+        target: /var/lib/postgresql/data
+      - type: bind
+        source: ./config/setup_db.psql
+        target: /docker-entrypoint-initdb.d/setup_db.sql
 
   akkoma:
     image: akkoma/akkoma:next
