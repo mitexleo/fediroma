@@ -56,10 +56,7 @@ RUN ln -s $HOME/bin/pleroma_ctl /bin/akkoma_ctl
 
 ADD docker-entrypoint.sh $HOME/docker-entrypoint.sh
 
-RUN adduser --system --home $HOME akkoma
-USER akkoma
-
-ENV AKKOMA_CONFIG_PATH=/opt/akkoma/config/config.exs
+ENV AKKOMA_CONFIG_PATH=/opt/akkoma/config/prod.secret.exs
 VOLUME uploads /opt/akkoma/uploads
 VOLUME instance /opt/akkoma/instance
 VOLUME config /opt/akkoma/config

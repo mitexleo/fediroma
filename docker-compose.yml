@@ -3,6 +3,8 @@ services:
     image: postgres:16-alpine
     shm_size: 4gb
     restart: unless-stopped
+    env_file:
+      - .env 
     environment: {
       # This might seem insecure but is usually not a problem.
       # You should leave this at the "akkoma" default.
@@ -14,13 +16,14 @@ services:
       POSTGRES_USER: akkoma,
       POSTGRES_PASSWORD: akkoma,
     }
+    user: ${DOCKER_USER}
     volumes:
       - ./pgdata:/var/lib/postgresql/data:z
-
 
   akkoma:
     image: akkoma/akkoma:next
     restart: unless-stopped
+    user: ${DOCKER_USER}
     links:
       - db
     ports: [
@@ -34,9 +37,9 @@ services:
       "127.0.0.1:4000:4000",
     ]
     volumes:
-      - ./config:/opt/akkoma/config:z
-      - ./uploads:/opt/akkoma/uploads:z
-      - ./instance:/opt/akkoma/instance:z
+      - ./config:/opt/akkoma/config
+      - ./uploads:/opt/akkoma/uploads
+      - ./instance:/opt/akkoma/instance
 
   # Copy this into docker-compose.override.yml and uncomment there if you want to use a reverse proxy
   #proxy:

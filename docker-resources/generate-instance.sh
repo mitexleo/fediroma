@@ -3,7 +3,6 @@
 set -euo pipefail
 
 mkdir -p pgdata
-mkdir -p docker-setup-tmp
 
 # This is sorta special in that we need the generated_config.exs to make it onto the host
 # We can also automate the DB setup here!
@@ -22,6 +21,6 @@ docker compose start db
 docker compose run \
     --rm \
     -e "PGPASSWORD=akkoma" \
-    -v "$(pwd)/docker-setup-tmp/setup_db.psql:/docker-entrypoint-initdb.d/setup_db.sql" \
+    -v "$(pwd)/config:/docker-entrypoint-initdb.d" \
     db
 
